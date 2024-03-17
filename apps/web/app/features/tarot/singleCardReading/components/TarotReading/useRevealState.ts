@@ -67,8 +67,8 @@ const machine: Machine = {
 		TOGGLE: () => ({ value: 'pre_hide' }),
 	},
 	hidden: {
-		REVEAL: () => ({ value: 'pre_reveal' }),
-		TOGGLE: () => ({ value: 'pre_reveal' }),
+		REVEAL: () => ({ value: 'reveal' }),
+		TOGGLE: () => ({ value: 'reveal' }),
 	},
 	pre_reveal: {
 		PRE_COMPLETED: () => ({ value: 'reveal' }),

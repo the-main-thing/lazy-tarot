@@ -67,13 +67,6 @@ const withContent = <T extends { id: string }>({
 
 type State<T extends { id: string }> =
 	| {
-			value: 'ssr'
-			card: PickedCardWithContent<T> | undefined
-			history: Array<PickedCard> | undefined
-			nextCard: PickedCardWithContent<T> | undefined
-			cardsSet: NonEmptyArray<T>
-	  }
-	| {
 			value: 'loading'
 			card: PickedCardWithContent<T> | undefined
 			history: Array<PickedCard> | undefined
@@ -127,10 +120,6 @@ const getMachine = <T extends { id: string }>() => {
 		state: State<T>,
 		event: Extract<Event<T>, { type: 'PICK_NEXT_CARD' }>
 	): State<T> => {
-		if (state.value === 'ssr') {
-			return state
-		}
-
 		const stateHistory = event.history || state.history
 
 		const prev = [...(stateHistory || [])]
@@ -207,16 +196,6 @@ const getMachine = <T extends { id: string }>() => {
 			) => State<T>
 		}
 	} = {
-		ssr: {
-			HYDRATED: state => ({
-				...state,
-				value: 'loading',
-			}),
-			SET_CARDS_SET: (state, event) => ({
-				...state,
-				cardsSet: event.data,
-			}),
-		},
 		loading: {
 			SET_CARDS_SET: (state, event) =>
 				state.cardsSet === event.data
@@ -356,16 +335,6 @@ const getInitialState = <T extends { id: string }>({
 			})
 		: undefined
 
-	if (typeof window === 'undefined') {
-		return {
-			value: 'ssr',
-			card,
-			cardsSet,
-			nextCard: undefined,
-			history: undefined,
-		}
-	}
-
 	return {
 		value: 'loading',
 		card,
@@ -395,19 +364,42 @@ export const useSingleCardReading = <T extends { id: string }>({
 	}, [cardsSet])
 
 	useEffect(() => {
-		if (stateValue === 'ssr') {
-			send({
-				type: 'HYDRATED',
-			})
-		}
-
 		if (stateValue === 'loading') {
-			send({
-				type: 'SET_HISTORY',
-				data: storage
-					? parseStorage(storageKey, storage).history || []
-					: [],
+			const frameId = window.requestAnimationFrame(() => {
+				const history = parseStorage(storageKey, storage).history || []
+				let card = initialPickedCard
+					? withContent({ card: initialPickedCard, cardsSet })
+					: undefined
+				if (!card) {
+					card = pickRandomCard({
+						prev: history,
+						source: cardsSet,
+					})
+				}
+				const nextCard = pickRandomCard({
+					prev: [
+						...history,
+						{
+							id: card.card.id,
+							upsideDown: card.upsideDown,
+						},
+					],
+					source: cardsSet,
+				})
+				send({
+					type: 'LOADED',
+					data: {
+						history,
+						cardsSet: cardsSet,
+						card,
+						nextCard,
+					},
+				})
 			})
+
+			return () => {
+				window.cancelAnimationFrame(frameId)
+			}
 		}
 	}, [stateValue, cardsSet, initialPickedCard, storage, storageKey])
 

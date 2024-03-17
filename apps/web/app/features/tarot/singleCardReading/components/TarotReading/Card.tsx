@@ -4,11 +4,8 @@ import { ClassNames } from '@emotion/react'
 import { Card } from '~/components/Card'
 import type { ImgProps } from '~/components/Img'
 
-// import { FORM_ID } from './constants'
-import {
-	stateToCardState,
-	// hiddenState
-} from './useRevealState'
+import { FORM_ID } from './constants'
+import { stateToCardState } from './useRevealState'
 import type { Send, RevealState } from './useRevealState'
 
 type Props = {
@@ -27,9 +24,9 @@ const Container = forwardRef<
 		state: RevealState['value']
 		buttonLabel?: string
 		className?: string
-		___DELETE_ME: Send
+		send: Send
 	}
->(({ children, buttonLabel, className, state, ___DELETE_ME }, ref) => {
+>(({ children, buttonLabel, className, state, send }, ref) => {
 	if (!buttonLabel) {
 		return (
 			<div
@@ -44,25 +41,22 @@ const Container = forwardRef<
 		)
 	}
 
-	// if (!hiddenState[state]) {
-	// 	return (
-	// 		<div
-	// 			ref={ref as never}
-	// 			aria-hidden="true"
-	// 			className={'relative ' + className}
-	// 		>
-	// 			{children}
-	// 		</div>
-	// 	)
-	// }
+	const buttonProps =
+		state === 'hidden' || state === 'initial_hidden'
+			? ({
+					type: 'submit',
+					form: FORM_ID,
+			  } as const)
+			: ({
+					type: 'button',
+					onClick: () => send({ type: 'TOGGLE' }),
+			  } as const)
 
 	return (
 		<button
 			ref={ref as never}
-			// type="submit"
-			// form={FORM_ID}
-			onClick={() => ___DELETE_ME({ type: 'TOGGLE' })}
 			className={'block relative ' + className}
+			{...buttonProps}
 		>
 			<div className="sr-only">{buttonLabel}</div>
 			{children}
@@ -79,7 +73,7 @@ const CardOfTheDay = forwardRef<HTMLDivElement, Props>(
 				buttonLabel={buttonLabel}
 				className="inline-flex flex-col items-center"
 				state={state}
-				___DELETE_ME={send}
+				send={send}
 			>
 				<ClassNames>
 					{({ css }) => (

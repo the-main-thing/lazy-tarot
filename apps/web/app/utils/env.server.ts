@@ -1,4 +1,4 @@
-export type EnvKey = 'NODE_ENV' | 'API_ENDPOINT'
+export type EnvKey = 'NODE_ENV' | 'API_ENDPOINT' | 'DEV_ONLY_API_ENDPOINT'
 
 export const env = <TGraceful extends boolean = false>(
 	key: EnvKey,

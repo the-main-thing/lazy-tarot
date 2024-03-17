@@ -117,7 +117,13 @@ const Backdrop = ({
 			aria-hidden="true"
 		>
 			<animated.div
-				style={spring}
+				style={
+					state === 'reveal' || state === 'hide'
+						? {
+								opacity: 1,
+						  }
+						: spring
+				}
 				className="opacity-0 fixed inset-0 bg-white pointer-events-none"
 			/>
 		</div>

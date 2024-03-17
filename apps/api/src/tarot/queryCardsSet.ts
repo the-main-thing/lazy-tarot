@@ -47,6 +47,6 @@ export const getCardsSet = publicProcedure
       input,
       ctx,
     })
-
+    
     return data
   })

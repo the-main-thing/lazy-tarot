@@ -17,15 +17,19 @@ export const queryContent = async (
   runQuery: Params['runQuery'],
   id: Params['id'],
 ) => {
-  const data = await runQuery(
-    q('*')
-      .filterByType('tarotCard')
-      .filter(`_id == ${id}`)
-      .grab(cardContentQueryObject)
-      .slice(0),
-  )
+  try {
+    const data = await runQuery(
+      q('*')
+        .filter(`_type == "tarotCard" && _id == "${id}"`)
+        .grab(cardContentQueryObject)
+        .slice(0),
+    )
 
-  return data as typeof data | null
+    return data as typeof data | null
+  } catch (error) {
+    console.error('SANITY_ERROR', error)
+    throw error
+  }
 }
 
 export const getCardById = publicProcedure

@@ -70,7 +70,7 @@ export const TarotReading = ({
 			setSearchParams(
 				searchParams.serialize({
 					id: pickedCard.card.id,
-					upside_down: pickedCard.card.upsideDown ? '1' : '0',
+					upside_down: pickedCard.upsideDown ? '1' : '0',
 				}),
 				{
 					replace: true,
@@ -79,6 +79,7 @@ export const TarotReading = ({
 			)
 		}
 	}, [state, pickedCard, setSearchParams])
+
 	const [formCardPlaceholder, setFormCardPlaceholder] =
 		useState<Element | null>(null)
 	const [descriptionCardPlaceholder, setDescriptionCardPlaceholder] =
@@ -172,7 +173,9 @@ export const TarotReading = ({
 				revealed={!hiddenState[state]}
 				form={
 					<Form
-						send={send}
+						onSubmit={() => {
+							send({ type: 'REVEAL' })
+						}}
 						header={formContent.headerTitle}
 						description={formContent.formDescription}
 						state={state}

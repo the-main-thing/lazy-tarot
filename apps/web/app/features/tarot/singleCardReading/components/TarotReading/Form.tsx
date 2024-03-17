@@ -1,10 +1,11 @@
+import { useEffect } from 'react'
 import { animated, useTrail } from '@react-spring/web'
 import { Form as RemixForm } from '@remix-run/react'
 
 import { PortableText } from '~/components/PortableText'
 
 import { FORM_ID } from './constants'
-import type { RevealState, Send } from './useRevealState'
+import type { RevealState } from './useRevealState'
 
 type PortableTextValue = React.ComponentProps<typeof PortableText>['value']
 
@@ -15,10 +16,10 @@ type Props<
 	header: THeader
 	description: TDescription
 	state: RevealState['value']
-	send: Send
 	id: string | undefined
 	upsideDown: boolean | undefined
 	submitButtonLabel: string
+	onSubmit: () => void
 }
 
 type SpringConfig = {
@@ -73,11 +74,23 @@ export const Form = <
 	state,
 	id,
 	upsideDown,
-	send,
+	onSubmit,
 	submitButtonLabel,
 }: Props<THeader, TDescription>) => {
 	const spring = useTrail(2, stateSpringMap[state])
 	const formDisabled = state !== 'initial_hidden' && state !== 'hidden'
+
+	useEffect(() => {
+		if (state === 'hidden') {
+			const frameId = window.requestAnimationFrame(() => {
+				onSubmit()
+			})
+
+			return () => {
+				window.cancelAnimationFrame(frameId)
+			}
+		}
+	}, [state, onSubmit])
 
 	return (
 		<RemixForm
@@ -85,7 +98,7 @@ export const Form = <
 			id={FORM_ID}
 			onSubmit={(event) => {
 				event.preventDefault()
-				send({ type: 'REVEAL' })
+				onSubmit()
 			}}
 			preventScrollReset
 			aria-disabled={formDisabled ? 'true' : 'false'}

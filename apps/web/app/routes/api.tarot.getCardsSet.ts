@@ -8,7 +8,7 @@ const MINUTE_IN_SECONDS = 60
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const language = getLanugage(request.headers)
-	const cardsSet = api.tarot.public.getCardsSet.query({
+	const cardsSet = await api.tarot.public.getCardsSet.query({
 		language,
 	})
 
