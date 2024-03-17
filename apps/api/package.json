@@ -1,0 +1,33 @@
+{
+  "name": "@repo/api",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "deploy": "npx wrangler deploy",
+    "dev": "npx wrangler dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sanity/client": "^6.15.3",
+    "@sanity/image-url": "^1.0.2",
+    "@trpc/client": "^11.0.0-next-beta.318",
+    "@trpc/server": "^11.0.0-next-beta.318",
+    "accept-language-parser": "^1.5.0",
+    "groqd": "^0.15.10",
+    "zod": "^3.22.4",
+    "@repo/utils": "*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240312.0",
+    "@types/accept-language-parser": "^1.5.6",
+    "@types/node": "^20.11.25",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.2",
+    "wrangler": "^3.32.0",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*"
+  }
+}

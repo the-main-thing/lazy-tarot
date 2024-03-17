@@ -1,0 +1,9 @@
+{
+	"extends": "@repo/typescript-config/utils.json",
+	"compilerOptions": {
+		"types": ["vitest/globals"],
+		"outDir": "dist"
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist", "*.test.ts", "*.test.js"]
+}
