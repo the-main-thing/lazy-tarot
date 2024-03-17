@@ -7,23 +7,9 @@ type Card = {
 type NonEmptyArray<T> = [T, ...Array<T>]
 type CombinationKey = `${string}:${boolean}`
 
-const MIN_PREV_CARD_PICKING_CHANCE = 0.05
-
 type Combination<T> = {
 	card: T
 	upsideDown: boolean
-}
-
-const getPrevChance = (prev: number, next: number): number => {
-	const total = prev + next
-	const result = Math.max(
-		prev / Math.max(total * next, total),
-		MIN_PREV_CARD_PICKING_CHANCE
-	)
-	if (next && result === 1) {
-		return 0.9
-	}
-	return result
 }
 
 const pickFromPrevious = <
@@ -80,9 +66,25 @@ export const pickRandomCard = <
 	if (!source.length) {
 		return pickFromPrevious({ prev, source })
 	}
-	const prevCombinationsSet = new Set<CombinationKey>(
-		prev.map(({ id, upsideDown }) => `${id}:${upsideDown}` as const)
-	)
+
+	if (prev.length >= source.length) {
+		// Allow 4 oldest cards to be picked
+		// If there is no such amount of cards, then just increase chance for a single card
+		prev = prev.slice(
+			Math.min(Math.min(4, source.length - 1), prev.length - 1)
+		)
+	}
+	prev =
+		prev.length >= source.length
+			? prev.slice(Math.floor(source.length / 4))
+			: prev
+	const prevCombinationsSet = new Set<CombinationKey>()
+	for (const { id } of prev) {
+		// Ignore upsideDown so there will be no situation when
+		// new card is just the turned over old one
+		prevCombinationsSet.add(`${id}:true`)
+		prevCombinationsSet.add(`${id}:false`)
+	}
 	const sourceCombinationsKeys = new Set<CombinationKey>()
 	for (const card of source) {
 		const aCombination = `${card.id}:true` as const
@@ -99,15 +101,6 @@ export const pickRandomCard = <
 		) {
 			sourceCombinationsKeys.add(bCombination)
 		}
-	}
-	const chanceOfPickingPrevCard = getPrevChance(
-		prevCombinationsSet.size,
-		sourceCombinationsKeys.size
-	)
-	const pickPrevCard =
-		randInt(0, Math.round(100 / chanceOfPickingPrevCard) - 100) === 0
-	if (pickPrevCard || !sourceCombinationsKeys.size) {
-		return pickFromPrevious({ prev, source })
 	}
 
 	return {

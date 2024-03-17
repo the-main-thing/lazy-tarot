@@ -1,3 +1,4 @@
+import { redirect } from '@remix-run/node'
 import type { LoaderFunctionArgs } from '@remix-run/node'
 
 import { api } from '~/api.server'
@@ -36,6 +37,20 @@ const CACHE_CONTROL_VALUE = `public, max-age=${
 export const loader = async ({
 	request,
 }: Pick<LoaderFunctionArgs, 'request'>) => {
+	const url = new URL(request.url)
+	const searchQuery = searchParams.deserialize(
+		new URL(request.url).searchParams,
+	)
+	if (searchQuery?.scroll_to) {
+		throw redirect(
+			`${url.pathname}?${searchParams
+				.serialize({
+					id: searchQuery.id,
+					upside_down: searchQuery.upside_down,
+				})
+				.toString()}#${searchQuery.scroll_to}`,
+		)
+	}
 	const data = await getPageData(
 		request.headers,
 		searchParams.deserialize(new URL(request.url).searchParams),

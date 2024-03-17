@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from '@remix-run/react'
+import { useNavigate } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 
 import { Img } from '~/components'
@@ -61,24 +61,28 @@ export const TarotReading = ({
 	useEffect(() => {
 		// We are picking the next card beforehand so it would be preloaded when we reveal it.
 		if (state === 'hidden') {
+			console.log('picking next card')
 			pickNextCard()
 		}
 	}, [state, pickNextCard])
-	const [, setSearchParams] = useSearchParams()
+	const navigate = useNavigate()
 	useEffect(() => {
 		if (state === 'revealed' && pickedCard) {
-			setSearchParams(
-				searchParams.serialize({
-					id: pickedCard.card.id,
-					upside_down: pickedCard.upsideDown ? '1' : '0',
-				}),
+			navigate(
+				`/?${searchParams
+					.serialize({
+						id: pickedCard.card.id,
+						upside_down: pickedCard.upsideDown ? '1' : '0',
+						scroll_to: 'tarot-reading',
+					})
+					.toString()}`,
 				{
 					replace: true,
 					preventScrollReset: true,
 				},
 			)
 		}
-	}, [state, pickedCard, setSearchParams])
+	}, [state, pickedCard, navigate])
 
 	const [formCardPlaceholder, setFormCardPlaceholder] =
 		useState<Element | null>(null)
@@ -145,9 +149,9 @@ export const TarotReading = ({
 
 	return (
 		<section
-			id="tarot-reading"
 			className="relative flex flex-col items-center"
 		>
+			<div id="tarot-reading" className="absolute -top-16" />
 			<div
 				className="sr-only pointer-events-none"
 				aria-hidden="true"

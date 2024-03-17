@@ -19,7 +19,7 @@ export const action = async ({
 		return redirect(
 			`/?${searchParams
 				.serialize(formDataParser.serialize(parsedFormData))
-				.toString()}`,
+				.toString()}#tarot-reading`,
 		)
 	}
 
@@ -46,11 +46,11 @@ export const action = async ({
 	})
 
 	return redirect(
-		`/${searchParams
+		`/?${searchParams
 			.serialize({
 				id: pickedCard.card.id,
 				upside_down: serializeUpsideDown(pickedCard.upsideDown),
 			})
-			.toString()}`,
+			.toString()}#tarot-reading`,
 	)
 }

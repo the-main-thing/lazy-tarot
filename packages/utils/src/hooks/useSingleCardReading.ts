@@ -120,71 +120,32 @@ const getMachine = <T extends { id: string }>() => {
 		state: State<T>,
 		event: Extract<Event<T>, { type: 'PICK_NEXT_CARD' }>
 	): State<T> => {
-		const stateHistory = event.history || state.history
+		const history = event.history || state.history || []
 
-		const prev = [...(stateHistory || [])]
-		if (state.card) {
-			prev.push({
-				id: state.card.card.id,
-				upsideDown: state.card.upsideDown,
-			})
-		}
-		if (state.nextCard) {
-			prev.push({
-				id: state.nextCard.card.id,
-				upsideDown: state.nextCard.upsideDown,
-			})
-		}
-		const nextCard: NonNullable<typeof state.card> = pickRandomCard({
-			prev,
+		let nextCard: NonNullable<typeof state.card> = pickRandomCard({
+			prev: history,
 			source: state.cardsSet,
 		})
 
-		const history: typeof state.history = stateHistory
-			? [
-					...stateHistory,
-					...(state.card
-						? [
-								{
-									id: state.card.card.id,
-									upsideDown: state.card.upsideDown,
-								},
-							]
-						: []),
-				]
-			: undefined
-		const card: NonNullable<typeof state.card> = {
-			card: state.nextCard?.card || nextCard.card,
-			upsideDown: state.nextCard
-				? state.nextCard?.upsideDown
-				: nextCard.upsideDown,
-		}
-		const next = state.nextCard
-			? nextCard
-			: pickRandomCard({
-					prev: [
-						...prev,
-						{ id: card.card.id, upsideDown: card.upsideDown },
-					],
-					source: state.cardsSet,
-				})
+		history.push({
+			id: nextCard.card.id,
+			upsideDown: nextCard.upsideDown,
+		})
 
-		if (history) {
-			return {
-				...state,
-				history,
-				card,
-				nextCard: next,
-				value: 'ready',
-			}
+		let card = state.nextCard
+		if (!card) {
+			card = nextCard
+			nextCard = pickRandomCard({
+				prev: history,
+				source: state.cardsSet,
+			})
 		}
 
 		return {
 			...state,
-			value: 'loading',
 			history,
 			card,
-			nextCard: next,
+			nextCard,
 		}
 	}
 
@@ -364,7 +325,7 @@ export const useSingleCardReading = <T extends { id: string }>({
 	}, [cardsSet])
 
 	useEffect(() => {
-		if (stateValue === 'loading') {
+		if (stateValue === 'loading' && cardsSet.length) {
 			const frameId = window.requestAnimationFrame(() => {
 				const history = parseStorage(storageKey, storage).history || []
 				let card = initialPickedCard
