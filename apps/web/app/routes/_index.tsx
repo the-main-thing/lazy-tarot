@@ -83,6 +83,8 @@ export default function Index() {
 		manifestoPageContent,
 	} = pages
 
+	const x = 1
+
 	return (
 		<main className="w-full md:w-11/12 p-4 pt-10 pb-20 md:pb-40 flex flex-col m-auto gap-16">
 			<div>
