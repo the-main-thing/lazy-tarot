@@ -47,16 +47,16 @@ const hideSpring: SpringConfig = {
 	from: visible,
 	to: hidden,
 }
-const revealSpring: SpringConfig = {
-	from: hidden,
-	to: visible,
-}
+// const revealSpring: SpringConfig = {
+// 	from: hidden,
+// 	to: visible,
+// }
 
 const stateSpringMap: {
 	[state in RevealState['value']]: SpringConfig
 } = {
 	initial_hidden: visibleSpring,
-	hidden: revealSpring,
+	hidden: hiddenSpring,
 	pre_reveal: hideSpring,
 	reveal: hiddenSpring,
 	revealed: hiddenSpring,

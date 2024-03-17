@@ -120,7 +120,7 @@ const getMachine = <T extends { id: string }>() => {
 		state: State<T>,
 		event: Extract<Event<T>, { type: 'PICK_NEXT_CARD' }>
 	): State<T> => {
-		const history = event.history || state.history || []
+		const history = (event.history || state.history || []).slice()
 
 		let nextCard: NonNullable<typeof state.card> = pickRandomCard({
 			prev: history,
@@ -368,14 +368,17 @@ export const useSingleCardReading = <T extends { id: string }>({
 	useEffect(() => {
 		if (history && storage) {
 			const idleId = window.requestIdleCallback(() => {
-				storage.setItem(storageKey, JSON.stringify({ history }))
+				storage.setItem(
+					storageKey,
+					JSON.stringify({ history: history.slice(-cardsSet.length) })
+				)
 			})
 
 			return () => {
 				window.cancelIdleCallback(idleId)
 			}
 		}
-	}, [history, storage, storageKey])
+	}, [history, storage, storageKey, cardsSet])
 
 	const pickNextCard = useCallback(() => {
 		send({

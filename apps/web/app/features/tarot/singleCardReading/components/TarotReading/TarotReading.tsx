@@ -60,8 +60,7 @@ export const TarotReading = ({
 	const [{ value: state }, send] = useRevealState(Boolean(currentCard))
 	useEffect(() => {
 		// We are picking the next card beforehand so it would be preloaded when we reveal it.
-		if (state === 'hidden') {
-			console.log('picking next card')
+		if (state === 'hidden' || state === 'initial_revealed') {
 			pickNextCard()
 		}
 	}, [state, pickNextCard])
@@ -147,25 +146,33 @@ export const TarotReading = ({
 		</ClientOnly>
 	)
 
+	const preloadNextCardImage = nextCard ? (
+		<Img src={nextCard.card.image} alt="" aria-hidden="true" />
+	) : null
+
 	return (
-		<section
-			className="relative flex flex-col items-center"
-		>
+		<section className="relative flex flex-col items-center">
 			<div id="tarot-reading" className="absolute -top-16" />
 			<div
 				className="sr-only pointer-events-none"
 				aria-hidden="true"
 				tabIndex={-1}
 			>
-				<ClientOnly fallback={null}>
+				<ClientOnly fallback={preloadNextCardImage}>
 					{() => {
-						return nextCard ? (
-							<Img
-								aria-hidden="true"
-								alt=""
-								src={nextCard.card.image}
-							/>
-						) : null
+						return (
+							<>
+								{preloadNextCardImage}
+								{cardsSet.map((card) => (
+									<Img
+										key={card.id}
+										src={card.image}
+										alt=""
+										aria-hidden="true"
+									/>
+								))}
+							</>
+						)
 					}}
 				</ClientOnly>
 			</div>
