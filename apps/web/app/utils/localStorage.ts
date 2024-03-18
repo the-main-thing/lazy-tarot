@@ -18,15 +18,16 @@ class InMemoryStorage {
 const inMemoryStorage = new InMemoryStorage()
 
 export class LocalStorage {
-	private fallback: InMemoryStorage | null = inMemoryStorage
+	private fallback: InMemoryStorage = inMemoryStorage
 	private get storage() {
-		if (typeof window !== 'undefined') {
-			this.fallback = null
-		}
-		if (this.fallback) {
+		try {
+			if (typeof window !== 'undefined') {
+				return window.localStorage
+			}
+			return this.fallback
+		} catch {
 			return this.fallback
 		}
-		return window.localStorage
 	}
 	getItem = (key: string) => this.storage.getItem(key)
 	setItem = (key: string, value: string) => this.storage.setItem(key, value)
