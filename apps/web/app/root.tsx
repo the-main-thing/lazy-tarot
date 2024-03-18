@@ -9,7 +9,7 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 
-import { getLanguagesFromHeaders } from './utils/i18n.server'
+import { getLanguagesFromHeaders, getLanugage } from './utils/i18n.server'
 import { QueryProvider } from './QueryProvider'
 import tailwind from './tailwind.css?url'
 
@@ -67,6 +67,9 @@ export default function Root() {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const languages = getLanguagesFromHeaders(request.headers)
+
+	console.log(getLanugage(request.headers))
+	console.log(JSON.stringify(languages, null, 2))
 
 	return json(
 		{
