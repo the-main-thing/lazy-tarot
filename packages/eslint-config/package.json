@@ -5,7 +5,7 @@
   "files": [
     "library.js",
     "react-internal.js",
-    "web.cjs"
+    "resolveTsConfig.cjs"
   ],
   "devDependencies": {
     "@vercel/style-guide": "^5.2.0",

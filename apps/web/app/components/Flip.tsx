@@ -72,7 +72,7 @@ const Horizontaly = forwardRef<HTMLDivElement, Props>(
 			state,
 		)
 		if (
-			typeof window !== undefined &&
+			typeof window !== 'undefined' &&
 			initialState &&
 			initialState !== state
 		) {

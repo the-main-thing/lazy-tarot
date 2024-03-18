@@ -6,7 +6,6 @@ declare type AnyFunction = (...args: Array<any>) => any
 declare type AsyncAnyFunction = (...args: Array<any>) => Promise<any>
 declare type NonEmptyArray<T> = [T, ...T[]]
 declare type RemoveFirstElement<T extends Array<any>> = T extends [
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	infer _First,
 	...infer Rest,
 ]

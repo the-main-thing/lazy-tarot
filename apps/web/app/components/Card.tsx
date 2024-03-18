@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
 import classNames from 'classnames'
-import { type useSpringRef } from '@react-spring/web'
 
 import { Flip } from './Flip'
 import type { ImgProps } from './Img'
@@ -13,7 +12,6 @@ type Props = {
 	upsideDown: boolean
 	onAnimationComplete?: () => void
 	imgProps?: Omit<ImgProps, 'src' | 'alt' | 'aria-hidden'>
-	springRef?: ReturnType<typeof useSpringRef>
 	className?: string
 }
 
@@ -26,7 +24,6 @@ export const Card = forwardRef<HTMLDivElement, Props>(
 			upsideDown,
 			onAnimationComplete,
 			imgProps,
-			springRef,
 			className,
 		},
 		ref,
@@ -40,7 +37,6 @@ export const Card = forwardRef<HTMLDivElement, Props>(
 		return (
 			<Flip.Horizontaly
 				ref={ref}
-				springRef={springRef}
 				className={className}
 				back={<Img {...derivedImgProps} src={back} />}
 				face={
