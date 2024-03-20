@@ -20,10 +20,15 @@ type PickedCardWithContent<T extends { id: string }> = {
 }
 type StorageValue = z.infer<typeof storageSchema>
 
-type Storage = {
-	getItem: (key: string) => string | null
-	setItem: (key: string, value: string) => void
-}
+type Storage =
+	| {
+			getItem: (key: string) => Promise<string | null>
+			setItem: (key: string, value: string) => Promise<void>
+	  }
+	| {
+			getItem: (key: string) => string | null
+			setItem: (key: string, value: string) => void
+	  }
 
 type Props<T extends { id: string }> = {
 	cardsSet: NonEmptyArray<T>
@@ -32,9 +37,12 @@ type Props<T extends { id: string }> = {
 	storageKey: string
 }
 
-const parseStorage = (key: string, storage: Storage): StorageValue => {
-	const saved = storage.getItem(key)
+const parseStorage = async (
+	key: string,
+	storage: Storage
+): Promise<StorageValue> => {
 	try {
+		const saved = await storage.getItem(key)
 		return saved
 			? {
 					history: JSON.parse(saved).history.filter(
@@ -326,8 +334,13 @@ export const useSingleCardReading = <T extends { id: string }>({
 
 	useEffect(() => {
 		if (stateValue === 'loading' && cardsSet.length) {
-			const frameId = window.requestAnimationFrame(() => {
-				const history = parseStorage(storageKey, storage).history || []
+			let awaiting = true
+			const getStorageValue = async () => {
+				const storageValue = await parseStorage(storageKey, storage)
+				if (!awaiting) {
+					return
+				}
+				const history = storageValue.history || []
 				let card = initialPickedCard
 					? withContent({ card: initialPickedCard, cardsSet })
 					: undefined
@@ -356,10 +369,12 @@ export const useSingleCardReading = <T extends { id: string }>({
 						nextCard,
 					},
 				})
-			})
+			}
+
+			getStorageValue()
 
 			return () => {
-				window.cancelAnimationFrame(frameId)
+				awaiting = false
 			}
 		}
 	}, [stateValue, cardsSet, initialPickedCard, storage, storageKey])
@@ -367,7 +382,7 @@ export const useSingleCardReading = <T extends { id: string }>({
 	const history = 'history' in state ? state.history : undefined
 	useEffect(() => {
 		if (history && storage) {
-			const idleId = window.requestIdleCallback(() => {
+			const idleId = requestIdleCallback(() => {
 				storage.setItem(
 					storageKey,
 					JSON.stringify({ history: history.slice(-cardsSet.length) })
@@ -375,18 +390,17 @@ export const useSingleCardReading = <T extends { id: string }>({
 			})
 
 			return () => {
-				window.cancelIdleCallback(idleId)
+				cancelIdleCallback(idleId)
 			}
 		}
 	}, [history, storage, storageKey, cardsSet])
 
 	const pickNextCard = useCallback(() => {
-		send({
-			type: 'PICK_NEXT_CARD',
-			history: storage
-				? parseStorage(storageKey, storage).history
-				: undefined,
+		parseStorage(storageKey, storage).then(({ history }) => {
+			send({ type: 'PICK_NEXT_CARD', history })
 		})
+
+		return
 	}, [])
 
 	return {
