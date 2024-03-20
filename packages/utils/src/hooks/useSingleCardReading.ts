@@ -1,7 +1,9 @@
 import { z } from 'zod'
 import { useEffect, useState, useReducer, useCallback } from 'react'
 import { equals } from 'remeda'
+
 import { pickRandomCard } from '../pickRandomCard.js'
+import { requestIdleCallback } from '../requestIdleCallback.js'
 
 type NonEmptyArray<T> = [T, ...Array<T>]
 
@@ -382,16 +384,12 @@ export const useSingleCardReading = <T extends { id: string }>({
 	const history = 'history' in state ? state.history : undefined
 	useEffect(() => {
 		if (history && storage) {
-			const idleId = requestIdleCallback(() => {
+			return requestIdleCallback(() => {
 				storage.setItem(
 					storageKey,
 					JSON.stringify({ history: history.slice(-cardsSet.length) })
 				)
 			})
-
-			return () => {
-				cancelIdleCallback(idleId)
-			}
 		}
 	}, [history, storage, storageKey, cardsSet])
 
