@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useTransition } from 'react'
 import { useIsomorphicLayoutEffect, useSpring } from '@react-spring/web'
 
 import { trackPosition } from './trackPosition'
@@ -36,6 +36,7 @@ export const useAnimation = (target: Element | null) => {
 	const [targetPosition, setTargetPosition] = useState(() =>
 		targetElement ? fromElement(targetElement) : null,
 	)
+	const [, startTransition] = useTransition()
 
 	const state = useMemo(() => {
 		if (!base) {
@@ -83,22 +84,13 @@ export const useAnimation = (target: Element | null) => {
 			})
 		}
 		updatePosition()
-		let idleCallbackId: ReturnType<
-			typeof window.requestIdleCallback
-		> | null = null
 		const onResize = () => {
-			if (idleCallbackId !== null) {
-				window.cancelIdleCallback(idleCallbackId)
-			}
-			idleCallbackId = window.requestIdleCallback(updatePosition)
+			startTransition(() => updatePosition())
 		}
 		window.addEventListener('resize', onResize)
 
 		return () => {
 			window.removeEventListener('resize', onResize)
-			if (idleCallbackId !== null) {
-				window.cancelIdleCallback(idleCallbackId)
-			}
 		}
 	}, [state, base, targetElement])
 
