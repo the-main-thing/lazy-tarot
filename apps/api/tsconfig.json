@@ -1,11 +1,7 @@
 {
   "extends": "@repo/typescript-config/api.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["src/*"]
-    }
+    "outDir": "./dist"
   },
   "exclude": ["dist", "build", "node_modules"]
 }

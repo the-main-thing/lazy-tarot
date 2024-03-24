@@ -5,17 +5,33 @@ export type Position = {
 	height: number
 }
 
+const getScrollY = () =>
+	[
+		document.body.scrollTop,
+		document.documentElement.scrollTop,
+		window.scrollY,
+	].filter(Boolean)[0] || 0
+const getScrollX = () =>
+	[
+		document.body.scrollLeft,
+		document.documentElement.scrollLeft,
+		window.scrollX,
+	].filter(Boolean)[0] || 0
+const getClientTop = () =>
+	[document.body.clientTop, document.documentElement.clientTop].filter(
+		Boolean,
+	)[0] || 0
+const getClientLeft = () =>
+	[document.body.clientLeft, document.documentElement.clientLeft].filter(
+		Boolean,
+	)[0] || 0
+
 export const fromRect = (rect: DOMRect): Position => {
-	const body = document.body
-	const documentElement = document.documentElement
+	const scrollTop = getScrollY()
+	const scrollLeft = getScrollX()
 
-	const scrollTop =
-		window.scrollY || documentElement.scrollTop || body.scrollTop
-	const scrollLeft =
-		window.scrollX || documentElement.scrollLeft || body.scrollLeft
-
-	const clientTop = documentElement.clientTop || body.clientTop || 0
-	const clientLeft = documentElement.clientLeft || body.clientLeft || 0
+	const clientTop = getClientTop()
+	const clientLeft = getClientLeft()
 
 	return {
 		x: rect.left + scrollLeft - clientLeft,
@@ -24,6 +40,7 @@ export const fromRect = (rect: DOMRect): Position => {
 		height: rect.height,
 	}
 }
+
 export const fromElement = (element: Element): Position =>
 	fromRect(element.getBoundingClientRect())
 

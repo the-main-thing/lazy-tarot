@@ -4,9 +4,6 @@ import { Form as RemixForm } from '@remix-run/react'
 
 import { PortableText } from '~/components/PortableText'
 
-import { FORM_ID } from './constants'
-import type { RevealState } from './useRevealState'
-
 type PortableTextValue = React.ComponentProps<typeof PortableText>['value']
 
 type Props<
@@ -15,11 +12,12 @@ type Props<
 > = {
 	header: THeader
 	description: TDescription
-	state: RevealState['value']
-	id: string | undefined
+	cardId: string | undefined
+	id: string
 	upsideDown: boolean | undefined
-	submitButtonLabel: string
-	onSubmit: () => void
+	onSubmit: React.FormEventHandler<HTMLFormElement> | undefined
+	hidden: boolean
+	animate: boolean
 }
 
 type SpringConfig = {
@@ -35,76 +33,55 @@ const visible: ValueOf<SpringConfig> = {
 	translateX: '0%',
 }
 
-const hiddenSpring: SpringConfig = {
-	from: hidden,
-	to: hidden,
-}
-const visibleSpring: SpringConfig = {
-	from: visible,
-	to: visible,
-}
-const hideSpring: SpringConfig = {
-	from: visible,
-	to: hidden,
-}
-// const revealSpring: SpringConfig = {
-// 	from: hidden,
-// 	to: visible,
-// }
-
-const stateSpringMap: {
-	[state in RevealState['value']]: SpringConfig
-} = {
-	initial_hidden: visibleSpring,
-	hidden: hiddenSpring,
-	pre_reveal: hideSpring,
-	reveal: hiddenSpring,
-	revealed: hiddenSpring,
-	initial_revealed: hiddenSpring,
-	pre_hide: hiddenSpring,
-	hide: hiddenSpring,
-}
-
 export const Form = <
 	THeader extends PortableTextValue,
 	TDescription extends PortableTextValue,
 >({
 	header,
 	description,
-	state,
+	hidden: hideForm,
+	animate,
 	id,
+	cardId,
 	upsideDown,
 	onSubmit,
-	submitButtonLabel,
 }: Props<THeader, TDescription>) => {
-	const spring = useTrail(2, stateSpringMap[state])
-	const formDisabled = state !== 'initial_hidden' && state !== 'hidden'
-
-	useEffect(() => {
-		if (state === 'hidden') {
-			const frameId = window.requestAnimationFrame(() => {
-				onSubmit()
-			})
-
-			return () => {
-				window.cancelAnimationFrame(frameId)
+	const [spring, api] = useTrail(2, (i) => {
+		if (animate) {
+			return {
+				from: hideForm ? visible : hidden,
+				to: hideForm ? hidden : visible,
+				delay: i * 100,
 			}
 		}
-	}, [state, onSubmit])
+
+		return {
+			from: hideForm ? hidden : visible,
+			to: hideForm ? hidden : visible,
+			delay: 0,
+		}
+	})
+
+	useEffect(() => {
+		if (animate && hideForm) {
+			api.start(hidden)
+			return
+		}
+		if (animate && !hideForm) {
+			api.start(visible)
+			return
+		}
+	}, [hideForm, animate, api])
 
 	return (
 		<RemixForm
-			method="POST"
-			id={FORM_ID}
-			onSubmit={(event) => {
-				event.preventDefault()
-				onSubmit()
-			}}
+			method="GET"
+			id={id}
+			onSubmit={onSubmit}
 			preventScrollReset
-			aria-disabled={formDisabled ? 'true' : 'false'}
 			className="w-full text-center"
 		>
-			{id ? <input type="hidden" name="id" value={id} /> : null}
+			{cardId ? <input type="hidden" name="id" value={cardId} /> : null}
 			{typeof upsideDown === 'boolean' ? (
 				<input
 					type="hidden"
@@ -112,20 +89,19 @@ export const Form = <
 					value={upsideDown ? '1' : '0'}
 				/>
 			) : null}
-			<animated.div style={spring[1]}>
+			<input type="hidden" name="scroll_to" value="tarot-reading" />
+			<animated.div
+				style={spring[1]}
+				className={hideForm ? 'pointer-events-none' : ''}
+			>
 				<PortableText value={header} />
 			</animated.div>
-			<animated.div style={spring[0]}>
+			<animated.div
+				style={spring[0]}
+				className={hideForm ? 'pointer-events-none' : ''}
+			>
 				<PortableText value={description} />
 			</animated.div>
-			<button
-				className="sr-only"
-				type="submit"
-				aria-disabled={formDisabled ? 'true' : 'false'}
-				tabIndex={formDisabled ? -1 : 0}
-			>
-				{submitButtonLabel}
-			</button>
 		</RemixForm>
 	)
 }

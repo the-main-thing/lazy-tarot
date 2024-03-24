@@ -23,6 +23,7 @@
 		"@repo/utils": "*",
 		"@tanstack/react-query": "^5.22.2",
 		"@trpc/client": "^11.0.0-next-beta.318",
+		"@use-gesture/react": "^10.3.1",
 		"accept-language-parser": "^1.5.0",
 		"classnames": "^2.5.1",
 		"date-fns": "^3.3.1",

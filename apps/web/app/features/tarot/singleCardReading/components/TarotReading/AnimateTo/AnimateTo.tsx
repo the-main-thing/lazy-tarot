@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { animated } from '@react-spring/web'
 
-import { BodyBottomPortal } from './BodyBottomPortal'
+import { BodyBottomPortal } from '~/components/BodyBottomPortal'
 
 import { useAnimation } from './useMovement'
 

@@ -1,6 +1,6 @@
-import { ClientLoaderFunctionArgs } from '@remix-run/react'
+import { type ClientLoaderFunctionArgs, redirect } from '@remix-run/react'
 
-import { getOrFetchCardsSet } from '../query.client'
+import { getOrFetchCardsSet } from '../query'
 import { searchParams } from './searchParams'
 
 export const clientLoader = async ({
@@ -10,15 +10,23 @@ export const clientLoader = async ({
 	const parsedSearchParams = searchParams.deserialize(
 		new URL(request.url).searchParams,
 	)
+	const currentCardContent = parsedSearchParams
+		? cardsSet.find((card) => card.id === parsedSearchParams.id)
+		: undefined
+
+	if (parsedSearchParams && !currentCardContent) {
+		throw redirect('/')
+	}
 
 	return {
 		cardsSet,
-		currentCard: parsedSearchParams
+		currentCard: currentCardContent
 			? {
-					id: parsedSearchParams.id,
-					upsideDown: parsedSearchParams.upside_down === '1',
+					card: currentCardContent,
+					upsideDown: parsedSearchParams?.upside_down === '1',
 			  }
 			: null,
+		nextCard: null,
 	}
 }
 

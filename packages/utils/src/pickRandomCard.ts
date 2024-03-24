@@ -67,7 +67,7 @@ export const pickRandomCard = <
 	}
 
 	for (let i = 0; i < MAX_ATTEMPTS; i++) {
-		const card = source[randInt(0, source.length)]!
+		const card = source[randInt(0, source.length - 1)]!
 		const upsideDown = randInt(0, 1) === 1
 		const combination = `${card.id}:${upsideDown}` as const
 		if (!prevCombinations[combination]) {
@@ -78,7 +78,7 @@ export const pickRandomCard = <
 		}
 	}
 
-	const index = randInt(0, source.length)
+	const index = randInt(0, source.length - 1)
 	let card = source[index]!
 	let upsideDown = randInt(0, 1) === 1
 	if (prev[prev.length - 1]?.id === card.id) {

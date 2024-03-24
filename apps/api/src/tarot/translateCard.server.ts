@@ -2,7 +2,7 @@ import { BREAKPOINTS } from '@repo/utils'
 
 import { getTranslated, getImagesSet } from '../sanity'
 import type { Card } from './cardContentQueryObject.server'
-import type { Context } from '~/context'
+import type { Context } from '../context'
 
 type Props = {
   language: string | undefined

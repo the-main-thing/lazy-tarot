@@ -37,17 +37,15 @@ const getSrcSet = (srcSet: SrcSet) =>
 export const Img = forwardRef<HTMLImageElement, ImgProps>(
 	({ src, alt = '', className, ...props }, ref) => {
 		return (
-			<>
-				<img
-					ref={ref}
-					alt={alt}
-					aria-hidden={alt ? 'false' : 'true'}
-					{...props}
-					srcSet={getSrcSet(src)}
-					src={src.sm.src}
-					className={className}
-				/>
-			</>
+			<img
+				ref={ref}
+				alt={alt}
+				aria-hidden={alt ? 'false' : 'true'}
+				{...props}
+				srcSet={getSrcSet(src)}
+				src={src.sm.src}
+				className={className}
+			/>
 		)
 	},
 )

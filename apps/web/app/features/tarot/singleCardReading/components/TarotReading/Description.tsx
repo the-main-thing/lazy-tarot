@@ -1,10 +1,8 @@
-import { animated, useSpring } from '@react-spring/web'
-import { ClassNames } from '@emotion/react'
+import { useEffect } from 'react'
+import { animated, useSprings } from '@react-spring/web'
 
 import { PortableText } from '~/components/PortableText'
 import { Typography } from '~/components/Typography'
-
-import type { RevealState } from './useRevealState'
 
 type PortableTextValue = React.ComponentProps<typeof PortableText>['value']
 
@@ -14,8 +12,11 @@ type Props<
 > = {
 	header: THeader
 	description: TDescription
-	state: RevealState['value']
 	cardTitle: string
+	hidden: boolean
+	animate: boolean
+	children: React.ReactNode
+	animatingNewCard: boolean
 }
 
 type SpringConfig = {
@@ -31,36 +32,6 @@ const visible: ValueOf<SpringConfig> = {
 	scale: 1,
 }
 
-const hiddenSpring: SpringConfig = {
-	from: hidden,
-	to: hidden,
-}
-const visibleSpring: SpringConfig = {
-	from: visible,
-	to: visible,
-}
-const hideSpring: SpringConfig = {
-	from: visible,
-	to: hidden,
-}
-const revealSpring: SpringConfig = {
-	from: hidden,
-	to: visible,
-}
-
-const stateSpringMap: {
-	[state in RevealState['value']]: SpringConfig
-} = {
-	initial_hidden: hiddenSpring,
-	hidden: hiddenSpring,
-	pre_reveal: hiddenSpring,
-	reveal: hiddenSpring,
-	revealed: revealSpring,
-	initial_revealed: visibleSpring,
-	pre_hide: hideSpring,
-	hide: hiddenSpring,
-}
-
 export const Description = <
 	THeader extends PortableTextValue,
 	TDescription extends PortableTextValue,
@@ -68,32 +39,63 @@ export const Description = <
 	header,
 	description,
 	cardTitle,
-	state,
+	hidden: hideDescription,
+	animate,
+	children,
+	animatingNewCard,
 }: Props<THeader, TDescription>) => {
-	const spring = useSpring(stateSpringMap[state])
+	const [spring, api] = useSprings(3, () => {
+		const to = hideDescription ? hidden : visible
+		const from = hideDescription ? visible : hidden
+		return {
+			from: animate ? from : to,
+			to,
+			delay: 0,
+		}
+	})
+
+	useEffect(() => {
+		if (animatingNewCard) {
+			api.start(hidden)
+
+			return
+		}
+		if (!animate) {
+			return
+		}
+		if (!animatingNewCard && !hideDescription) {
+			api.start(visible)
+
+			return
+		}
+
+		api.start(hideDescription ? hidden : visible)
+	}, [hideDescription, animate, api, animatingNewCard])
 
 	return (
-		<animated.article style={spring}>
-			<ClassNames>
-				{({ css, cx }) => (
-					<div
-						className={cx(
-							'relative flex flex-col gap-2',
-							css`
-								& h1 {
-									margin-top: -0.1823em;
-								}
-							`,
-						)}
+		<article aria-hidden={hideDescription ? 'true' : 'false'}>
+			<div className="flex flex-col items-center gap-8">
+				<animated.div style={spring[0]!}>
+					<PortableText value={header} />
+				</animated.div>
+				<animated.div
+					style={spring[1]!}
+					className="text-pretty hyphens-auto text-center"
+				>
+					<Typography variant="h2">{cardTitle}</Typography>
+				</animated.div>
+				<div className="flex landscape:flex-row portrait:flex-col-reverse gap-20 md:gap-16">
+					<animated.div
+						style={spring[2]!}
+						className="max-w-text-60 text-pretty hyphens-auto text-justify"
 					>
-						<PortableText value={header} />
-						<Typography variant="h2">{cardTitle}</Typography>
+						<PortableText value={description} />
+					</animated.div>
+					<div className="flex flex-col items-center landscape:items-start landscape:pt-2">
+						{children}
 					</div>
-				)}
-			</ClassNames>
-			<div style={{ maxWidth: '60ch' }} className="text-pretty">
-				<PortableText value={description} />
+				</div>
 			</div>
-		</animated.article>
+		</article>
 	)
 }

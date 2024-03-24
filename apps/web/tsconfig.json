@@ -10,6 +10,9 @@
 	],
 	"compilerOptions": {
 		"baseUrl": ".",
+		"declarationMap": false,
+		"declaration": false,
+		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./app/*"]
 		},

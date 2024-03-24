@@ -10,6 +10,8 @@ export const BodyBottomPortal = memo(
 		if (portal) {
 			return createPortal(children, portal)
 		}
+
+		return null
 	},
 )
 
