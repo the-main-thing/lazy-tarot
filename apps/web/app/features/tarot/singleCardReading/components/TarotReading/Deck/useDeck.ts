@@ -16,7 +16,7 @@ type Props = {
 
 const VOID_FUNCTION: VoidFunction = () => void 0
 
-const DECK_SIZE = 22
+const DECK_SIZE = 18
 
 const initialFrom: SpringStyles = {
 	x: 0,
@@ -28,6 +28,7 @@ const initialFrom: SpringStyles = {
 	rotateZ: 0.01,
 	scale: 1,
 	opacity: 1,
+	revealRotate: 0,
 }
 
 const initialTo: SpringStyles = { ...initialFrom }
@@ -42,8 +43,9 @@ const from = (
 		...initialTo,
 		x,
 		y,
+		z: (DECK_SIZE / 2 > i ? -1 : 1) * i * 10,
 		rotate,
-		z: i,
+		revealRotate: 0,
 	}
 }
 
@@ -61,6 +63,29 @@ const getY = (percent: number): string => {
 	return `${Math.abs(percent)}vh`
 }
 
+const toRevealRotateTransformPositive = (rotate: number) =>
+	`rotateY(${rotate}deg)` as const
+const toRevealRotateTransformNegative = (rotate: number) =>
+	`rotateY(${rotate * -1}deg)` as const
+
+export const interpolateRevealRotate = (
+	props: Pick<SpringProps, 'revealRotate'>,
+) =>
+	[
+		{
+			transform: interpolate(
+				[props.revealRotate],
+				toRevealRotateTransformPositive,
+			),
+		},
+		{
+			transform: interpolate(
+				[props.revealRotate],
+				toRevealRotateTransformNegative,
+			),
+		},
+	] as const
+
 const transform = (
 	x: number,
 	y: number,
@@ -70,10 +95,11 @@ const transform = (
 	rotateZ: number,
 	rotate: number,
 	scale: number,
-) =>
-	`perspective(1500px) translate3d(${getX(x)}, ${getY(
+) => {
+	return `perspective(1500px) translate3d(${getX(x)}, ${getY(
 		y,
 	)}, ${z}px)  rotate3d(${rotateX}, ${rotateY}, ${rotateZ}, ${rotate}deg) scale(${scale})` as const
+}
 
 export const getSSRStyles = ({
 	x,
@@ -118,11 +144,11 @@ const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
 		return {
 			x: Math.random() * (Math.random() > 0.5 ? 1 : -1) * 0.1,
 			y: Math.random() * 4,
-			z: i,
 			rotate: Math.random() * (Math.random() > 0.5 ? 1 : -1) * 2,
 			rotateY: 0,
 			rotateX: 0,
 			rotateZ: 0.1,
+			revealRotate: 0,
 			scale: 1,
 			delay: i * 10,
 			opacity: 1,
@@ -133,11 +159,11 @@ const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
 	return {
 		x: Math.random() * (Math.random() > 0.5 ? 1 : -1),
 		y: Math.random(),
-		z: DECK_SIZE - 1,
 		rotateX: 0,
 		rotateY: 1,
 		rotateZ: 0,
-		rotate: 180,
+		rotate: 0,
+		revealRotate: -180,
 		scale: 1,
 		opacity: 1,
 		onRest,
@@ -153,6 +179,7 @@ const getShuffleStart = (i: number, onRest?: VoidFunction) => {
 		opacity: 1,
 		delay: (DECK_SIZE - 1 - i) * 16,
 		rotate: 0,
+		revealRotate: 0,
 		onRest,
 		onStart: VOID_FUNCTION,
 	}
@@ -173,7 +200,6 @@ const getShuffleEnd = (i: number, onRest?: VoidFunction) => {
 const fromShuffle = {
 	x: -105,
 	y: 0,
-	z: 0,
 	rotate: 0,
 	rotateY: 0,
 	rotateX: 0,
@@ -191,7 +217,10 @@ export const getInitialStylesList = ({
 		.map((_, i) => {
 			let to = from(i)
 			if (initialRevealed) {
-				to = getRevealedStyle(i)
+				to = {
+					...getRevealedStyle(i),
+					z: to.z,
+				}
 			}
 
 			return {
