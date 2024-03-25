@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { animated } from '@react-spring/web'
 import { ClientOnly } from 'remix-utils/client-only'
 
@@ -48,6 +48,27 @@ export const Deck = ({
 	const [nonAnimatingTarget, setNonAnimatingTarget] =
 		useState<Element | null>(null)
 	const [animating, setAnimating] = useState(false)
+	const [screenOrientation, setScreenOrientation] = useState<
+		'landscape' | 'portrait'
+	>('landscape')
+	useEffect(() => {
+		const onMediaChange = () => {
+			setScreenOrientation(
+				window.matchMedia('(orientation: landscape)').matches
+					? 'landscape'
+					: 'portrait',
+			)
+		}
+		onMediaChange()
+		window
+			.matchMedia('(orientation: landscape)')
+			.addEventListener('change', onMediaChange)
+		return () => {
+			window
+				.matchMedia('(orientation: landscape)')
+				.removeEventListener('change', onMediaChange)
+		}
+	}, [])
 	const [positionTarget, setPositionTarget] = useState(nonAnimatingTarget)
 	if (!positionTarget && nonAnimatingTarget) {
 		setPositionTarget(nonAnimatingTarget)
@@ -224,47 +245,53 @@ export const Deck = ({
 		<ClientOnly fallback={deck}>
 			{() => (
 				<div className="flex flex-col items-center justify-center">
-					<BodyBottomPortal>
-						<div className="absolute top-0 left-0">
-							<div
-								className={
-									'fixed inset-0 flex flex-col items-center justify-center pointer-events-none'
-								}
-							>
-								<div
-									className={
-										'relative flex flex-col items-center justify-center ' +
-										className
-									}
-								>
-									<Img
-										className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
-										ref={setMiddleOfTheScreen}
-										src={cardBackImage}
-										alt=""
-										aria-hidden="true"
-									/>
+					{screenOrientation === 'landscape' ? (
+						<>
+							<BodyBottomPortal>
+								<div className="absolute top-0 left-0">
+									<div
+										className={
+											'fixed inset-0 flex flex-col items-center justify-center pointer-events-none'
+										}
+									>
+										<div
+											className={
+												'relative flex flex-col items-center justify-center ' +
+												className
+											}
+										>
+											<Img
+												className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
+												ref={setMiddleOfTheScreen}
+												src={cardBackImage}
+												alt=""
+												aria-hidden="true"
+											/>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					</BodyBottomPortal>
-
-					<Img
-						className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
-						ref={setNonAnimatingTarget}
-						src={cardBackImage}
-						alt=""
-						aria-hidden="true"
-					/>
-					<AnimateTo
-						key={
-							String(initialRevealed) + String(pickedCard?.image)
-						}
-						target={positionTarget}
-						trackForMs={5000}
-					>
-						{deck}
-					</AnimateTo>
+							</BodyBottomPortal>
+							<Img
+								className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
+								ref={setNonAnimatingTarget}
+								src={cardBackImage}
+								alt=""
+								aria-hidden="true"
+							/>
+							<AnimateTo
+								key={
+									String(initialRevealed) +
+									String(pickedCard?.image)
+								}
+								target={positionTarget}
+								trackForMs={5000}
+							>
+								{deck}
+							</AnimateTo>
+						</>
+					) : (
+						deck
+					)}
 				</div>
 			)}
 		</ClientOnly>

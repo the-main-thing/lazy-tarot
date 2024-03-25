@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import { useIsomorphicLayoutEffect, useSpring } from '@react-spring/web'
 
 import { requestIdleCallback } from '@repo/utils'
@@ -152,11 +152,42 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 			opacity: 0,
 		}
 	}, [basePosition, targetPosition, state])
-
-	const spring = useSpring({
-		...style,
+	const [spring, api] = useSpring(() => ({
+		from: { ...style, opacity: 0 },
+		to: { ...style, opacity: 0 },
 		onRest: () => onAtPosition(targetElement),
-	})
+	}))
 
-	return [state === 'moving' ? spring : style, setBase] as const
+	const onAtPositionRef = useRef(onAtPosition)
+	onAtPositionRef.current = onAtPosition
+
+	useIsomorphicLayoutEffect(() => {
+		if (state === 'moving') {
+			api.start({
+				...style,
+				onRest: () => onAtPositionRef.current(targetElement),
+			})
+			return
+		}
+		if (state === 'teleporting') {
+			api.set({
+				...style,
+				opacity: 0,
+			})
+			onAtPositionRef.current(targetElement)
+			api.set({ ...style, opacity: 1 })
+			return
+		}
+		if (state === 'idle') {
+			api.set(style)
+			onAtPositionRef.current(targetElement)
+			return
+		}
+
+		api.set({ ...style, opacity: 0 })
+		onAtPositionRef.current(targetElement)
+		return
+	}, [style, api, state, targetElement])
+
+	return [spring, setBase] as const
 }

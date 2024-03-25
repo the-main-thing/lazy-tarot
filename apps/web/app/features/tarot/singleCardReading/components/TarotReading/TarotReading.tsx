@@ -387,12 +387,12 @@ export const TarotReading = ({
 									<div className="absolute top-0 left-0">
 										<animated.div
 											style={hideContentSpring}
-											className="fixed bg-white w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
+											className="fixed bg-slate-100 w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
 										/>
 									</div>
 								</BodyBottomPortal>
 								<AnimateTo
-									trackForMs={5000}
+									trackForMs={10000}
 									target={
 										revealed && pickedCard
 											? descriptionCardPlaceholder

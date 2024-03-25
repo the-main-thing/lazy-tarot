@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 export const unpauseScroll = () => {
-	document.body.classList.remove('overflow-hidden')
+	document.documentElement.classList.remove('overflow-hidden')
 }
 
 export const pauseScroll = () => {
-	document.body.classList.add('overflow-hidden')
+	if (!document.documentElement.classList.contains('overflow-hidden')) {
+		document.documentElement.classList.add('overflow-hidden')
+	}
 
 	return unpauseScroll
 }

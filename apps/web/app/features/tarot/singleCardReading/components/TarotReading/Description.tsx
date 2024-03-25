@@ -80,18 +80,26 @@ export const Description = <
 				</animated.div>
 				<animated.div
 					style={spring[1]!}
-					className="text-pretty hyphens-auto text-center"
+					className="text-pretty hyphens-auto text-center portrait:hidden"
 				>
 					<Typography variant="h2">{cardTitle}</Typography>
 				</animated.div>
-				<div className="flex landscape:flex-row portrait:flex-col-reverse gap-20 md:gap-16">
-					<animated.div
-						style={spring[2]!}
-						className="max-w-text-60 text-pretty hyphens-auto text-justify"
-					>
-						<PortableText value={description} />
-					</animated.div>
-					<div className="flex flex-col items-center landscape:items-start landscape:pt-1">
+				<div className="flex landscape:flex-row portrait:flex-col-reverse gap-16 md:gap-16">
+					<div className="flex flex-col items-center gap-8">
+						<animated.div
+							style={spring[1]!}
+							className="text-pretty hyphens-auto text-center landscape:hidden"
+						>
+							<Typography variant="h2">{cardTitle}</Typography>
+						</animated.div>
+						<animated.div
+							style={spring[2]!}
+							className="max-w-text-60 text-pretty hyphens-auto text-justify"
+						>
+							<PortableText value={description} />
+						</animated.div>
+					</div>
+					<div className="flex flex-col items-center landscape:items-start">
 						{children}
 					</div>
 				</div>
