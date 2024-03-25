@@ -153,7 +153,4 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	return loaderHeaders
-	// return new Headers({
-	// 	'Cache-Control': 'no-cache, no-store, must-revalidate',
-	// })
 }
