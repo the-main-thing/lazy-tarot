@@ -175,12 +175,14 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 				...style,
 				opacity: 0,
 			})
-			api.set({ ...style, opacity: 1 })
 			onAtPositionRef.current(targetElement)
 			return
 		}
 		if (state === 'idle') {
-			api.set(style)
+			api.set({
+				...style,
+				opacity: 1,
+			})
 			onAtPositionRef.current(targetElement)
 			return
 		}
