@@ -3,12 +3,13 @@ import { animated } from '@react-spring/web'
 
 import { BodyBottomPortal } from '~/components/BodyBottomPortal'
 
-import { useAnimation } from './useMovement'
+import { useAnimation } from './useAnimation'
 
 type Props = {
 	target: Element | null
 	children: React.ReactNode
 	className?: string
+	trackForMs?: number
 }
 
 const containersStyles = {
@@ -18,8 +19,8 @@ const containersStyles = {
 } as const
 
 const AnimateTo = forwardRef<HTMLDivElement | null, Props>(
-	({ target, children, className }, ref) => {
-		const [style, setBase] = useAnimation(target)
+	({ target, children, className, trackForMs }, ref) => {
+		const [style, setBase] = useAnimation(target, trackForMs)
 
 		const animatedContainerClassName = `absolute inline-flex top-0 left-0 origin-top-left ${
 			className || ''

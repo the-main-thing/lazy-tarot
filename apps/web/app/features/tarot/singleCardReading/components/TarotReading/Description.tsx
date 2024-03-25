@@ -91,7 +91,7 @@ export const Description = <
 					>
 						<PortableText value={description} />
 					</animated.div>
-					<div className="flex flex-col items-center landscape:items-start landscape:pt-2">
+					<div className="flex flex-col items-center landscape:items-start landscape:pt-1">
 						{children}
 					</div>
 				</div>

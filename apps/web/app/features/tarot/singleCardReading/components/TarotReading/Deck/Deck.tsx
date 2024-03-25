@@ -71,12 +71,25 @@ export const Deck = ({
 		},
 	})
 
+	const cardContainerClassName = 'absolute top-0 left-0 bg-stone-50 rounded'
+	const imgClassName = 'rounded bg-stone-50'
+	const cardImageContainerClassName =
+		'shadow-lg rounded p-1 pb-2 bg-stone-50 flex flex-col items-center justify-center flex-shrink-0'
+
 	const deck = (
-		<div
+		<button
 			className={
-				'relative flex flex-col items-center justify-center ' +
+				'relative flex flex-col items-center justify-center rounded ' +
 				className
 			}
+			type={type}
+			form={form}
+			onClick={(event) => {
+				onClick?.(event)
+				setAnimating(true)
+				setAnimate(true)
+				onReveal()
+			}}
 		>
 			{springs.map((props, index, array) => {
 				const asButton = index === array.length - 1
@@ -87,33 +100,36 @@ export const Deck = ({
 						WebkitBackfaceVisibility: 'hidden',
 						backfaceVisibility: 'hidden',
 					} as const
+
 					const placeholder = (
-						<Img
-							src={cardBackImage}
-							alt=""
-							aria-hidden="true"
-							className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
-						/>
+						<div className="flex flex-row flex-nowrap">
+							<Img
+								src={cardBackImage}
+								alt=""
+								aria-hidden="true"
+								className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
+							/>
+							{pickedCard ? (
+								<Img
+									src={pickedCard.image}
+									alt=""
+									aria-hidden="true"
+									className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
+								/>
+							) : null}
+						</div>
 					)
 					return (
-						<animated.button
+						<animated.div
 							key={index}
-							type={type}
-							form={form}
-							onClick={(event) => {
-								onClick?.(event)
-								setAnimating(true)
-								setAnimate(true)
-								onReveal()
-							}}
-							className={'absolute top-0  '}
+							className="absolute top-0 left-0"
 							style={getSpringStyles(props)}
 						>
 							<div className="sr-only">{children}</div>
 							<div className="relative w-full h-full bg-transparent rounded">
 								<animated.div
 									style={{
-										perspective: '1000px',
+										perspective: '10000px',
 										background: 'transparent',
 									}}
 									className="relative"
@@ -124,17 +140,24 @@ export const Deck = ({
 											...revealRotate,
 											transformStyle: 'preserve-3d',
 										}}
-										className="absolute top-0 left-0 rounded shadow-md md:shadow-lg"
+										className={
+											'absolute top-0 left-0 rounded '
+										}
 									>
 										{placeholder}
 										<animated.div
 											style={shared}
-											className="absolute top-0 left-0 p-1 pb-2 bg-slate-50 rounded"
+											className={
+												cardContainerClassName +
+												' ' +
+												cardImageContainerClassName
+											}
 										>
 											<Img
 												src={cardBackImage}
 												alt=""
 												aria-hidden="true"
+												className={imgClassName}
 											/>
 										</animated.div>
 										<animated.div
@@ -142,7 +165,11 @@ export const Deck = ({
 												...shared,
 												transform: `rotateY(180deg)`,
 											}}
-											className="absolute top-0 left-0 p-1 pb-2 bg-slate-50 rounded"
+											className={
+												cardContainerClassName +
+												' ' +
+												cardImageContainerClassName
+											}
 										>
 											{pickedCard ? (
 												<Img
@@ -157,35 +184,40 @@ export const Deck = ({
 															  }
 															: undefined
 													}
+													className={imgClassName}
 												/>
 											) : null}
 										</animated.div>
 									</animated.div>
 								</animated.div>
 							</div>
-						</animated.button>
+						</animated.div>
 					)
 				}
 
 				return (
 					<animated.div
 						key={index}
-						className={
-							'absolute top-0 p-1 pb-2 bg-slate-50 rounded shadow-md md:shadow-lg overflow-hidden'
-						}
+						className={cardContainerClassName}
 						style={getSpringStyles(props)}
 					>
-						<div className="w-full h-full bg-inherit relative overflow-hidden rounded">
+						<div
+							className={
+								'w-full h-full bg-inherit relative overflow-hidden rounded ' +
+								cardImageContainerClassName
+							}
+						>
 							<Img
 								src={cardBackImage}
 								alt=""
 								aria-hidden="true"
+								className={imgClassName}
 							/>
 						</div>
 					</animated.div>
 				)
 			})}
-		</div>
+		</button>
 	)
 
 	return (
@@ -196,7 +228,7 @@ export const Deck = ({
 						<div className="absolute top-0 left-0">
 							<div
 								className={
-									'fixed inset-0 flex flex-col items-center justify-center'
+									'fixed inset-0 flex flex-col items-center justify-center pointer-events-none'
 								}
 							>
 								<div
@@ -227,6 +259,7 @@ export const Deck = ({
 					<AnimateTo
 						key={String(initialRevealed)}
 						target={positionTarget}
+						trackForMs={5000}
 					>
 						{deck}
 					</AnimateTo>

@@ -1,8 +1,10 @@
+import { isInteger } from '@repo/utils'
 import { equals, type Position, fromElement } from './position'
 
 export const trackPosition = <TElement extends Element>(
 	element: TElement | null,
 	onChange: (position: Position, element: TElement) => void,
+	trackForMs?: number
 ) => {
 	if (!element) {
 		return () => void 0
@@ -13,7 +15,7 @@ export const trackPosition = <TElement extends Element>(
 	let framesCount = 0
 	let lastPosition = fromElement(element)
 	let lastChange = Date.now()
-	const finishAfter = 1000
+	const finishAfter = isInteger(trackForMs) && trackForMs > 0 ? trackForMs : 1000
 	const skipFrames = 2
 	const onFrame = () => {
 		if (canceled) {

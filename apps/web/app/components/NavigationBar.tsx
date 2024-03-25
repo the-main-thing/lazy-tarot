@@ -1,5 +1,7 @@
-import { NavLink } from '@remix-run/react'
+import { Link } from '@remix-run/react'
 import { ClassNames } from '@emotion/react'
+
+import { Typography } from './Typography'
 
 const NavLinkItem = ({
 	to,
@@ -10,17 +12,17 @@ const NavLinkItem = ({
 }) => (
 	<ClassNames>
 		{({ cx, css }) => (
-			<NavLink
+			<Link
 				to={to}
 				className={cx(
-					'italic text-xl md:text-2xl lg:text-3xl border-transparent border-b-2 hover:border-black focus:border-black pb-1',
+					'italic border-transparent border-b-2 hover:border-black focus:border-black pb-1',
 					css`
 						transition: border-bottom 0.2s ease-in-out;
 					`,
 				)}
 			>
-				{children}
-			</NavLink>
+				<Typography variant="span">{children}</Typography>
+			</Link>
 		)}
 	</ClassNames>
 )

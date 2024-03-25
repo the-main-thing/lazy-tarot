@@ -7,7 +7,7 @@ import { trackPosition } from './trackPosition'
 import { getStyle } from './getStyle'
 import { fromElement, equals } from './position'
 
-export const useAnimation = (target: Element | null) => {
+export const useAnimation = (target: Element | null, trackForMs?: number) => {
 	const [{ base, current, next }, setElements] = useState<{
 		base: Element | null
 		current: Element | null
@@ -62,10 +62,14 @@ export const useAnimation = (target: Element | null) => {
 	useIsomorphicLayoutEffect(() => {
 		onNext(target)
 		if (!moving) {
-			return trackPosition(target, (position, element) => {
-				onNext(element)
-				setTargetPosition(position)
-			})
+			return trackPosition(
+				target,
+				(position, element) => {
+					onNext(element)
+					setTargetPosition(position)
+				},
+				trackForMs,
+			)
 		}
 	}, [target, moving])
 

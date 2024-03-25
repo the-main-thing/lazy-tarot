@@ -18,6 +18,10 @@ const VOID_FUNCTION: VoidFunction = () => void 0
 
 const DECK_SIZE = 18
 
+const getZ = (index: number, multiplyBy: number) => {
+	return (index - Math.floor(DECK_SIZE / 2)) * multiplyBy * 10
+}
+
 const initialFrom: SpringStyles = {
 	x: 0,
 	y: 0,
@@ -43,7 +47,7 @@ const from = (
 		...initialTo,
 		x,
 		y,
-		z: (DECK_SIZE / 2 > i ? -1 : 1) * i * 10,
+		z: getZ(i, 1),
 		rotate,
 		revealRotate: 0,
 	}
@@ -96,7 +100,7 @@ const transform = (
 	rotate: number,
 	scale: number,
 ) => {
-	return `perspective(1500px) translate3d(${getX(x)}, ${getY(
+	return `perspective(10000px) translate3d(${getX(x)}, ${getY(
 		y,
 	)}, ${z}px)  rotate3d(${rotateX}, ${rotateY}, ${rotateZ}, ${rotate}deg) scale(${scale})` as const
 }
@@ -156,13 +160,16 @@ const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
 			onStart: VOID_FUNCTION,
 		}
 	}
+	const inBrowser = typeof window !== 'undefined'
 	return {
 		x: Math.random() * (Math.random() > 0.5 ? 1 : -1),
 		y: Math.random(),
+		rotateY: 0,
 		rotateX: 0,
-		rotateY: 1,
-		rotateZ: 0,
-		rotate: 0,
+		rotateZ: 1,
+		rotate: inBrowser
+			? Math.random() * (Math.random() > 0.5 ? 1 : -1) * 6
+			: 0,
 		revealRotate: -180,
 		scale: 1,
 		opacity: 1,
@@ -318,10 +325,24 @@ export const useDeck = ({
 									api.start((i) => {
 										const to = getRevealedStyle(i)
 										if (i === DECK_SIZE - 1) {
+											to.delay = 0
 											to.onRest = () => {
 												onRevealContent()
 												// Make sure to set the state for the future updates
 												setRevealed(true)
+												api.start((i) => {
+													if (i === DECK_SIZE - 1) {
+														return {
+															y: 0,
+															x: 0,
+															rotateX: 0,
+															rotateY: 0,
+															rotateZ: 0,
+															rotate: 0,
+															delay: 800,
+														}
+													}
+												})
 											}
 										}
 
@@ -344,6 +365,19 @@ export const useDeck = ({
 					onRevealed()
 					setRevealed(true)
 					onRevealContent()
+					api.start((i) => {
+						if (i === DECK_SIZE - 1) {
+							return {
+								y: 0,
+								x: 0,
+								rotateX: 0,
+								rotateY: 0,
+								rotateZ: 0,
+								rotate: 0,
+								delay: 800,
+							}
+						}
+					})
 				}
 			}
 
