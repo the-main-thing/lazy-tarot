@@ -84,7 +84,7 @@ export default function Index() {
 				/>
 			</div>
 			<div className="w-full flex flex-col items-center mb-14 gap-24">
-				<header className="w-8/12 m-auto text-center">
+				<header className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center">
 					<PortableText value={indexPageContent.headerTitle} />
 					<ClassNames>
 						{({ cx, css }) => (
@@ -105,7 +105,10 @@ export default function Index() {
 						)}
 					</ClassNames>
 				</header>
-				<Img src={indexPageContent.logo} className="w-screen-40 landscape:w-screen-15 landscape:max-w-screen-h-30" />
+				<Img
+					src={indexPageContent.logo}
+					className="w-screen-40 landscape:w-screen-15 landscape:max-w-screen-h-30"
+				/>
 			</div>
 			{cardsSet?.length > 0 ? (
 				<TarotReading
