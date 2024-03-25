@@ -257,7 +257,9 @@ export const Deck = ({
 						aria-hidden="true"
 					/>
 					<AnimateTo
-						key={String(initialRevealed)}
+						key={
+							String(initialRevealed) + String(pickedCard?.image)
+						}
 						target={positionTarget}
 						trackForMs={5000}
 					>
