@@ -113,13 +113,28 @@ export const getSSRStyles = ({
 	rotateY,
 	rotateZ,
 	rotate,
+	revealRotate,
 	scale,
 	opacity,
 }: ReturnType<typeof getInitialStylesList>[number]['to']) => {
 	return {
-		transform: transform(x, y, z, rotateX, rotateY, rotateZ, rotate, scale),
-		opacity,
-		transformStyle: 'preserve-3d',
+		deck: {
+			transform: transform(
+				x,
+				y,
+				z,
+				rotateX,
+				rotateY,
+				rotateZ,
+				rotate,
+				scale,
+			),
+			opacity,
+			transformStyle: 'preserve-3d',
+		},
+		revealRotate: {
+			transform: `rotateY(${revealRotate}deg)`,
+		},
 	} as const
 }
 

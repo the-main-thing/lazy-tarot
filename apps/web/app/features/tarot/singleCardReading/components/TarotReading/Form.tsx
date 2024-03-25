@@ -91,13 +91,13 @@ export const Form = <
 			) : null}
 			<input type="hidden" name="scroll_to" value="tarot-reading" />
 			<animated.div
-				style={spring[1]}
+				style={animate ? spring[1] : hideForm ? hidden : visible}
 				className={hideForm ? 'pointer-events-none' : ''}
 			>
 				<PortableText value={header} />
 			</animated.div>
 			<animated.div
-				style={spring[0]}
+				style={animate ? spring[0] : hideForm ? hidden : visible}
 				className={hideForm ? 'pointer-events-none' : ''}
 			>
 				<PortableText value={description} />

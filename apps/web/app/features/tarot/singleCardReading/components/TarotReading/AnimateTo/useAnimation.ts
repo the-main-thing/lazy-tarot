@@ -171,26 +171,20 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 			return
 		}
 		if (state === 'teleporting') {
-			api.set({
-				...style,
-				opacity: 0,
-			})
+			api.set(style)
 			onAtPositionRef.current(targetElement)
 			return
 		}
 		if (state === 'idle') {
-			api.set({
-				...style,
-				opacity: 1,
-			})
+			api.set(style)
 			onAtPositionRef.current(targetElement)
 			return
 		}
 
-		api.set({ ...style, opacity: 0 })
+		api.set(style)
 		onAtPositionRef.current(targetElement)
 		return
 	}, [style, api, state, targetElement])
 
-	return [spring, setBase] as const
+	return [state === 'moving' ? spring : style, setBase] as const
 }

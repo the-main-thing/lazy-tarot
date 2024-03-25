@@ -11,8 +11,8 @@ type Props<
 	TDescription extends PortableTextValue,
 > = {
 	header: THeader
-	description: TDescription
-	cardTitle: string
+	description: TDescription | undefined
+	cardTitle: string | undefined
 	hidden: boolean
 	animate: boolean
 	children: React.ReactNode
@@ -75,11 +75,25 @@ export const Description = <
 	return (
 		<article aria-hidden={hideDescription ? 'true' : 'false'}>
 			<div className="flex flex-col items-center gap-8">
-				<animated.div style={spring[0]!}>
+				<animated.div
+					style={
+						animate
+							? spring[0]!
+							: hideDescription
+							  ? hidden
+							  : visible
+					}
+				>
 					<PortableText value={header} />
 				</animated.div>
 				<animated.div
-					style={spring[1]!}
+					style={
+						animate
+							? spring[1]!
+							: hideDescription
+							  ? hidden
+							  : visible
+					}
 					className="text-pretty hyphens-auto text-center portrait:hidden"
 				>
 					<Typography variant="h2">{cardTitle}</Typography>
@@ -87,16 +101,30 @@ export const Description = <
 				<div className="flex landscape:flex-row portrait:flex-col-reverse gap-16 md:gap-16">
 					<div className="flex flex-col items-center gap-8">
 						<animated.div
-							style={spring[1]!}
+							style={
+								animate
+									? spring[1]!
+									: hideDescription
+									  ? hidden
+									  : visible
+							}
 							className="text-pretty hyphens-auto text-center landscape:hidden"
 						>
 							<Typography variant="h2">{cardTitle}</Typography>
 						</animated.div>
 						<animated.div
-							style={spring[2]!}
+							style={
+								animate
+									? spring[2]!
+									: hideDescription
+									  ? hidden
+									  : visible
+							}
 							className="max-w-text-60 text-pretty hyphens-auto text-justify"
 						>
-							<PortableText value={description} />
+							{description ? (
+								<PortableText value={description} />
+							) : null}
 						</animated.div>
 					</div>
 					<div className="flex flex-col items-center landscape:items-start">

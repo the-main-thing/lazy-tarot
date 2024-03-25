@@ -316,7 +316,7 @@ export const TarotReading = ({
 			<div id="tarot-reading" className="relative -top-16" />
 			{preloadNextCardImage}
 
-			<div className="relative">
+			<div className="relative flex flex-col items-center">
 				<div
 					className={
 						'flex flex-col items-center gap-12' +
@@ -348,17 +348,28 @@ export const TarotReading = ({
 								</>
 							}
 						>
-							{() => formPlaceholder}
+							{() => (
+								<>
+									{formPlaceholder}
+									<div className="absolute top-0 left-0" />
+								</>
+							)}
 						</ClientOnly>
 					</div>
 				</div>
-				<div className={!revealed ? 'hidden' : ''}>
-					{revealed && pickedCard ? (
+				<div
+					className={
+						!revealed
+							? 'absolute -z-50 opacity-0 pointer-events-none'
+							: ''
+					}
+				>
+					{revealed ? (
 						<Description
 							hidden={!revealed}
 							header={descriptionPageContent.header}
-							description={pickedCard.description}
-							cardTitle={pickedCard.title}
+							description={pickedCard?.description}
+							cardTitle={pickedCard?.title}
 							animate={animate}
 							animatingNewCard={animatingNewCard}
 						>
@@ -373,38 +384,41 @@ export const TarotReading = ({
 										</>
 									}
 								>
-									{() => descriptionPlaceholder}
+									{() => (
+										<>
+											{descriptionPlaceholder}
+											<div className="absolute top-0 left-0" />
+										</>
+									)}
 								</ClientOnly>
 							</div>
 						</Description>
 					) : null}
 				</div>
-				<div className="relative">
-					<ClientOnly fallback={null}>
-						{() => (
-							<>
-								<BodyBottomPortal>
-									<div className="absolute top-0 left-0">
-										<animated.div
-											style={hideContentSpring}
-											className="fixed bg-slate-100 w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
-										/>
-									</div>
-								</BodyBottomPortal>
-								<AnimateTo
-									trackForMs={10000}
-									target={
-										revealed && pickedCard
-											? descriptionCardPlaceholder
-											: formCardPlaceholder
-									}
-								>
-									{deck}
-								</AnimateTo>
-							</>
-						)}
-					</ClientOnly>
-				</div>
+				<ClientOnly fallback={null}>
+					{() => (
+						<>
+							<BodyBottomPortal>
+								<div className="absolute top-0 left-0">
+									<animated.div
+										style={hideContentSpring}
+										className="fixed bg-slate-100 w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
+									/>
+								</div>
+							</BodyBottomPortal>
+							<AnimateTo
+								trackForMs={10000}
+								target={
+									(revealed && pickedCard)
+										? descriptionCardPlaceholder
+										: formCardPlaceholder
+								}
+							>
+								{deck}
+							</AnimateTo>
+						</>
+					)}
+				</ClientOnly>
 			</div>
 		</section>
 	)

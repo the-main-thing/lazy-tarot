@@ -112,10 +112,11 @@ export const Deck = ({
 				onReveal()
 			}}
 		>
+			<div className="sr-only">{children}</div>
 			{springs.map((props, index, array) => {
-				const asButton = index === array.length - 1
+				const top = index === array.length - 1
 
-				if (asButton) {
+				if (top) {
 					const [revealRotate] = interpolateRevealRotate(props)
 					const shared = {
 						WebkitBackfaceVisibility: 'hidden',
@@ -123,14 +124,14 @@ export const Deck = ({
 					} as const
 
 					const placeholder = (
-						<div className="flex flex-row flex-nowrap">
+						<div className="relative -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap">
 							<Img
 								src={cardBackImage}
 								alt=""
 								aria-hidden="true"
 								className="relative -z-50 opacity-0 bg-transparent shadow-none pointer-events-none"
 							/>
-							{pickedCard ? (
+							{animate && pickedCard ? (
 								<Img
 									src={pickedCard.image}
 									alt=""
@@ -144,11 +145,14 @@ export const Deck = ({
 						<animated.div
 							key={index}
 							className="absolute top-0 left-0"
-							style={getSpringStyles(props)}
+							style={
+								animate
+									? getSpringStyles(props)
+									: deckSSRData.style[index]!.deck
+							}
 						>
-							<div className="sr-only">{children}</div>
 							<div className="relative w-full h-full bg-transparent rounded">
-								<animated.div
+								<div
 									style={{
 										perspective: '10000px',
 										background: 'transparent',
@@ -158,19 +162,19 @@ export const Deck = ({
 									{placeholder}
 									<animated.div
 										style={{
-											...revealRotate,
+											...(animate
+												? revealRotate
+												: deckSSRData.style[index]!
+														.revealRotate),
 											transformStyle: 'preserve-3d',
 										}}
 										className={
 											'absolute top-0 left-0 rounded '
 										}
 									>
-										{placeholder}
-										<animated.div
+										<div
 											style={shared}
 											className={
-												cardContainerClassName +
-												' ' +
 												cardImageContainerClassName
 											}
 										>
@@ -180,16 +184,15 @@ export const Deck = ({
 												aria-hidden="true"
 												className={imgClassName}
 											/>
-										</animated.div>
-										<animated.div
+										</div>
+										<div
 											style={{
 												...shared,
 												transform: `rotateY(180deg)`,
 											}}
 											className={
-												cardContainerClassName +
-												' ' +
-												cardImageContainerClassName
+												cardImageContainerClassName +
+												' absolute top-0 left-0'
 											}
 										>
 											{pickedCard ? (
@@ -201,16 +204,16 @@ export const Deck = ({
 														pickedCard.upsideDown
 															? {
 																	transform:
-																		'rotateX(180deg)',
+																		'rotate(180deg)',
 															  }
 															: undefined
 													}
 													className={imgClassName}
 												/>
 											) : null}
-										</animated.div>
+										</div>
 									</animated.div>
-								</animated.div>
+								</div>
 							</div>
 						</animated.div>
 					)
@@ -220,7 +223,11 @@ export const Deck = ({
 					<animated.div
 						key={index}
 						className={cardContainerClassName}
-						style={getSpringStyles(props)}
+						style={
+							animate
+								? getSpringStyles(props)
+								: deckSSRData.style[index]!.deck
+						}
 					>
 						<div
 							className={
@@ -242,10 +249,10 @@ export const Deck = ({
 	)
 
 	return (
-		<ClientOnly fallback={deck}>
-			{() => (
-				<div className="flex flex-col items-center justify-center">
-					{screenOrientation === 'landscape' ? (
+		<div className="flex flex-col items-center justify-center w-full">
+			<ClientOnly fallback={deck}>
+				{() =>
+					screenOrientation === 'landscape' && animate ? (
 						<>
 							<BodyBottomPortal>
 								<div className="absolute top-0 left-0">
@@ -279,10 +286,10 @@ export const Deck = ({
 								aria-hidden="true"
 							/>
 							<AnimateTo
-								key={
-									String(initialRevealed) +
-									String(pickedCard?.image)
-								}
+								// key={
+								// 	String(initialRevealed) +
+								// 	String(pickedCard?.image)
+								// }
 								target={positionTarget}
 								trackForMs={5000}
 							>
@@ -291,9 +298,9 @@ export const Deck = ({
 						</>
 					) : (
 						deck
-					)}
-				</div>
-			)}
-		</ClientOnly>
+					)
+				}
+			</ClientOnly>
+		</div>
 	)
 }
