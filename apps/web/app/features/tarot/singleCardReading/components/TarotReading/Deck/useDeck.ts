@@ -345,19 +345,6 @@ export const useDeck = ({
 												onRevealContent()
 												// Make sure to set the state for the future updates
 												setRevealed(true)
-												api.start((i) => {
-													if (i === DECK_SIZE - 1) {
-														return {
-															y: 0,
-															x: 0,
-															rotateX: 0,
-															rotateY: 0,
-															rotateZ: 0,
-															rotate: 0,
-															delay: 800,
-														}
-													}
-												})
 											}
 										}
 
