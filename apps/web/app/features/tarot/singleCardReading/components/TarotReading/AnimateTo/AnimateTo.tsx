@@ -35,7 +35,7 @@ const AnimateTo = forwardRef<HTMLDivElement | null, Props>(
 						>
 							<animated.div
 								className={
-									'absolute origin-top-left ' + className
+									'opacity-0 absolute origin-top-left ' + className
 								}
 								style={style}
 							>

@@ -163,6 +163,7 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 
 	useIsomorphicLayoutEffect(() => {
 		if (state === 'moving') {
+			api.set({ opacity: 1 })
 			api.start({
 				...style,
 				onRest: () => onAtPositionRef.current(targetElement),
@@ -174,8 +175,8 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 				...style,
 				opacity: 0,
 			})
-			onAtPositionRef.current(targetElement)
 			api.set({ ...style, opacity: 1 })
+			onAtPositionRef.current(targetElement)
 			return
 		}
 		if (state === 'idle') {
