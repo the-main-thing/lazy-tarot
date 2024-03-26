@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useNavigate, useLocation } from '@remix-run/react'
+import { useSearchParams, useLocation } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 import { useSpring, animated } from '@react-spring/web'
 import { pickRandomCard } from '@repo/utils'
@@ -102,7 +102,6 @@ export const TarotReading = ({
 	nextCard: initialNextCard,
 	deckSSRData,
 }: Props) => {
-	const navigate = useNavigate()
 	const inBrowser = typeof window !== 'undefined'
 	const { data: cardsSet } = useQueryCardsSet()
 	const nextCard = useMemo(() => {
@@ -247,6 +246,7 @@ export const TarotReading = ({
 		}
 	}, [hideContentApi, animatingNewCard])
 
+	const [, setSearchParams] = useSearchParams()
 	const deck = (
 		<Deck
 			className={deckClassName}
@@ -266,14 +266,12 @@ export const TarotReading = ({
 				}
 				const nextId = 'id' in nextCard ? nextCard.id : nextCard.card.id
 				const nextUpsideDown = nextCard.upsideDown
-				navigate(
-					`/?${searchParams
-						.serialize({
-							id: nextId,
-							upside_down: nextUpsideDown ? '1' : '0',
-							scroll_to: 'tarot-reading',
-						})
-						.toString()}`,
+				setSearchParams(
+					searchParams.serialize({
+						id: nextId,
+						upside_down: nextUpsideDown ? '1' : '0',
+						scroll_to: 'tarot-reading',
+					}),
 					{
 						replace: true,
 						preventScrollReset: true,
@@ -409,7 +407,7 @@ export const TarotReading = ({
 							<AnimateTo
 								trackForMs={10000}
 								target={
-									(revealed && pickedCard)
+									revealed && pickedCard
 										? descriptionCardPlaceholder
 										: formCardPlaceholder
 								}

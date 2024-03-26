@@ -19,6 +19,12 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
         _id: q.string(),
         manifestoLinkTitle: schemas.i18n,
         tarotReadingLinkTitle: schemas.i18n,
+        ogData: q.array(
+          q.object({
+            property: q.string(),
+            content: schemas.i18n,
+          }),
+        ),
       })
       .slice(0),
     indexPageContent: q('*')
@@ -87,6 +93,10 @@ const translate = (
         rootLayoutContent.tarotReadingLinkTitle,
         language,
       ),
+      ogData: rootLayoutContent.ogData.map(({ property, content }) => ({
+        property,
+        content: getTranslated(content, language),
+      })),
     },
     indexPageContent: {
       title: getTranslated(indexPageContent.title, language),

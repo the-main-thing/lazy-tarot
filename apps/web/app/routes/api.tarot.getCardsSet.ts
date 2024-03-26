@@ -3,12 +3,12 @@ import type { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node'
 
 import { api } from '~/api.server'
 import { queryClient } from '~/queryClient.server'
-import { getLanugage } from '~/utils/i18n.server'
+import { getLanguage } from '~/utils/i18n.server'
 
 const MINUTE_IN_SECONDS = 60
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const language = getLanugage(request.headers)
+	const language = getLanguage(request.headers)
 	const [cardsSet] = await Promise.all([
 		queryClient.fetchQuery({
 			queryKey: ['getCardsSet', { language }],

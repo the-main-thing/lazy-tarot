@@ -29,6 +29,32 @@ const rootLayout = defineType({
       type: 'internationalizedArrayString',
       validation: (Rule) => Rule.required(),
     },
+    {
+      name: 'ogData',
+      title: 'Open graph data (SEO)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          name: 'meta',
+          title: 'Meta',
+          fields: [
+            {
+              type: 'string',
+              name: 'property',
+              title: 'property',
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              type: 'internationalizedArrayString',
+              name: 'content',
+              title: 'content',
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+        },
+      ],
+    },
   ],
 })
 

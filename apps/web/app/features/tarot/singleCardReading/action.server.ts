@@ -3,7 +3,7 @@ import type { ActionFunctionArgs } from '@remix-run/node'
 import { pickRandomCard } from '@repo/utils'
 
 import { api } from '~/api.server'
-import { getLanugage } from '~/utils/i18n.server'
+import { getLanguage } from '~/utils/i18n.server'
 
 import { formDataParser, serializeUpsideDown } from './formDataParser'
 import { searchParams } from './searchParams'
@@ -28,7 +28,7 @@ export const action = async ({
 		new URL(request.url).searchParams,
 	)
 	const cardsSet = await api.tarot.public.getCardsSet.query({
-		language: getLanugage(request.headers),
+		language: getLanguage(request.headers),
 	})
 	if (!cardsSet.length) {
 		throw redirect('/')

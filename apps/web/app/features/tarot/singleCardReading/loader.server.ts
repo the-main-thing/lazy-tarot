@@ -3,7 +3,7 @@ import type { LoaderFunctionArgs } from '@remix-run/node'
 
 import { queryClient } from '~/queryClient.server'
 import { api } from '~/api.server'
-import { getLanugage } from '~/utils/i18n.server'
+import { getLanguage } from '~/utils/i18n.server'
 import { loader as deckLoader } from './components/TarotReading/Deck/loader'
 
 import { searchParams } from './searchParams'
@@ -13,7 +13,7 @@ const getPageData = async (
 	headers: Headers,
 	searchQuery?: ReturnType<typeof searchParams.deserialize>,
 ) => {
-	const language = getLanugage(headers)
+	const language = getLanguage(headers)
 	const [cardsSet] = await Promise.all([
 		queryClient.fetchQuery({
 			queryKey: ['getCardsSet', { language }],

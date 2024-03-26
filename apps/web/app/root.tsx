@@ -1,4 +1,4 @@
-import { json } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
 import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
 import {
 	Links,
@@ -8,19 +8,18 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 } from '@remix-run/react'
+import { SUPPORTED_LANGUAGES } from '@repo/utils'
 
-import { getLanguagesFromHeaders } from './utils/i18n.server'
+import { getLanguage, dir } from './utils/i18n.server'
 import { QueryProvider } from './QueryProvider'
 import tailwind from './tailwind.css?url'
 
 export default function Root() {
-	const {
-		languages: [{ code, dir }],
-	} = useLoaderData<typeof loader>()
+	const { lang, dir } = useLoaderData<typeof loader>()
 
 	return (
 		<html
-			lang={code}
+			lang={lang}
 			dir={dir}
 			style={{
 				fontFamily: 'Cormorant Garamond',
@@ -65,15 +64,35 @@ export default function Root() {
 	)
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const languages = getLanguagesFromHeaders(request.headers)
+export const loader = ({ request, params }: LoaderFunctionArgs) => {
+	const language = params.language || ''
+	if (!SUPPORTED_LANGUAGES.includes(language.toLowerCase() as never)) {
+		const language = getLanguage(request.headers)
+		const currentUrl = new URL(request.url)
+		const path = currentUrl.pathname
+			.split('/')
+			.filter(Boolean)
+			.slice(1)
+			.join('/')
+		let nextPath = `/${language}${path ? `/${path}` : ''}`
+		const queryString = currentUrl.searchParams.toString()
+		const hash = currentUrl.hash
+		if (queryString) {
+			nextPath += `?${queryString}`
+		}
+		if (hash) {
+			nextPath += `#${hash}`
+		}
+		throw redirect(nextPath)
+	}
 
 	return json({
-		languages,
+		lang: language,
+		dir: dir(language),
 	})
 }
 
-export const shouldRevalidate = () => false
+export const shouldRevalidate = () => true
 
 export const links: LinksFunction = () => [
 	{

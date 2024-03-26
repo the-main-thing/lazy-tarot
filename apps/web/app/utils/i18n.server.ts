@@ -2,7 +2,7 @@ import { parse } from 'accept-language-parser'
 
 import { defaultLanguage, SUPPORTED_LANGUAGES } from '@repo/utils'
 
-const dir = (_lang: string): Language['dir'] => 'ltr'
+export const dir = (_lang: string): Language['dir'] => 'ltr'
 
 type Language = {
 	code: string
@@ -45,7 +45,7 @@ export const getLanguagesFromHeaders = (
 	return parsedLanugages
 }
 
-export const getLanugage = (
+export const getLanguage = (
 	headers: Headers,
 ): (typeof SUPPORTED_LANGUAGES)[number] => {
 	const languages = getLanguagesFromHeaders(headers)
