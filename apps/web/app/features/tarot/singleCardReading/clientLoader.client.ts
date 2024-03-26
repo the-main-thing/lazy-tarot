@@ -26,7 +26,6 @@ export const clientLoader = async ({
 					upsideDown: parsedSearchParams?.upside_down === '1',
 			  }
 			: null,
-		nextCard: null,
 	}
 }
 

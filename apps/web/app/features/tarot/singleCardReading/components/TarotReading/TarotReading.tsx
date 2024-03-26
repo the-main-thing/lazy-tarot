@@ -28,7 +28,7 @@ type Props = {
 	>
 	currentCard: LoaderData['currentCard'] | ClientLoaderData['currentCard']
 	deckSSRData: LoaderData['deckSSRData']
-	nextCard: LoaderData['nextCard'] | ClientLoaderData['nextCard']
+	nextCard: LoaderData['nextCard']
 }
 
 const getCardContent = ({
@@ -402,7 +402,7 @@ export const TarotReading = ({
 								<div className="absolute top-0 left-0">
 									<animated.div
 										style={hideContentSpring}
-										className="fixed bg-slate-100 w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
+										className="fixed bg-white w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
 									/>
 								</div>
 							</BodyBottomPortal>

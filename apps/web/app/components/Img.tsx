@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
-
-import type { BREAKPOINTS } from '~/constants/breakpoints'
+import { srcSet as getSrcSet, type BREAKPOINTS } from '@repo/utils'
 
 type Breakpoints = typeof BREAKPOINTS
 type Breakpoint<K extends keyof Breakpoints> = Breakpoints[K]
@@ -28,11 +27,6 @@ export type ImgProps = ImgPropsBase &
 				'aria-hidden'?: 'true'
 		  }
 	)
-
-const getSrcSet = (srcSet: SrcSet) =>
-	Object.values(srcSet)
-		.map(({ src, width }) => `${src} ${width}w`)
-		.join(' ,')
 
 export const Img = forwardRef<HTMLImageElement, ImgProps>(
 	({ src, alt = '', className, ...props }, ref) => {

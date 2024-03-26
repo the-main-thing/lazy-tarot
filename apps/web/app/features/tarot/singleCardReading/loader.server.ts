@@ -46,6 +46,7 @@ const getPageData = async (
 			: null,
 		nextCard: nextCard
 			? {
+					image: nextCard.card.image,
 					id: nextCard.card.id,
 					upsideDown: nextCard.upsideDown,
 			  }
