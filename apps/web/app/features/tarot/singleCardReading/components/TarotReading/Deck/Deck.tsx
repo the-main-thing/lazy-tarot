@@ -84,18 +84,20 @@ export const Deck = ({
 		onShuffling: () => {
 			setPositionTarget(middleOfTheScreen)
 		},
+		onAnimationEnd: () => {
+			setPositionTarget(nonAnimatingTarget)
+			setAnimating(false)
+		},
 		onHideContent,
 		onRevealContent: () => {
-			setPositionTarget(nonAnimatingTarget)
 			onRevealContent()
-			setAnimating(false)
 		},
 	})
 
 	const cardContainerClassName = 'absolute top-0 left-0 bg-stone-50 rounded'
 	const imgClassName = 'rounded bg-stone-50'
 	const cardImageContainerClassName =
-		'shadow-lg rounded p-1 pb-2 bg-stone-50 flex flex-col items-center justify-center flex-shrink-0'
+		'shadow-lg rounded p-1 pb-2 bg-stone-50 flex flex-col items-center justify-center flex-shrink-0 border border-slate-100'
 
 	const deck = (
 		<button

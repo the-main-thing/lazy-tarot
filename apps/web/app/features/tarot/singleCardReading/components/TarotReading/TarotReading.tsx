@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams, useLocation } from '@remix-run/react'
+import { useNavigate, useLocation } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 import { useSpring, animated } from '@react-spring/web'
 import { pickRandomCard } from '@repo/utils'
@@ -246,7 +246,8 @@ export const TarotReading = ({
 		}
 	}, [hideContentApi, animatingNewCard])
 
-	const [, setSearchParams] = useSearchParams()
+	const navigate = useNavigate()
+	const { pathname, hash } = useLocation()
 	const deck = (
 		<Deck
 			className={deckClassName}
@@ -266,12 +267,12 @@ export const TarotReading = ({
 				}
 				const nextId = 'id' in nextCard ? nextCard.id : nextCard.card.id
 				const nextUpsideDown = nextCard.upsideDown
-				setSearchParams(
-					searchParams.serialize({
+				navigate(
+					`${pathname}?${searchParams.serialize({
 						id: nextId,
 						upside_down: nextUpsideDown ? '1' : '0',
 						scroll_to: 'tarot-reading',
-					}),
+					})}${hash}`,
 					{
 						replace: true,
 						preventScrollReset: true,

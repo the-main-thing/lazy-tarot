@@ -12,6 +12,7 @@ type Props = {
 	onHideContent: () => void
 	onRevealContent: () => void
 	onShuffling: () => void
+	onAnimationEnd: () => void
 }
 
 const VOID_FUNCTION: VoidFunction = () => void 0
@@ -260,6 +261,7 @@ export const useDeck = ({
 	onHideContent,
 	onRevealContent,
 	onShuffling,
+	onAnimationEnd,
 }: Props) => {
 	const [revealed, setRevealed] = useState(initialRevealed)
 	// We don't want to always sync initialRevealed with the state
@@ -302,22 +304,25 @@ export const useDeck = ({
 	})
 
 	const handlersRef = useRef({
-		onRevealed: onRevealed,
+		onRevealed,
 		onHideContent,
 		onRevealContent,
 		onShuffling,
+		onAnimationEnd,
 	})
 
 	handlersRef.current.onRevealed = onRevealed
 	handlersRef.current.onHideContent = onHideContent
 	handlersRef.current.onRevealContent = onRevealContent
 	handlersRef.current.onShuffling = onShuffling
+	handlersRef.current.onAnimationEnd = onAnimationEnd
 
 	const onReveal = useCallback(() => {
 		const onRevealed = () => handlersRef.current.onRevealed()
 		const onHideContent = () => handlersRef.current.onHideContent()
 		const onRevealContent = () => handlersRef.current.onRevealContent()
 		const onShuffling = () => handlersRef.current.onShuffling()
+		const onAnimationEnd = () => handlersRef.current.onAnimationEnd()
 		api.start((i) => {
 			onHideContent()
 			if (revealed) {
@@ -343,6 +348,7 @@ export const useDeck = ({
 											to.delay = 0
 											to.onRest = () => {
 												onRevealContent()
+												onAnimationEnd()
 												// Make sure to set the state for the future updates
 												setRevealed(true)
 											}
