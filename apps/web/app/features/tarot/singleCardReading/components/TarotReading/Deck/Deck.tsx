@@ -124,7 +124,7 @@ export const Deck = ({
 					} as const
 
 					const placeholder = (
-						<div className="relative -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap">
+						<div className="relative max-w-full overflow-hidden -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap">
 							<Img
 								src={cardBackImage}
 								alt=""

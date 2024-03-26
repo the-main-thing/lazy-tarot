@@ -74,7 +74,7 @@ export const Description = <
 
 	return (
 		<article aria-hidden={hideDescription ? 'true' : 'false'}>
-			<div className="flex flex-col items-center gap-8">
+			<div className="flex flex-col items-center text-center gap-8">
 				<animated.div
 					style={
 						animate
