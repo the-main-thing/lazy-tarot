@@ -21,6 +21,8 @@ import { api } from '~/api.server'
 import { loader as tarotReadingLoader } from '~/features/tarot/singleCardReading/loader.server'
 import { clientLoader as tarotReadingClientLoader } from '~/features/tarot/singleCardReading/clientLoader.client'
 import { useQueryCardsSet } from '~/features/tarot/query'
+import { ManifestoPage } from '~/features/manifesto/ManifestoPage'
+import { AboutUsPage } from '~/features/aboutUs/AboutUsPage'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const host = env('PUBLIC_HOST')
@@ -68,6 +70,7 @@ export default function Index() {
 		indexPageContent,
 		tarotReadingPageContent,
 		manifestoPageContent,
+		aboutUsPageContent,
 	} = pages
 
 	const { data: fullCardsSet } = useQueryCardsSet()
@@ -92,6 +95,7 @@ export default function Index() {
 					))
 				}
 			</ClientOnly>
+
 			<div className="w-full md:w-11/12 p-4 pt-10 pb-20 md:pb-40 flex flex-col m-auto gap-16">
 				<div id="index">
 					<NavigationBar
@@ -145,18 +149,19 @@ export default function Index() {
 					card={card}
 					deckSSRData={deckSSRData}
 				/>
-				<section id="manifesto">
-					<article className="flex flex-col gap-16 w-full max-w-text-60 m-auto items-center">
-						<div className="w-full text-center">
-							<PortableText value={manifestoPageContent.header} />
-						</div>
-						<div className="text-pretty text-justify hyphens-auto">
-							<PortableText
-								value={manifestoPageContent.content}
-							/>
-						</div>
-					</article>
-				</section>
+				<div />
+				<ManifestoPage
+					header={manifestoPageContent.header}
+					content={manifestoPageContent.content}
+					headerImage={manifestoPageContent.headerImage}
+					contentImage={manifestoPageContent.contentImage}
+				/>
+				<div />
+				<AboutUsPage
+					header={aboutUsPageContent.header}
+					image={aboutUsPageContent.image}
+					social={aboutUsPageContent.social}
+				/>
 			</div>
 		</>
 	)

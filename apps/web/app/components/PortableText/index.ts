@@ -1,1 +1,5 @@
-export { PortableText, type TextBlock} from './PortableText'
+export {
+	PortableText,
+	type TextBlock,
+	type PortableTextValue,
+} from './PortableText'

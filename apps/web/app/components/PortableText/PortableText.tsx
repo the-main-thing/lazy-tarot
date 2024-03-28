@@ -9,6 +9,8 @@ import { Typography } from '../Typography'
 
 export type TextBlock<T extends TypedObject = TypedObject> = T
 
+export type PortableTextValue = Parameters<typeof PortableText>[0]['value']
+
 const components = {
 	marks: {
 		strong: (props) => (

@@ -56,6 +56,26 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
         _id: q.string(),
         content: schemas.i18nBlock,
         header: schemas.i18nBlock,
+        headerImage: schemas.image,
+        contentImage: schemas.image,
+      })
+      .slice(0),
+    aboutUsPageContent: q('*')
+      .filter('_type == "aboutUsPage"')
+      .grab({
+        _id: q.string(),
+        header: q.object({
+          teamTitle: schemas.i18n,
+          pageTitle: schemas.i18n,
+        }),
+        image: schemas.image,
+        social: q.array(
+          q.object({
+            title: schemas.i18n,
+            urlTitle: schemas.i18n,
+            url: q.string().url(),
+          }),
+        ),
       })
       .slice(0),
   })
@@ -72,6 +92,7 @@ const translate = (
     indexPageContent,
     tarotReadingPageContent,
     manifestoPageContent,
+    aboutUsPageContent,
   }: Awaited<ReturnType<typeof getSanityContent>>,
 ) => {
   const { client } = context.sanity
@@ -132,6 +153,43 @@ const translate = (
     manifestoPageContent: {
       header: getTranslated(manifestoPageContent.header, language),
       content: getTranslated(manifestoPageContent.content, language),
+      headerImage: getImagesSet({
+        client,
+        format: 'png',
+        image: manifestoPageContent.headerImage,
+        breakpoints: Object.keys(BREAKPOINTS).reduce(
+          (acc, key) => {
+            acc[key as keyof typeof BREAKPOINTS] = 700
+
+            return acc
+          },
+          {} as {
+            [key in keyof typeof BREAKPOINTS]: 700
+          },
+        ),
+      }),
+      contentImage: getImagesSet({
+        client,
+        image: manifestoPageContent.contentImage,
+        breakpoints: BREAKPOINTS,
+      }),
+    },
+    aboutUsPageContent: {
+      id: aboutUsPageContent._id,
+      header: {
+        teamTitle: getTranslated(aboutUsPageContent.header.teamTitle, language),
+        pageTitle: getTranslated(aboutUsPageContent.header.pageTitle, language),
+      },
+      image: getImagesSet({
+        client,
+        image: aboutUsPageContent.image,
+        breakpoints: BREAKPOINTS,
+      }),
+      social: aboutUsPageContent.social.map((link) => ({
+        title: getTranslated(link.title, language),
+        urlTitle: getTranslated(link.urlTitle, language),
+        url: link.url,
+      })),
     },
   }
 }

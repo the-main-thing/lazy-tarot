@@ -1,5 +1,9 @@
 export { Typography } from './Typography'
-export { PortableText, type TextBlock } from './PortableText'
+export {
+	PortableText,
+	type TextBlock,
+	type PortableTextValue,
+} from './PortableText'
 export { Img, type ImgProps } from './Img'
 export { Flip } from './Flip'
 export { Card } from './Card'
