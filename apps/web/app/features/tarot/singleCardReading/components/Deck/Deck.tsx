@@ -90,7 +90,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 		const deck = (
 			<div
 				className={
-					'relative flex flex-col items-center justify-center rounded ' +
+					'relative z-10 flex flex-col items-center justify-center rounded ' +
 					className
 				}
 			>
