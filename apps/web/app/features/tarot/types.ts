@@ -15,7 +15,7 @@ export type ReadyToRenderCard = {
 }
 
 export type PickedCard = {
-	card: Card;
+	card: Card
 	upsideDown: boolean
 }
 
@@ -23,7 +23,4 @@ type Pages = Awaited<
 	ReturnType<(typeof api)['pages']['public']['getAllPages']['query']>
 >
 
-export type PageData = Pick<
-	Pages,
-	'tarotOfTheDayPageContent' | 'tarotReadingPageContent'
->
+export type PageData = Pick<Pages, 'tarotReadingPageContent'>

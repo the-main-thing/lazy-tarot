@@ -3,55 +3,62 @@ import type { LoaderFunctionArgs } from '@remix-run/node'
 
 import { queryClient } from '~/queryClient.server'
 import { api } from '~/api.server'
-import { getLanguage } from '~/utils/i18n.server'
-import { loader as deckLoader } from './components/TarotReading/Deck/loader'
+import { loader as deckLoader } from './components/Deck/loader'
 
 import { searchParams } from './searchParams'
 import { pickRandomCard } from '@repo/utils'
 
 const getPageData = async (
-	headers: Headers,
+	language: string,
 	searchQuery?: ReturnType<typeof searchParams.deserialize>,
 ) => {
-	const language = getLanguage(headers)
-	const [cardsSet] = await Promise.all([
+	const [cardsSetArray] = await Promise.all([
 		queryClient.fetchQuery({
 			queryKey: ['getCardsSet', { language }],
 			queryFn: () => api.tarot.public.getCardsSet.query({ language }),
+			staleTime: 1000 * 60 * 30, // 30 minutes
 		}),
 	])
+	if (!cardsSetArray.length) {
+		return {
+			revealed: false,
+			deckSSRData: deckLoader(false),
+			card: null,
+		}
+	}
+
+	const cardsSet = cardsSetArray as NonEmptyArray<
+		(typeof cardsSetArray)[number]
+	>
 
 	const currentCardContent = searchQuery
 		? cardsSet.find((card) => card.id === searchQuery.id)
 		: undefined
 
 	if (searchQuery && !currentCardContent) {
-		throw redirect('/')
+		throw redirect(`/${language}`)
 	}
 
-	const nextCard = cardsSet.length
-		? pickRandomCard({
-				prev: [],
-				source: cardsSet as NonEmptyArray<(typeof cardsSet)[number]>,
-		  })
-		: null
+	if (!currentCardContent) {
+		const card = pickRandomCard({
+			prev: [],
+			source: cardsSet,
+		})
+
+		return {
+			revealed: false,
+			deckSSRData: deckLoader(false),
+			card,
+		}
+	}
 
 	return {
-		cardsSet: cardsSet.map((card) => ({ id: card.id })),
-		currentCard: currentCardContent
-			? {
-					card: currentCardContent,
-					upsideDown: searchQuery?.upside_down === '1',
-			  }
-			: null,
-		nextCard: nextCard
-			? {
-					image: nextCard.card.image,
-					id: nextCard.card.id,
-					upsideDown: nextCard.upsideDown,
-			  }
-			: null,
-		deckSSRData: deckLoader(Boolean(currentCardContent)),
+		revealed: true,
+		deckSSRData: deckLoader(true),
+		card: {
+			card: currentCardContent,
+			upsideDown: searchQuery?.upside_down === '1',
+		},
 	}
 }
 
@@ -67,8 +74,16 @@ headers.append('Vary', 'Accept-Language')
 
 export const loader = async ({
 	request,
-}: Pick<LoaderFunctionArgs, 'request'>) => {
+	params,
+}: Pick<LoaderFunctionArgs, 'request' | 'params'>) => {
+	const { language } = params
+	if (!language) {
+		throw redirect('/')
+	}
 	const url = new URL(request.url)
+	if (url.searchParams.get('reset') === '1') {
+		throw redirect(`/${language}#tarot-reading`)
+	}
 	const searchQuery = searchParams.deserialize(
 		new URL(request.url).searchParams,
 	)
@@ -83,7 +98,7 @@ export const loader = async ({
 		)
 	}
 	const data = await getPageData(
-		request.headers,
+		language,
 		searchParams.deserialize(new URL(request.url).searchParams),
 	)
 

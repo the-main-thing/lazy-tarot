@@ -13,6 +13,9 @@ class InMemoryStorage {
 	removeItem = (key: string) => {
 		return this.storage.delete(key)
 	}
+	get iterable() {
+		return this.storage.entries()
+	}
 }
 
 const inMemoryStorage = new InMemoryStorage()
@@ -38,7 +41,11 @@ export class LocalStorage {
 				if (typeof window === 'undefined') {
 					return
 				}
-				if (this.storage !== this.fallback) {
+				const storage = this.storage
+				if (storage !== this.fallback) {
+					for (const [key, value] of this.fallback.iterable) {
+						storage.setItem(key, value)
+					}
 					clearInterval(interval)
 				}
 			}, 10)

@@ -1,1 +1,0 @@
-export { TarotReading } from './TarotReading'

@@ -17,7 +17,6 @@ type Props<
 	upsideDown: boolean | undefined
 	onSubmit: React.FormEventHandler<HTMLFormElement> | undefined
 	hidden: boolean
-	animate: boolean
 }
 
 type SpringConfig = {
@@ -40,21 +39,12 @@ export const Form = <
 	header,
 	description,
 	hidden: hideForm,
-	animate,
 	id,
 	cardId,
 	upsideDown,
 	onSubmit,
 }: Props<THeader, TDescription>) => {
-	const [spring, api] = useTrail(2, (i) => {
-		if (animate) {
-			return {
-				from: hideForm ? visible : hidden,
-				to: hideForm ? hidden : visible,
-				delay: i * 100,
-			}
-		}
-
+	const [spring, api] = useTrail(2, () => {
 		return {
 			from: hideForm ? hidden : visible,
 			to: hideForm ? hidden : visible,
@@ -63,15 +53,25 @@ export const Form = <
 	})
 
 	useEffect(() => {
-		if (animate && hideForm) {
-			api.start(hidden)
+		if (hideForm) {
+			api.start((i) => {
+				return {
+					...hidden,
+					delay: i * 100,
+				}
+			})
 			return
 		}
-		if (animate && !hideForm) {
-			api.start(visible)
+		if (!hideForm) {
+			api.start((i) => {
+				return {
+					...visible,
+					delay: i * 100,
+				}
+			})
 			return
 		}
-	}, [hideForm, animate, api])
+	}, [hideForm, api])
 
 	return (
 		<RemixForm
@@ -81,6 +81,7 @@ export const Form = <
 			preventScrollReset
 			className="w-full text-center"
 		>
+			{hideForm ? <input type="hidden" name="reset" value="1" /> : null}
 			{cardId ? <input type="hidden" name="id" value={cardId} /> : null}
 			{typeof upsideDown === 'boolean' ? (
 				<input
@@ -91,13 +92,13 @@ export const Form = <
 			) : null}
 			<input type="hidden" name="scroll_to" value="tarot-reading" />
 			<animated.div
-				style={animate ? spring[1] : hideForm ? hidden : visible}
+				style={spring[1]}
 				className={hideForm ? 'pointer-events-none' : ''}
 			>
 				<PortableText value={header} />
 			</animated.div>
 			<animated.div
-				style={animate ? spring[0] : hideForm ? hidden : visible}
+				style={spring[0]}
 				className={hideForm ? 'pointer-events-none' : ''}
 			>
 				<PortableText value={description} />

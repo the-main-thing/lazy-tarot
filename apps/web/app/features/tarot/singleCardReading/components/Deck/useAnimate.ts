@@ -1,19 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { to as interpolate, useSprings } from '@react-spring/web'
 import { randInt } from '@repo/utils'
 
 import type { SpringStyles, NonNullableConfig, SpringProps } from './types'
 
-type Props = {
-	initialRevealed: boolean
-	onRevealed: () => void
-	animate: boolean
-	initialSprings: ReturnType<typeof getInitialStylesList>
-	onHideContent: () => void
-	onRevealContent: () => void
-	onShuffling: () => void
-	onAnimationEnd: () => void
-}
+import type { State } from '../../useStateMachine'
 
 const VOID_FUNCTION: VoidFunction = () => void 0
 
@@ -139,7 +130,7 @@ export const getSSRStyles = ({
 	} as const
 }
 
-const getSpringStyles = (props: SpringProps) => {
+export const getSpringStyles = (props: SpringProps) => {
 	return {
 		transform: interpolate(
 			[
@@ -159,7 +150,10 @@ const getSpringStyles = (props: SpringProps) => {
 	} as const
 }
 
-const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
+const getRevealedStyle = (
+	i: number,
+	{ onRest, onStart }: { onRest?: VoidFunction; onStart?: VoidFunction },
+) => {
 	if (i !== DECK_SIZE - 1) {
 		return {
 			x: Math.random() * (Math.random() > 0.5 ? 1 : -1) * 0.1,
@@ -172,8 +166,6 @@ const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
 			scale: 1,
 			delay: i * 10,
 			opacity: 1,
-			onRest,
-			onStart: VOID_FUNCTION,
 		}
 	}
 	const inBrowser = typeof window !== 'undefined'
@@ -190,12 +182,15 @@ const getRevealedStyle = (i: number, onRest?: VoidFunction) => {
 		scale: 1,
 		opacity: 1,
 		onRest,
-		onStart: VOID_FUNCTION,
+		onStart: i === 0 ? onStart : undefined,
 		delay: Math.max(i - 3, 0) * 10,
 	}
 }
 
-const getShuffleStart = (i: number, onRest?: VoidFunction) => {
+const getShuffleStart = (
+	i: number,
+	{ onRest, onStart }: { onRest?: VoidFunction; onStart?: VoidFunction },
+) => {
 	return {
 		x: 100,
 		scale: 1.05,
@@ -203,8 +198,8 @@ const getShuffleStart = (i: number, onRest?: VoidFunction) => {
 		delay: (DECK_SIZE - 1 - i) * 16,
 		rotate: 0,
 		revealRotate: 0,
-		onRest,
-		onStart: VOID_FUNCTION,
+		onRest: i === DECK_SIZE - 1 ? onRest : undefined,
+		onStart: i === 0 ? onStart : undefined,
 	}
 }
 
@@ -232,170 +227,119 @@ const fromShuffle = {
 }
 
 export const getInitialStylesList = ({
-	initialRevealed,
+	revealed,
 	animate,
-}: Pick<Props, 'initialRevealed' | 'animate'>) => {
+}: {
+	revealed: boolean
+	animate: boolean
+}) => {
 	return Array(DECK_SIZE)
 		.fill('')
 		.map((_, i) => {
 			let to = from(i)
-			if (initialRevealed) {
+			if (revealed) {
 				to = {
-					...getRevealedStyle(i),
+					...getRevealedStyle(i, {}),
 					z: to.z,
 				}
 			}
 
 			return {
 				to,
-				from: animate ? fromShuffle : to,
+				from: animate
+					? {
+							...fromShuffle,
+							z: i - (DECK_SIZE - 1),
+					  }
+					: to,
 			}
 		})
 }
 
-export const useDeck = ({
-	animate,
-	initialRevealed,
-	onRevealed,
-	initialSprings,
-	onHideContent,
-	onRevealContent,
-	onShuffling,
-	onAnimationEnd,
-}: Props) => {
-	const [revealed, setRevealed] = useState(initialRevealed)
-	// We don't want to always sync initialRevealed with the state
-	// we only need to sync when it's changed
+export type ChangeEvent =
+	| {
+			type: 'HIDING_START'
+	  }
+	| {
+			type: 'HIDING_END'
+	  }
+	| {
+			type: 'REVEALING_START'
+	  }
+	| {
+			type: 'REVEALING_END'
+	  }
+
+type Props = {
+	state: State['value']
+	initialStyles: ReturnType<typeof getInitialStylesList>
+	onChange: (event: ChangeEvent) => void
+}
+
+export const useAnimate = ({ state, onChange, initialStyles }: Props) => {
+	const [springs, api] = useSprings(DECK_SIZE, (i) => initialStyles[i]!)
+	const onChangeRef = useRef(onChange)
+	onChangeRef.current = onChange
 	useEffect(() => {
-		setRevealed(initialRevealed)
-	}, [initialRevealed])
-
-	const [springs, api] = useSprings(DECK_SIZE, (i) => {
-		if (!animate) {
-			const to = initialSprings[i]!.to
-			return {
-				from: to,
-				to,
-			}
-		}
-		if (revealed) {
-			return {
-				from: fromShuffle,
-				to: getRevealedStyle(i),
-				onStart:
-					i === 0
-						? () => onHideContent()
-						: i === DECK_SIZE - 1
-						  ? () => onRevealContent()
-						  : undefined,
-			}
-		}
-
-		return {
-			from: fromShuffle,
-			to: from(i),
-			onStart:
-				i === 0
-					? () => onHideContent()
-					: i === DECK_SIZE - 1
-					  ? () => onRevealContent()
-					  : undefined,
-		}
-	})
-
-	const handlersRef = useRef({
-		onRevealed,
-		onHideContent,
-		onRevealContent,
-		onShuffling,
-		onAnimationEnd,
-	})
-
-	handlersRef.current.onRevealed = onRevealed
-	handlersRef.current.onHideContent = onHideContent
-	handlersRef.current.onRevealContent = onRevealContent
-	handlersRef.current.onShuffling = onShuffling
-	handlersRef.current.onAnimationEnd = onAnimationEnd
-
-	const onReveal = useCallback(() => {
-		const onRevealed = () => handlersRef.current.onRevealed()
-		const onHideContent = () => handlersRef.current.onHideContent()
-		const onRevealContent = () => handlersRef.current.onRevealContent()
-		const onShuffling = () => handlersRef.current.onShuffling()
-		const onAnimationEnd = () => handlersRef.current.onAnimationEnd()
-		api.start((i) => {
-			onHideContent()
-			if (revealed) {
-				const to = getShuffleStart(i)
-				if (i === DECK_SIZE - 1) {
-					// Cards left the screen
-					to.onRest = () => {
-						// At this point we need to get the next card to reveal
-						onRevealed()
-						onShuffling()
-
-						// Get cards back on screen
-						// Teleport cards to the initial position
-						api.set(fromShuffle)
-						api.start((i) => {
-							const to = getShuffleEnd(i)
-							if (i === DECK_SIZE - 1) {
-								// Cards on the screen, reveal the next one
-								to.onRest = () => {
-									api.start((i) => {
-										const to = getRevealedStyle(i)
-										if (i === DECK_SIZE - 1) {
-											to.delay = 0
-											to.onRest = () => {
-												onRevealContent()
-												onAnimationEnd()
-												// Make sure to set the state for the future updates
-												setRevealed(true)
-											}
-										}
-
-										return to
-									})
-								}
-							}
-
-							return to
-						})
-					}
-				}
-
-				return to
-			}
-
-			const to = getRevealedStyle(i)
-			if (i === DECK_SIZE - 1) {
-				to.onRest = () => {
-					onRevealed()
-					setRevealed(true)
-					onRevealContent()
-					api.start((i) => {
-						if (i === DECK_SIZE - 1) {
-							return {
-								y: 0,
-								x: 0,
-								rotateX: 0,
-								rotateY: 0,
-								rotateZ: 0,
-								rotate: 0,
-								delay: 800,
-							}
+		switch (state) {
+			case 'error':
+			case 'ininital_hidden':
+			case 'initial_revealed':
+			case 'pre_reveal':
+			case 'revealed':
+			case 'hidden':
+				return
+			case 'revealing':
+				api.start((i) => {
+					const config = getRevealedStyle(i, {})
+					if (i === 0) {
+						config.onStart = () => {
+							onChangeRef.current({ type: 'REVEALING_START' })
 						}
-					})
-				}
-			}
+					}
+					if (i === DECK_SIZE - 1) {
+						config.onRest = () => {
+							onChangeRef.current({ type: 'REVEALING_END' })
+						}
+					}
 
-			return to
-		})
-	}, [api, revealed])
+					return config
+				})
+				return
+			case 'pre_hide':
+				api.start((i) => {
+					const config = getShuffleStart(i, {})
+					if (i === 0) {
+						config.onStart = () => {
+							onChangeRef.current({ type: 'HIDING_START' })
+						}
+					}
+					if (i === DECK_SIZE - 1) {
+						config.onRest = () => {
+							api.set(fromShuffle)
+						}
+					}
 
-	return {
-		springs,
-		onReveal,
-		getSpringStyles,
-	}
+					return config
+				})
+				return
+			case 'hiding':
+				api.set(fromShuffle)
+				api.start((i) => {
+					const config = getShuffleEnd(i)
+					if (i === DECK_SIZE - 1) {
+						config.onRest = () => {
+							onChangeRef.current({ type: 'HIDING_END' })
+						}
+					}
+
+					return config
+				})
+				return
+			default:
+				return
+		}
+	}, [api, state])
+
+	return springs
 }

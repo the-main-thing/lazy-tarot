@@ -1,32 +1,31 @@
-import { type ClientLoaderFunctionArgs, redirect } from '@remix-run/react'
+import { type ClientLoaderFunctionArgs } from '@remix-run/react'
 
+import { queryClient } from '~/QueryProvider'
 import { getOrFetchCardsSet } from '../query'
-import { searchParams } from './searchParams'
 
-export const clientLoader = async ({
-	request,
-}: Pick<ClientLoaderFunctionArgs, 'request'>) => {
-	const cardsSet = await getOrFetchCardsSet()
-	const parsedSearchParams = searchParams.deserialize(
-		new URL(request.url).searchParams,
-	)
-	const currentCardContent = parsedSearchParams
-		? cardsSet.find((card) => card.id === parsedSearchParams.id)
-		: undefined
-
-	if (parsedSearchParams && !currentCardContent) {
-		throw redirect('/')
-	}
-
-	return {
-		cardsSet,
-		currentCard: currentCardContent
-			? {
-					card: currentCardContent,
-					upsideDown: parsedSearchParams?.upside_down === '1',
-			  }
-			: null,
-	}
+/**
+ * Prevent client from sending following requests to the server
+ * since all the logic is done in the browser
+ */
+export const clientLoader = async <TServerLoaderData>({
+	serverLoader,
+}: Pick<ClientLoaderFunctionArgs, 'serverLoader'>) => {
+	const serverData = await queryClient.fetchQuery<TServerLoaderData>({
+		queryKey: [
+			window.location.origin,
+			{
+				page: 'tarotReading',
+			},
+		],
+		queryFn: () => serverLoader() as Promise<TServerLoaderData>,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	})
+	// Just start preloading data
+	getOrFetchCardsSet()
+	return serverData
 }
 
-export type ClientLoaderData = Awaited<ReturnType<typeof clientLoader>>
+export type ClientLoaderData<TServerLoaderData> = Awaited<
+	ReturnType<typeof clientLoader<TServerLoaderData>>
+>

@@ -1,5 +1,6 @@
 import {
 	useLoaderData,
+	Link,
 	type ClientLoaderFunctionArgs,
 	type ClientLoaderFunction,
 } from '@remix-run/react'
@@ -15,11 +16,10 @@ import { ClientOnly } from 'remix-utils/client-only'
 
 import { env } from '~/utils/env.server'
 import { Img, PortableText, NavigationBar, PreloadImg } from '~/components'
-import { TarotReading } from '~/features/tarot/singleCardReading/components/TarotReading'
+import { TarotReading } from '~/features/tarot/singleCardReading/TarotReading'
 import { api } from '~/api.server'
 import { loader as tarotReadingLoader } from '~/features/tarot/singleCardReading/loader.server'
 import { clientLoader as tarotReadingClientLoader } from '~/features/tarot/singleCardReading/clientLoader.client'
-import { queryClient } from '~/QueryProvider'
 import { useQueryCardsSet } from '~/features/tarot/query'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -32,7 +32,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		api.pages.public.getAllPages.query({
 			language,
 		}),
-		tarotReadingLoader({ request }),
+		tarotReadingLoader({ request, params }),
 	])
 
 	return json(
@@ -49,34 +49,23 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 }
 
 export const clientLoader = async ({
-	request,
 	serverLoader,
 }: ClientLoaderFunctionArgs) => {
-	const serverData = await queryClient.fetchQuery<
+	const clientData = await tarotReadingClientLoader<
 		SerializeFrom<typeof loader>
-	>({
-		queryKey: [window.location.origin, 'get'],
-		queryFn: () => serverLoader(),
-		staleTime: Infinity,
-		gcTime: Infinity,
-	})
-	const clientData = await tarotReadingClientLoader({ request })
+	>({ serverLoader })
 
-	return {
-		...serverData,
-		...clientData,
-	} satisfies typeof serverData
+	return clientData satisfies SerializeFrom<typeof loader>
 }
 ;(clientLoader as ClientLoaderFunction).hydrate = true
 
 export default function Index() {
-	const { pages, cardsSet, currentCard, nextCard, deckSSRData } =
+	const { pages, card, deckSSRData, language, revealed } =
 		useLoaderData<typeof clientLoader>()
 
 	const {
 		rootLayoutContent,
 		indexPageContent,
-		tarotOfTheDayPageContent,
 		tarotReadingPageContent,
 		manifestoPageContent,
 	} = pages
@@ -89,11 +78,8 @@ export default function Index() {
 				rel="preload"
 				srcSet={tarotReadingPageContent.cardBackImage}
 			/>
-			{currentCard ? (
-				<PreloadImg rel="preload" srcSet={currentCard.card.image} />
-			) : null}
-			{nextCard && 'image' in nextCard ? (
-				<PreloadImg rel="prefetch" srcSet={nextCard.image} />
+			{card ? (
+				<PreloadImg rel="preload" srcSet={card.card.image} />
 			) : null}
 			<ClientOnly fallback={null}>
 				{() =>
@@ -118,46 +104,47 @@ export default function Index() {
 					/>
 				</div>
 				<div className="w-full flex flex-col items-center mb-14 gap-24">
-					<header className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center">
-						<PortableText value={indexPageContent.headerTitle} />
-						<ClassNames>
-							{({ cx, css }) => (
-								<div
-									className={cx(
-										'text-subheader',
-										css`
-											& * {
-												line-height: 0.66em;
+					<header>
+						<Link
+							to={`/${language}#tarot-reading`}
+							className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center"
+						>
+							<PortableText
+								value={indexPageContent.headerTitle}
+							/>
+							<ClassNames>
+								{({ cx, css }) => (
+									<div
+										className={cx(
+											'text-subheader',
+											css`
+												& * {
+													line-height: 0.66em;
+												}
+											`,
+										)}
+									>
+										<PortableText
+											value={
+												indexPageContent.headerDescription
 											}
-										`,
-									)}
-								>
-									<PortableText
-										value={
-											indexPageContent.headerDescription
-										}
-									/>
-								</div>
-							)}
-						</ClassNames>
+										/>
+									</div>
+								)}
+							</ClassNames>
+						</Link>
 					</header>
 					<Img
 						src={indexPageContent.logo}
 						className="w-screen-65 landscape:w-screen-25"
 					/>
 				</div>
-				{cardsSet?.length > 0 ? (
-					<TarotReading
-						formContent={tarotReadingPageContent}
-						descriptionPageContent={tarotOfTheDayPageContent}
-						cardsSet={
-							cardsSet as NonEmptyArray<(typeof cardsSet)[number]>
-						}
-						currentCard={currentCard}
-						nextCard={nextCard}
-						deckSSRData={deckSSRData}
-					/>
-				) : null}
+				<TarotReading
+					pageContent={tarotReadingPageContent}
+					revealed={revealed}
+					card={card}
+					deckSSRData={deckSSRData}
+				/>
 				<section id="manifesto">
 					<article className="flex flex-col gap-16 w-full max-w-text-60 m-auto items-center">
 						<div className="w-full text-center">
@@ -202,7 +189,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		},
 		{
 			property: 'og:image',
-			content: `${data.host.endsWith('/') ? data.host : data.host + '/'}og-image.png`,
+			content: `${
+				data.host.endsWith('/') ? data.host : data.host + '/'
+			}og-image.png`,
 		},
 		{
 			property: 'og:image:width',
