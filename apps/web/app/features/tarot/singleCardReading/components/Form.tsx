@@ -79,7 +79,7 @@ export const Form = <
 			id={id}
 			onSubmit={onSubmit}
 			preventScrollReset
-			className="w-full text-center"
+			className="w-full portrait:text-center"
 		>
 			{hideForm ? <input type="hidden" name="reset" value="1" /> : null}
 			{cardId ? <input type="hidden" name="id" value={cardId} /> : null}

@@ -107,7 +107,7 @@ export default function Index() {
 						}
 					/>
 				</div>
-				<div className="w-full flex flex-col items-center mb-14 gap-24">
+				<div className="w-full flex flex-col items-center mb-14 gap-4">
 					<header>
 						<Link
 							to={`/${language}#tarot-reading`}
@@ -138,10 +138,12 @@ export default function Index() {
 							</ClassNames>
 						</Link>
 					</header>
-					<Img
-						src={indexPageContent.logo}
-						className="w-screen-65 landscape:w-screen-25"
-					/>
+					<div className="relative -left-4">
+						<Img
+							src={indexPageContent.logo}
+							className="w-screen-30 landscape:w-screen-13 relative"
+						/>
+					</div>
 				</div>
 				<TarotReading
 					pageContent={tarotReadingPageContent}
