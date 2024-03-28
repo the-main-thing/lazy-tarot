@@ -9,6 +9,7 @@ import {
 	getSpringStyles,
 	type ChangeEvent,
 } from './useAnimate'
+import { CardBack } from './CardBack'
 import type { LoaderData } from './loader'
 import type { State } from '../../useStateMachine'
 
@@ -50,10 +51,11 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 		const { card, upsideDown } = state.card
 
 		const cardContainerClassName =
-			'absolute top-0 left-0 bg-stone-50 rounded'
-		const imgClassName = 'rounded bg-stone-50'
+			'absolute top-0 left-0 rounded bg-tranparent'
+		const imgClassName =
+			'rounded bg-transparent border-4 border-slate-50 shadow-lg '
 		const cardImageContainerClassName =
-			'shadow-lg rounded bg-stone-50 flex flex-col items-center justify-center flex-shrink-0 border border-4 border-b-8 border-slate-100 overflow-hidden'
+			'rounded flex flex-col items-center justify-center flex-shrink-0 bg-tranparent '
 
 		const face = (
 			<Img
@@ -67,12 +69,20 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 						  }
 						: undefined
 				}
-				className={imgClassName + ' opacity-0'}
+				className={
+					imgClassName +
+					' ' +
+					(upsideDown ? 'border-t-8' : 'border-b-8')
+				}
 			/>
 		)
-
 		const placeholder = (
-			<div className="relative max-w-full overflow-hidden -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap">
+			<div
+				style={{
+					height: 'min-content',
+				}}
+				className="relative max-w-full overflow-hidden -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap"
+			>
 				{face}
 			</div>
 		)
@@ -84,7 +94,6 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 					className
 				}
 			>
-				{placeholder}
 				<>
 					<div className="sr-only">{submitButtonLabel}</div>
 					{springs.map((props, index, array) => {
@@ -135,36 +144,22 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 												}
 											>
 												<div
-													style={{
-														...shared,
-														width: '100%',
-														height: '100%',
-														backgroundImage: `url(${cardBackImage.sm.src})`,
-														backgroundSize: 'cover',
-														backgroundPosition:
-															'center',
-														backgroundRepeat:
-															'no-repeat',
-													}}
+													style={shared}
 													className={
 														cardImageContainerClassName
 													}
 												>
-													<Img
-														src={card.image}
-														alt=""
-														aria-hidden="true"
-														style={
-															upsideDown
-																? {
-																		transform:
-																			'rotate(180deg)',
-																  }
-																: undefined
+													<CardBack
+														face={face}
+														url={
+															cardBackImage.sm.src
 														}
+														style={{
+															...shared,
+														}}
 														className={
 															imgClassName +
-															' opacity-0'
+															' border-b-8'
 														}
 													/>
 												</div>
@@ -178,24 +173,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 														' absolute top-0 left-0'
 													}
 												>
-													{card ? (
-														<Img
-															src={card.image}
-															alt=""
-															aria-hidden="true"
-															style={
-																upsideDown
-																	? {
-																			transform:
-																				'rotate(180deg)',
-																	  }
-																	: undefined
-															}
-															className={
-																imgClassName
-															}
-														/>
-													) : null}
+													{face}
 												</div>
 											</animated.div>
 										</div>
@@ -214,30 +192,11 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 										: deckSSRData.style[index]!.deck
 								}
 							>
-								<div
-									style={{
-										width: '100%',
-										height: '100%',
-										backgroundImage: `url(${cardBackImage.sm.src})`,
-										backgroundSize: 'cover',
-										backgroundPosition: 'center',
-										backgroundRepeat: 'no-repeat',
-									}}
-									className={cardImageContainerClassName}
-								>
-									<Img
-										src={card.image}
-										alt=""
-										aria-hidden="true"
-										style={
-											upsideDown
-												? {
-														transform:
-															'rotate(180deg)',
-												  }
-												: undefined
-										}
-										className={imgClassName + ' opacity-0'}
+								<div className={cardImageContainerClassName}>
+									<CardBack
+										face={face}
+										url={cardBackImage.sm.src}
+										className={imgClassName + ' border-b-8'}
 									/>
 								</div>
 							</animated.div>

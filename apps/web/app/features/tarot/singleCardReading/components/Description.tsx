@@ -77,7 +77,7 @@ export const Description = <
 	return (
 		<article
 			aria-hidden={hideDescription ? 'true' : 'false'}
-			className="flex flex-col gap-20"
+			className="flex flex-col gap-20 portrait:items-center"
 		>
 			{header ? (
 				<animated.div style={spring[0]!}>
@@ -116,7 +116,7 @@ export const Description = <
 						) : null}
 					</animated.div>
 				</div>
-				<div className="flex flex-col landscape:items-start">
+				<div className="flex flex-col landscape:items-start items-center portrait:m-auto">
 					{children}
 				</div>
 			</div>
