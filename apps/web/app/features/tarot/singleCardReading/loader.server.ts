@@ -21,6 +21,7 @@ const getPageData = async (
 	])
 	if (!cardsSetArray.length) {
 		return {
+			language,
 			revealed: false,
 			deckSSRData: deckLoader(false),
 			card: null,
@@ -46,6 +47,7 @@ const getPageData = async (
 		})
 
 		return {
+			language,
 			revealed: false,
 			deckSSRData: deckLoader(false),
 			card,
@@ -53,6 +55,7 @@ const getPageData = async (
 	}
 
 	return {
+		language,
 		revealed: true,
 		deckSSRData: deckLoader(true),
 		card: {

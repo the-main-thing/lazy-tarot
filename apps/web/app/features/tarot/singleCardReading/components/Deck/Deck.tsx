@@ -100,7 +100,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 						const top = index === array.length - 1
 
 						if (top) {
-							const [revealRotate] =
+							const [, revealRotate] =
 								interpolateRevealRotate(props)
 							const shared = {
 								WebkitBackfaceVisibility: 'hidden',

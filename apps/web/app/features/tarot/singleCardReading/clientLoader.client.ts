@@ -1,4 +1,4 @@
-import { type ClientLoaderFunctionArgs } from '@remix-run/react'
+import { type ClientLoaderFunctionArgs, redirect } from '@remix-run/react'
 
 import { queryClient } from '~/QueryProvider'
 import { getOrFetchCardsSet } from '../query'
@@ -9,7 +9,8 @@ import { getOrFetchCardsSet } from '../query'
  */
 export const clientLoader = async <TServerLoaderData>({
 	serverLoader,
-}: Pick<ClientLoaderFunctionArgs, 'serverLoader'>) => {
+	params,
+}: Pick<ClientLoaderFunctionArgs, 'serverLoader' | 'params'>) => {
 	const serverData = await queryClient.fetchQuery<TServerLoaderData>({
 		queryKey: [
 			window.location.origin,
@@ -21,8 +22,12 @@ export const clientLoader = async <TServerLoaderData>({
 		staleTime: Infinity,
 		gcTime: Infinity,
 	})
+	const { language } = params
+	if (!language) {
+		throw redirect('/')
+	}
 	// Just start preloading data
-	getOrFetchCardsSet()
+	getOrFetchCardsSet(language)
 	return serverData
 }
 

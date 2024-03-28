@@ -328,7 +328,7 @@ const TarotReadingContentfull = ({
 							)}
 						</ClientOnly>
 						<ResetButton
-							className="mt-16 flex rounded border border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-slate-600 hover:text-slate-100 transition-all focus:bg-slate-600 focus:text-slate-100"
+							className="mt-16 flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-stone-600 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100"
 							state={state.value}
 							type="submit"
 							form={FORM_ID}
@@ -363,8 +363,8 @@ const TarotReadingContentfull = ({
 }
 
 export const TarotReading = memo(
-	({ revealed, card, deckSSRData, pageContent }: Props) => {
-		const { data: cardsSet } = useQueryCardsSet()
+	({ revealed, card, deckSSRData, pageContent, language }: Props) => {
+		const { data: cardsSet } = useQueryCardsSet(language)
 		const [state, handlers] = useStateMachine({
 			revealed,
 			card,

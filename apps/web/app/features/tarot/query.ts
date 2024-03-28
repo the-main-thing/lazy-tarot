@@ -3,13 +3,15 @@ import { queryClient } from '~/QueryProvider'
 
 import type { Card } from './types'
 
-const getQueryCardsSetKey = () => ['/api/tarot/getCardsSet'] as const
+const getQueryCardsSetKey = (language: string) =>
+	['api/tarot/getCardsSet', language] as const
 
-const getUrl = () => `${window.location.origin}${getQueryCardsSetKey()[0]}`
+const getUrl = (lanugage: string) =>
+	[window.location.origin, ...getQueryCardsSetKey(lanugage)].join('/')
 
-export const getCardsSet = async (): Promise<Array<Card>> => {
+export const getCardsSet = async (language: string): Promise<Array<Card>> => {
 	try {
-		const response = await fetch(getUrl(), {
+		const response = await fetch(getUrl(language), {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -23,18 +25,18 @@ export const getCardsSet = async (): Promise<Array<Card>> => {
 	}
 }
 
-export const getOrFetchCardsSet = async () => {
+export const getOrFetchCardsSet = async (language: string) => {
 	return await queryClient.fetchQuery({
-		queryKey: getQueryCardsSetKey(),
-		queryFn: getCardsSet,
+		queryKey: getQueryCardsSetKey(language),
+		queryFn: () => getCardsSet(language),
 		staleTime: Infinity,
 	})
 }
 
-export const useQueryCardsSet = () => {
+export const useQueryCardsSet = (language: string) => {
 	return useQuery({
-		queryKey: getQueryCardsSetKey(),
-		queryFn: () => getCardsSet(),
+		queryKey: getQueryCardsSetKey(language),
+		queryFn: () => getCardsSet(language),
 		staleTime: Infinity,
 	})
 }

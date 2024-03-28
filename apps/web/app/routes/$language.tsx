@@ -40,7 +40,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	return json(
 		{
 			host,
-			language,
 			pages,
 			...tarotReadingData,
 		},
@@ -52,10 +51,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 export const clientLoader = async ({
 	serverLoader,
+	params,
 }: ClientLoaderFunctionArgs) => {
 	const clientData = await tarotReadingClientLoader<
 		SerializeFrom<typeof loader>
-	>({ serverLoader })
+	>({ serverLoader, params })
 
 	return clientData satisfies SerializeFrom<typeof loader>
 }
@@ -73,7 +73,7 @@ export default function Index() {
 		aboutUsPageContent,
 	} = pages
 
-	const { data: fullCardsSet } = useQueryCardsSet()
+	const { data: fullCardsSet } = useQueryCardsSet(language)
 
 	return (
 		<>
@@ -148,6 +148,7 @@ export default function Index() {
 					revealed={revealed}
 					card={card}
 					deckSSRData={deckSSRData}
+					language={language}
 				/>
 				<div />
 				<ManifestoPage
