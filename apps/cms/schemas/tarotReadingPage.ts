@@ -35,6 +35,18 @@ const tarotReadingPage = defineType({
       validation: (Rule) => Rule.required(),
     },
     {
+      name: 'pickNextCardButtonLabel',
+      title: 'Pick next card button label',
+      type: 'internationalizedArrayString',
+      validation: (Rule) => Rule.required(),
+    },
+    {
+      name: 'cardDescriptionHeaderText',
+      title: 'Card description header text',
+      type: 'internationalizedArrayString',
+      validation: (Rule) => Rule.required(),
+    },
+    {
       name: 'cardBackImage',
       title: 'Card back image',
       type: 'image',

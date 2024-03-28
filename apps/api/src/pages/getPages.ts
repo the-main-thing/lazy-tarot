@@ -44,16 +44,10 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
         _id: q.string(),
         headerTitle: schemas.i18nBlock,
         formDescription: schemas.i18nBlock,
+        cardDescriptionHeaderText: schemas.i18n,
         submitButtonLabel: schemas.i18n,
         cardBackImage: schemas.image,
-      })
-      .slice(0),
-    tarotOfTheDayPageContent: q('*')
-      .filterByType('tarotOfTheDayPage')
-      .grab({
-        _id: q.string(),
-        header: schemas.i18nBlock,
-        descriptionTitle: schemas.i18nBlock,
+        pickNextCardButtonLabel: schemas.i18n,
       })
       .slice(0),
     manifestoPageContent: q('*')
@@ -77,7 +71,6 @@ const translate = (
     rootLayoutContent,
     indexPageContent,
     tarotReadingPageContent,
-    tarotOfTheDayPageContent,
     manifestoPageContent,
   }: Awaited<ReturnType<typeof getSanityContent>>,
 ) => {
@@ -118,6 +111,10 @@ const translate = (
         tarotReadingPageContent.formDescription,
         language,
       ),
+      cardDescriptionHeaderText: getTranslated(
+        tarotReadingPageContent.cardDescriptionHeaderText,
+        language,
+      ),
       submitButtonLabel: getTranslated(
         tarotReadingPageContent.submitButtonLabel,
         language,
@@ -127,11 +124,8 @@ const translate = (
         image: tarotReadingPageContent.cardBackImage,
         breakpoints: BREAKPOINTS,
       }),
-    },
-    tarotOfTheDayPageContent: {
-      header: getTranslated(tarotOfTheDayPageContent.header, language),
-      descriptionTitle: getTranslated(
-        tarotOfTheDayPageContent.descriptionTitle,
+      pickNextCardButtonLabel: getTranslated(
+        tarotReadingPageContent.pickNextCardButtonLabel,
         language,
       ),
     },

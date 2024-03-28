@@ -2,7 +2,6 @@ import * as layout from './layout'
 import * as indexPage from './indexPage'
 import * as tarotCardsSet from './tarotCardsSet'
 import * as tarotReadingPage from './tarotReadingPage'
-import * as tarotOfTheDayPage from './tarotSingleCardReadingPage'
 import * as manifestoPage from './manifestoPage'
 import * as aboutUsPage from './aboutUsPage'
 
@@ -11,7 +10,6 @@ export const schemaTypes = [
   ...indexPage.definitions,
   ...tarotCardsSet.definitions,
   ...tarotReadingPage.definitions,
-  ...tarotOfTheDayPage.definitions,
   ...manifestoPage.definitions,
   ...aboutUsPage.definitions,
 ]
