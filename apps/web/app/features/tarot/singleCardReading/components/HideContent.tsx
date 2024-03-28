@@ -15,7 +15,7 @@ export const HideContent = (props: Props) => {
 
 	return (
 		<BodyBottomPortal>
-			<div className="absolute inset-0">
+			<div className="absolute inset-0 pointer-events-none">
 				<div className="absolute inset-0">
 					<animated.div
 						style={spring}
