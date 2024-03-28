@@ -30,8 +30,13 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 						<Typography variant="h3">{header.pageTitle}</Typography>
 					</div>
 				</div>
-				<div className="flex flex-col items-end gap-4">
-					<div className="landscape:w-screen-20 rounded portrait:w-screen-70">
+				<div className="flex flex-col items-end w-full gap-4">
+					<div
+						style={{
+							marginRight: '5.9rem',
+						}}
+						className="landscape:w-screen-25 rounded portrait:w-screen-70"
+					>
 						<Img
 							src={image}
 							alt=""

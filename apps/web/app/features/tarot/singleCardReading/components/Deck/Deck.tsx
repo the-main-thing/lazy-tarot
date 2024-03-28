@@ -53,7 +53,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 		const cardContainerClassName =
 			'absolute top-0 left-0 rounded bg-tranparent'
 		const imgClassName =
-			'rounded bg-transparent border-4 border-slate-50 shadow-lg '
+			'rounded border-4 border-slate-50 shadow-lg '
 		const cardImageContainerClassName =
 			'rounded flex flex-col items-center justify-center flex-shrink-0 bg-tranparent '
 
@@ -81,7 +81,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 				style={{
 					height: 'min-content',
 				}}
-				className="relative max-w-full overflow-hidden -z-50 bg-transparent shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap"
+				className="relative max-w-full overflow-hidden -z-50 shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap"
 			>
 				{face}
 			</div>
@@ -113,14 +113,14 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 									type="submit"
 									form={form}
 									onClick={onClick}
-									className="absolute top-0 left-0 bg-transparent"
+									className="absolute top-0 left-0"
 									style={
 										animate
 											? getSpringStyles(props)
 											: deckSSRData.style[index]!.deck
 									}
 								>
-									<div className="relative w-full h-full bg-transparent rounded">
+									<div className="relative w-full h-full rounded">
 										<div
 											style={{
 												perspective: '10000px',

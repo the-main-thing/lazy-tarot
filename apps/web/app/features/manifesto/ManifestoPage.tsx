@@ -30,7 +30,7 @@ export const ManifestoPage = ({
 					</div>
 				</div>
 				<div className="flex flex-col items-end gap-4">
-					<div className="text-pretty text-justify hyphens-auto">
+					<div className="text-pretty text-justify hyphens-auto flex flex-col gap-4">
 						<PortableText value={content} />
 					</div>
 					<div className="landscape:w-screen-14 rounded portrait:w-screen-70">

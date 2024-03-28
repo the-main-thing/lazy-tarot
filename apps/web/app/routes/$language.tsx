@@ -151,18 +151,19 @@ export default function Index() {
 					language={language}
 				/>
 				<div />
-				<ManifestoPage
-					header={manifestoPageContent.header}
-					content={manifestoPageContent.content}
-					headerImage={manifestoPageContent.headerImage}
-					contentImage={manifestoPageContent.contentImage}
-				/>
-				<div />
-				<AboutUsPage
-					header={aboutUsPageContent.header}
-					image={aboutUsPageContent.image}
-					social={aboutUsPageContent.social}
-				/>
+				<div className="flex flex-col w-full gap-8">
+					<ManifestoPage
+						header={manifestoPageContent.header}
+						content={manifestoPageContent.content}
+						headerImage={manifestoPageContent.headerImage}
+						contentImage={manifestoPageContent.contentImage}
+					/>
+					<AboutUsPage
+						header={aboutUsPageContent.header}
+						image={aboutUsPageContent.image}
+						social={aboutUsPageContent.social}
+					/>
+				</div>
 			</div>
 		</>
 	)
