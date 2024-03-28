@@ -15,7 +15,10 @@ type Props = {
 
 export const AboutUsPage = ({ header, image, social }: Props) => {
 	return (
-		<section id="about-us" className="flex flex-col w-full gap-16">
+		<section
+			id="about-us"
+			className="flex flex-col w-full gap-16 overflow-x-hidden"
+		>
 			<article className="flex flex-col gap-16 w-full landscape:flex-row landscape:flex-nowrap landscape:justify-between">
 				<div className="flex flex-col gap-4 landscape:pt-8">
 					<div className="text-pretty">
@@ -39,11 +42,11 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 				</div>
 			</article>
 			{social.length ? (
-				<ul className="flex flex-row flex-nowrap gap-4 justify-center">
+				<ul className="flex flex-col md:flex-row md:flex-nowrap gap-4 justify-center">
 					{social.map(({ title, urlTitle, url }) => (
 						<li
 							key={title + urlTitle + url}
-							className="flex flex-1 flex-col gap-4 pb-4 border-b"
+							className="flex flex-1 flex-col gap-4 pb-4 border-b border-black"
 						>
 							<Typography variant="default">{title}</Typography>
 							<a className="flex flex-col gap-4" href={url}>
@@ -56,7 +59,7 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 							</a>
 						</li>
 					))}
-					<li className="flex flex-1 flex-col gap-4 pb-4 border-b">
+					<li className="flex flex-1 flex-col gap-4 pb-4 border-b border-black">
 						<Typography variant="default">Email</Typography>
 						<a
 							className="flex flex-col gap-4"
