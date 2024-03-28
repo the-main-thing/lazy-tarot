@@ -15,11 +15,13 @@ export const HideContent = (props: Props) => {
 
 	return (
 		<BodyBottomPortal>
-			<div className="absolute top-0 left-0">
-				<animated.div
-					style={spring}
-					className="fixed bg-white w-screen h-screen top-0 left-0 pointer-events-none overflow-hidden"
-				/>
+			<div className="absolute inset-0">
+				<div className="absolute inset-0">
+					<animated.div
+						style={spring}
+						className="fixed bg-white inset-0 w-full h-full min-w-screen min-h-screen pointer-events-none overflow-hidden"
+					/>
+				</div>
 			</div>
 		</BodyBottomPortal>
 	)
