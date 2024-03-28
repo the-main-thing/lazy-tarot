@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { ClassNames } from '@emotion/react'
 
 interface Props {
 	face: React.ReactNode
@@ -10,24 +9,22 @@ interface Props {
 
 export const CardBack = memo(({ url, className, style, face }: Props) => {
 	return (
-		<ClassNames>
-			{({ css, cx }) => (
-				<div
-					className={cx(
-						className,
-						'flex flex-0',
-						css`
-							background-image: url(${url});
-							background-size: cover;
-							background-repeat: no-repeat;
-						`,
-					)}
-					style={style}
-				>
-					<div className="opacity-0">{face}</div>
-				</div>
-			)}
-		</ClassNames>
+		<div
+			className={
+				className +
+				' ' +
+				'relative overflow-hidden flex flex-col items-center flex-0'
+			}
+			style={style}
+		>
+			<div className="opacity-0">{face}</div>
+			<img
+				className="absolute top-0 left-0"
+				src={url}
+				alt=""
+				aria-hidden="true"
+			/>
+		</div>
 	)
 })
 
