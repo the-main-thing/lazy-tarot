@@ -65,15 +65,15 @@ const getPageData = async (
 	}
 }
 
-const MINUTE_IN_SECONDS = 60
-const CACHE_CONTROL_VALUE = `public, max-age=${
-	MINUTE_IN_SECONDS * 10
-}, stale-while-revalidate=${MINUTE_IN_SECONDS * 10 * 1}`
+// const MINUTE_IN_SECONDS = 60
+// const CACHE_CONTROL_VALUE = `public, max-age=${
+// 	MINUTE_IN_SECONDS * 10
+// }, stale-while-revalidate=${MINUTE_IN_SECONDS * 10 * 1}`
 
 const headers = new Headers()
-headers.append('Cache-Control', CACHE_CONTROL_VALUE)
-headers.append('Vary', 'Accept-Encoding')
-headers.append('Vary', 'Accept-Language')
+headers.append('Cache-Control', `no-cache, no-store, must-revalidate`)
+// headers.append('Vary', 'Accept-Encoding')
+// headers.append('Vary', 'Accept-Language')
 
 export const loader = async ({
 	request,
