@@ -1,3 +1,4 @@
+import { ClassNames } from '@emotion/react'
 import { type ImgProps, Img, Typography } from '~/components'
 
 type Props = {
@@ -31,19 +32,27 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 					</div>
 				</div>
 				<div className="flex flex-col items-end w-full gap-4">
-					<div
-						style={{
-							marginRight: '5.9rem',
-						}}
-						className="landscape:w-screen-25 rounded portrait:w-screen-70"
-					>
-						<Img
-							src={image}
-							alt=""
-							aria-hidden="true"
-							className="rounded"
-						/>
-					</div>
+					<ClassNames>
+						{({ cx, css }) => (
+							<div
+								className={cx(
+									'landscape:w-screen-25 rounded portrait:w-screen-70',
+									css`
+										@media (orientation: landscape) {
+											margin-right: 5.9rem;
+										}
+									`,
+								)}
+							>
+								<Img
+									src={image}
+									alt=""
+									aria-hidden="true"
+									className="rounded"
+								/>
+							</div>
+						)}
+					</ClassNames>
 				</div>
 			</article>
 			{social.length ? (

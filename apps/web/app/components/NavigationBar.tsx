@@ -1,7 +1,8 @@
-import { Link, useSearchParams, useLocation } from '@remix-run/react'
+import { Link } from '@remix-run/react'
 import { ClassNames } from '@emotion/react'
 
 import { Typography } from './Typography'
+import { useGetNavLink } from '~/utils/useGetNavLink'
 
 const NavLinkItem = ({
 	to,
@@ -27,15 +28,6 @@ const NavLinkItem = ({
 	</ClassNames>
 )
 
-const getLink = (hash: string, path: string, searchParams: URLSearchParams) => {
-	let search = searchParams.toString()
-	if (search) {
-		search = `?${search}`
-	}
-
-	return `${path}${search}#${hash}`
-}
-
 export const NavigationBar = ({
 	tarotReadingLinkTitle,
 	manifestoLinkTitle,
@@ -43,22 +35,16 @@ export const NavigationBar = ({
 	tarotReadingLinkTitle: string
 	manifestoLinkTitle: string
 }) => {
-	const [searchParams] = useSearchParams()
-	const { pathname } = useLocation()
 	return (
 		<nav className="w-full">
 			<ul className="w-full flex justify-between">
 				<li>
-					<NavLinkItem
-						to={getLink('tarot-reading', pathname, searchParams)}
-					>
+					<NavLinkItem to={useGetNavLink({ hash: 'tarot-reading' })}>
 						{tarotReadingLinkTitle}
 					</NavLinkItem>
 				</li>
 				<li>
-					<NavLinkItem
-						to={getLink('manifesto', pathname, searchParams)}
-					>
+					<NavLinkItem to={useGetNavLink({ hash: 'manifesto' })}>
 						{manifestoLinkTitle}
 					</NavLinkItem>
 				</li>

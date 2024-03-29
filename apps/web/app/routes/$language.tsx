@@ -23,6 +23,7 @@ import { clientLoader as tarotReadingClientLoader } from '~/features/tarot/singl
 import { useQueryCardsSet } from '~/features/tarot/query'
 import { ManifestoPage } from '~/features/manifesto/ManifestoPage'
 import { AboutUsPage } from '~/features/aboutUs/AboutUsPage'
+import { useGetNavLink } from '~/utils/useGetNavLink'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const host = env('PUBLIC_HOST')
@@ -110,7 +111,7 @@ export default function Index() {
 				<div className="w-full flex flex-col items-center mb-14 gap-4">
 					<header>
 						<Link
-							to={`/${language}#tarot-reading`}
+							to={useGetNavLink({ hash: 'tarot-reading' })}
 							className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center"
 						>
 							<PortableText
@@ -153,19 +154,16 @@ export default function Index() {
 					language={language}
 				/>
 				<div />
-				<div className="flex flex-col w-full gap-8">
-					<ManifestoPage
-						header={manifestoPageContent.header}
-						content={manifestoPageContent.content}
-						headerImage={manifestoPageContent.headerImage}
-						contentImage={manifestoPageContent.contentImage}
-					/>
-					<AboutUsPage
-						header={aboutUsPageContent.header}
-						image={aboutUsPageContent.image}
-						social={aboutUsPageContent.social}
-					/>
-				</div>
+				<ManifestoPage
+					header={manifestoPageContent.header}
+					content={manifestoPageContent.content}
+					headerImage={manifestoPageContent.headerImage}
+				/>
+				<AboutUsPage
+					header={aboutUsPageContent.header}
+					image={aboutUsPageContent.image}
+					social={aboutUsPageContent.social}
+				/>
 			</div>
 		</>
 	)

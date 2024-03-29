@@ -351,7 +351,7 @@ const TarotReadingContentfull = ({
 									}
 								}}
 							/>
-							<AnimateTo trackForMs={5000} target={animateTo}>
+							<AnimateTo trackForMs={500} target={animateTo}>
 								<div className="flex relative z-10">{deck}</div>
 							</AnimateTo>
 						</>
