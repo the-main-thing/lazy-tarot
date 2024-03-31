@@ -5,8 +5,6 @@ export {
 	type PortableTextValue,
 } from './PortableText'
 export { Img, type ImgProps } from './Img'
-export { Flip } from './Flip'
-export { Card } from './Card'
 export { NavigationBar } from './NavigationBar'
 export { BodyBottomPortal } from './BodyBottomPortal'
 export { PreloadImg } from './PreloadImg'

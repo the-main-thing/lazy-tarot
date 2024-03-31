@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, memo } from 'react'
-import { useNavigate, useLocation } from '@remix-run/react'
+import { useSearchParams, useLocation } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 import { useReducedMotion } from '@react-spring/web'
 
@@ -105,6 +105,7 @@ const TarotReadingContentfull = ({
 	onRevealed,
 	onPreRevealEnd,
 	onPreHideEnd,
+	onReset,
 }: ContentfullProps) => {
 	useReducedMotion()
 	const [formCardPlaceholder, setFormCardPlaceholder] =
@@ -189,54 +190,41 @@ const TarotReadingContentfull = ({
 		state.value === 'revealed' ||
 		state.value === 'pre_hide'
 	const { pathname } = useLocation()
-	const navigate = useNavigate()
+	const [urlSearchParams, setURLSearchParams] = useSearchParams()
+	useEffect(() => {
+		if (!urlSearchParams.has('k')) {
+			onReset()
+			return
+		}
+	}, [urlSearchParams, onReset])
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
-			const getLink = ({
-				searchParams,
-				hash,
-			}: {
-				searchParams?: URLSearchParams
-				hash?: string
-			}) => {
-				let base = pathname.startsWith('/') ? pathname : `/${pathname}`
-				if (searchParams) {
-					base += '?' + searchParams.toString()
-				}
-				if (hash) {
-					base += '#' + hash
-				}
-
-				return base
-			}
-
 			if (state.value === 'hidden') {
-				navigate(getLink({}), {
+				const params = new URLSearchParams()
+				params.set('k', '1')
+				setURLSearchParams(params, {
 					preventScrollReset: true,
 				})
 				return
 			}
 			if (state.value === 'revealed') {
-				navigate(
-					getLink({
-						searchParams: searchParams.serialize({
-							id: card.card.id,
-							upside_down: card.upsideDown ? '1' : '0',
-							scroll_to: 'tarot-reading',
-						}),
-					}),
-					{
-						preventScrollReset: true,
-					},
-				)
+				const nextParams = searchParams.serialize({
+					id: card.card.id,
+					upside_down: card.upsideDown ? '1' : '0',
+					scroll_to: 'tarot-reading',
+				})
+				nextParams.set('k', '1')
+				setURLSearchParams(nextParams, {
+					preventScrollReset: true,
+				})
 			}
-		}, 800)
+		}, 200)
 
 		return () => {
 			clearTimeout(timeout)
 		}
-	}, [card.card.id, card.upsideDown, navigate, pathname, state.value])
+	}, [card.card.id, card.upsideDown, pathname, state.value, setURLSearchParams])
 
 	const pickedCard = getCardContent(card)
 
@@ -302,7 +290,7 @@ const TarotReadingContentfull = ({
 				>
 					<Description
 						hidden={!formIsHidden}
-						header={pageContent.headerTitle}
+						header={pageContent.pickedCardTitle}
 						descriptionTitleText={
 							pageContent.cardDescriptionHeaderText
 						}

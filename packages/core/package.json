@@ -1,0 +1,33 @@
+{
+	"name": "@repo/core",
+	"version": "1.0.0",
+	"description": "Core, shareable logic for web and mobile applications",
+	"type": "module",
+	"exports": {
+		"./srcSet": "./src/srcSet.ts",
+		"./i18n": "./src/i18n.ts",
+		"./breakpoints": "./src/breakpoints.ts",
+		"./pickRandomCard": "./src/pickRandomCard.ts"
+	},
+	"scripts": {
+		"test": "vitest --config ./vitest.config.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^20.12.2",
+		"@types/react": "^18.2.73",
+		"@types/react-dom": "^18.2.23",
+		"eslint": "^8.57.0",
+		"prettier": "^3.2.5",
+		"typescript": "^5.4.3",
+		"vitest": "^1.4.0"
+	},
+	"dependencies": {
+		"@repo/utils": "*",
+		"react": "^18",
+		"rxjs": "^7.8.1",
+		"zod": "^3"
+	}
+}

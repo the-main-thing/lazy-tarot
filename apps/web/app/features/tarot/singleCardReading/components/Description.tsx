@@ -3,7 +3,7 @@ import { animated, useSprings } from '@react-spring/web'
 
 import { PortableText } from '~/components/PortableText'
 import { Typography } from '~/components/Typography'
-import { capitalize } from '~/utils/capitalize'
+import { capitalize } from '@repo/utils/capitalize'
 
 type PortableTextValue = React.ComponentProps<typeof PortableText>['value']
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { BREAKPOINTS } from '@repo/utils'
+import { BREAKPOINTS } from '@repo/core/breakpoints'
 
 import { q, schemas, getTranslated, getImagesSet } from '../sanity'
 import { publicProcedure } from '../trpc'
@@ -43,6 +43,7 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
       .grab({
         _id: q.string(),
         headerTitle: schemas.i18nBlock,
+        pickedCardTitle: schemas.i18nBlock,
         formDescription: schemas.i18nBlock,
         cardDescriptionHeaderText: schemas.i18n,
         submitButtonLabel: schemas.i18n,
@@ -128,6 +129,10 @@ const translate = (
     },
     tarotReadingPageContent: {
       headerTitle: getTranslated(tarotReadingPageContent.headerTitle, language),
+      pickedCardTitle: getTranslated(
+        tarotReadingPageContent.pickedCardTitle,
+        language,
+      ),
       formDescription: getTranslated(
         tarotReadingPageContent.formDescription,
         language,

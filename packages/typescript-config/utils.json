@@ -6,8 +6,8 @@
 	"compilerOptions": {
 		"isolatedModules": true,
 		"esModuleInterop": true,
-		"moduleResolution": "NodeNext",
-		"module": "NodeNext",
+		"moduleResolution": "Bundler",
+		"module": "ESNext",
 		"resolveJsonModule": true,
 		"strict": true,
 		"allowJs": true,

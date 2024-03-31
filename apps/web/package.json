@@ -1,5 +1,6 @@
 {
 	"name": "@repo/web",
+	"version": "0.0.1",
 	"private": true,
 	"sideEffects": false,
 	"type": "module",
@@ -33,7 +34,8 @@
 		"remeda": "^1.47.0",
 		"remix-utils": "^7.5.0",
 		"ua-parser-js": "^1.0.37",
-		"zod": "^3.22.4"
+		"zod": "^3.22.4",
+		"@repo/core": "*"
 	},
 	"devDependencies": {
 		"@remix-run/dev": "^2.8.1",

@@ -1,4 +1,4 @@
-import { randInt } from './randInt.js'
+import { randInt } from '@repo/utils/randInt'
 
 const MAX_ATTEMPTS = 100
 
@@ -38,7 +38,7 @@ export const pickRandomCard = <
 	}
 
 	const prevCombinations = {} as Record<CombinationString, true>
-	let historyLimit = Math.max(
+	const historyLimit = Math.max(
 		Math.min(source.length - 4, Math.floor(source.length / 2)),
 		0
 	)

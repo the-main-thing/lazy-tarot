@@ -18,7 +18,8 @@
     "@trpc/server": "^11.0.0-next-beta.318",
     "accept-language-parser": "^1.5.0",
     "groqd": "^0.15.10",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@repo/core": "*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240312.0",

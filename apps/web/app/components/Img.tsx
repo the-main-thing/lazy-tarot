@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
-import { srcSet as getSrcSet, type BREAKPOINTS } from '@repo/utils'
+import { type BREAKPOINTS } from '@repo/core/breakpoints'
+import { srcSet as getSrcSet } from '@repo/core/srcSet'
 
 type Breakpoints = typeof BREAKPOINTS
 type Breakpoint<K extends keyof Breakpoints> = Breakpoints[K]

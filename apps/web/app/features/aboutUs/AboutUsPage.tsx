@@ -28,7 +28,7 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 						</Typography>
 					</div>
 					<div className="text-pretty uppercase">
-						<Typography variant="h3">{header.pageTitle}</Typography>
+						<Typography variant="h2">{header.pageTitle}</Typography>
 					</div>
 				</div>
 				<div className="flex flex-col items-end w-full gap-4">

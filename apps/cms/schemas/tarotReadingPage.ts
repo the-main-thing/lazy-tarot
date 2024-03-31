@@ -22,6 +22,12 @@ const tarotReadingPage = defineType({
       validation: (Rule) => Rule.required(),
     },
     {
+      name: 'pickedCardTitle',
+      title: 'Header title when the card is picked',
+      type: 'internationalizedArrayFormattedText',
+      validation: (Rule) => Rule.required(),
+    },
+    {
       name: 'formDescription',
       title: 'New tarot of the day form description',
       type: 'internationalizedArrayFormattedText',

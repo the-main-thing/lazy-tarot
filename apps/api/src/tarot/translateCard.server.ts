@@ -1,4 +1,4 @@
-import { BREAKPOINTS } from '@repo/utils'
+import { BREAKPOINTS } from '@repo/core/breakpoints'
 
 import { getTranslated, getImagesSet } from '../sanity'
 import type { Card } from './cardContentQueryObject.server'

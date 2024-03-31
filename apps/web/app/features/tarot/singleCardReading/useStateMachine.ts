@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useRef, useMemo } from 'react'
-import { pickRandomCard, requestIdleCallback } from '@repo/utils'
+import { requestIdleCallback } from '@repo/utils/requestIdleCallback'
+import { pickRandomCard } from '@repo/core/pickRandomCard'
 
 import type { PickedCard, Card } from '../types'
 import type { LoaderData } from './loader.server'
@@ -91,6 +92,9 @@ type Event =
 	| {
 			type: 'HIDDEN'
 	  }
+	| {
+			type: 'RESET'
+	  }
 
 type Machine = {
 	[stateValue in State['value']]: {
@@ -170,17 +174,29 @@ const machine: Machine = {
 			...state,
 			value: 'revealing',
 		}),
+		RESET: (state) => ({
+			...state,
+			value: 'hidden',
+		}),
 	},
 	revealing: {
 		REVEALED: (state) => ({
 			...state,
 			value: 'revealed',
 		}),
+		RESET: (state) => ({
+			...state,
+			value: 'hidden',
+		}),
 	},
 	revealed: {
 		HIDE: (state) => ({
 			...state,
 			value: 'pre_hide',
+		}),
+		RESET: (state) => ({
+			...state,
+			value: 'hidden',
 		}),
 	},
 	initial_revealed: {
@@ -202,6 +218,10 @@ const machine: Machine = {
 			...state,
 			...pick(history, cardsSet, state.card),
 		}),
+		RESET: (state) => ({
+			...state,
+			value: 'ininital_hidden',
+		}),
 	},
 	pre_hide: {
 		PRE_HIDE_END: (state, { history, cardsSet }) => {
@@ -211,12 +231,14 @@ const machine: Machine = {
 				value: 'hiding',
 			}
 		},
+		RESET: (state) => ({ ...state, value: 'hidden' }),
 	},
 	hiding: {
 		HIDDEN: (state) => ({
 			...state,
 			value: 'hidden',
 		}),
+		RESET: (state) => ({ ...state, value: 'hidden' }),
 	},
 }
 
@@ -255,6 +277,7 @@ const dummyHandlers = {
 	onHide: VOID_FUNCTION,
 	onPreRevealEnd: VOID_FUNCTION,
 	onPreHideEnd: VOID_FUNCTION,
+	onReset: VOID_FUNCTION,
 } as const
 
 export const useStateMachine = ({
@@ -355,6 +378,9 @@ export const useStateMachine = ({
 				},
 				onHidden: () => {
 					send({ type: 'HIDDEN' })
+				},
+				onReset: () => {
+					send({ type: 'RESET' })
 				},
 			}
 		}

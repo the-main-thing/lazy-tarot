@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { forwardRef } from 'react'
 
-import { capitalize } from '~/utils/capitalize'
+import { capitalize } from '@repo/utils/capitalize'
 
 type VariantElementMap = {
 	h1: HTMLHeadingElement

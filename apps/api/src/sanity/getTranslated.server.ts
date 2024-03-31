@@ -1,6 +1,6 @@
 import { log } from '../utils/log'
 
-import { defaultLanguage } from '@repo/utils'
+import { defaultLanguage } from '@repo/core/i18n'
 
 export function getTranslated<T>(
   i18n: Array<{

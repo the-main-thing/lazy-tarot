@@ -1,1 +1,0 @@
-export * from './useSingleCardReading.js'

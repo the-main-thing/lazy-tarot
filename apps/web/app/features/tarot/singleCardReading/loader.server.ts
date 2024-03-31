@@ -6,7 +6,7 @@ import { api } from '~/api.server'
 import { loader as deckLoader } from './components/Deck/loader'
 
 import { searchParams } from './searchParams'
-import { pickRandomCard } from '@repo/utils'
+import { pickRandomCard } from '@repo/core/pickRandomCard'
 
 const getPageData = async (
 	language: string,
