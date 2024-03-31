@@ -110,7 +110,7 @@ export default function Index() {
 				<div className="w-full flex flex-col items-center mb-14 gap-4">
 					<header>
 						<Link
-							to={`/${language}?reset=1`}
+							to={`/${language}?reset=1#tarot-reading`}
 							className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center"
 						>
 							<PortableText
