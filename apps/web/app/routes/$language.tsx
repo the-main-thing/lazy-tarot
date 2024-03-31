@@ -23,7 +23,6 @@ import { clientLoader as tarotReadingClientLoader } from '~/features/tarot/singl
 import { useQueryCardsSet } from '~/features/tarot/query'
 import { ManifestoPage } from '~/features/manifesto/ManifestoPage'
 import { AboutUsPage } from '~/features/aboutUs/AboutUsPage'
-import { useGetNavLink } from '~/utils/useGetNavLink'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const host = env('PUBLIC_HOST')
@@ -111,7 +110,7 @@ export default function Index() {
 				<div className="w-full flex flex-col items-center mb-14 gap-4">
 					<header>
 						<Link
-							to={useGetNavLink({ hash: 'tarot-reading' })}
+							to={`/${language}?reset=1`}
 							className="pl-1 pr-1 md:pl-0 md:pr-0 md:w-8/12 m-auto text-center"
 						>
 							<PortableText

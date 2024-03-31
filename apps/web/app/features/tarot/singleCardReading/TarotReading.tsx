@@ -127,7 +127,7 @@ const TarotReadingContentfull = ({
 	}, [state.value, formCardPlaceholder, descriptionCardPlaceholder])
 
 	useHoldScroll(
-		state.value !== 'ininital_hidden' &&
+		state.value !== 'initial_hidden' &&
 			state.value !== 'hidden' &&
 			state.value !== 'revealed' &&
 			state.value !== 'initial_revealed',
@@ -145,9 +145,11 @@ const TarotReadingContentfull = ({
 
 	const deckClassName =
 		'landscape:w-screen-h-60 landscape:max-w-screen-22 portrait:w-screen-50 portrait:max-w-screen-h-60'
-
+	const [urlSearchParams, setURLSearchParams] = useSearchParams()
+	const reset = urlSearchParams.get('reset') === '1'
 	const deck = (
 		<Deck
+			key={String(reset)}
 			state={state}
 			submitButtonLabel={pageContent.submitButtonLabel}
 			className={deckClassName}
@@ -190,19 +192,18 @@ const TarotReadingContentfull = ({
 		state.value === 'revealed' ||
 		state.value === 'pre_hide'
 	const { pathname } = useLocation()
-	const [urlSearchParams, setURLSearchParams] = useSearchParams()
+
 	useEffect(() => {
-		if (!urlSearchParams.has('k')) {
+		if (reset) {
 			onReset()
 			return
 		}
-	}, [urlSearchParams, onReset])
+	}, [reset, onReset])
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			if (state.value === 'hidden') {
 				const params = new URLSearchParams()
-				params.set('k', '1')
 				setURLSearchParams(params, {
 					preventScrollReset: true,
 				})
@@ -214,7 +215,6 @@ const TarotReadingContentfull = ({
 					upside_down: card.upsideDown ? '1' : '0',
 					scroll_to: 'tarot-reading',
 				})
-				nextParams.set('k', '1')
 				setURLSearchParams(nextParams, {
 					preventScrollReset: true,
 				})
@@ -224,7 +224,13 @@ const TarotReadingContentfull = ({
 		return () => {
 			clearTimeout(timeout)
 		}
-	}, [card.card.id, card.upsideDown, pathname, state.value, setURLSearchParams])
+	}, [
+		card.card.id,
+		card.upsideDown,
+		pathname,
+		state.value,
+		setURLSearchParams,
+	])
 
 	const pickedCard = getCardContent(card)
 
@@ -253,7 +259,7 @@ const TarotReadingContentfull = ({
 								case 'initial_revealed':
 									return onHide()
 								case 'hidden':
-								case 'ininital_hidden':
+								case 'initial_hidden':
 									return onReveal()
 								default:
 									return

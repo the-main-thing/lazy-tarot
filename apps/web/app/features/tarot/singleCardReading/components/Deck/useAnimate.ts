@@ -283,7 +283,7 @@ export const useAnimate = ({ state, onChange, initialStyles }: Props) => {
 	useEffect(() => {
 		switch (state) {
 			case 'error':
-			case 'ininital_hidden':
+			case 'initial_hidden':
 			case 'initial_revealed':
 			case 'pre_reveal':
 			case 'revealed':

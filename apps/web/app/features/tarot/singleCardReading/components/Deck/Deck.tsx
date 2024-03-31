@@ -46,7 +46,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 
 		const animate =
 			state.value !== 'initial_revealed' &&
-			state.value !== 'ininital_hidden'
+			state.value !== 'initial_hidden'
 
 		const { card, upsideDown } = state.card
 

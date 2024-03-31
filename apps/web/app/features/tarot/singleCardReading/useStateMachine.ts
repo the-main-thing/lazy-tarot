@@ -14,7 +14,7 @@ export type State =
 			nextCard: null
 	  }
 	| {
-			value: 'ininital_hidden'
+			value: 'initial_hidden'
 			card: PickedCard
 			nextCard: null | PickedCard
 			history: CardsHistory
@@ -94,6 +94,8 @@ type Event =
 	  }
 	| {
 			type: 'RESET'
+			history: CardsHistory
+			cardsSet: NonEmptyArray<Card>
 	  }
 
 type Machine = {
@@ -133,17 +135,31 @@ const pick = (
 	return { card, nextCard, history }
 }
 
+const onReset = (
+	state: State,
+	{ history, cardsSet }: Extract<Event, { type: 'RESET' }>,
+): State => {
+	if (state.value === 'error' || state.value === 'initial_hidden') {
+		return state
+	}
+
+	return {
+		value: 'hidden',
+		...pick(history, cardsSet, state.nextCard || state.card),
+	}
+}
+
 const machine: Machine = {
 	error: {
 		INIT_ON_CLIENT: (state, { history, cardsSet }) => {
 			return {
 				...state,
-				value: 'ininital_hidden',
+				value: 'initial_hidden',
 				...pick(history, cardsSet, null),
 			}
 		},
 	},
-	ininital_hidden: {
+	initial_hidden: {
 		REVEAL: (state, { history, cardsSet }) =>
 			state.nextCard
 				? {
@@ -174,30 +190,21 @@ const machine: Machine = {
 			...state,
 			value: 'revealing',
 		}),
-		RESET: (state) => ({
-			...state,
-			value: 'hidden',
-		}),
+		RESET: onReset,
 	},
 	revealing: {
 		REVEALED: (state) => ({
 			...state,
 			value: 'revealed',
 		}),
-		RESET: (state) => ({
-			...state,
-			value: 'hidden',
-		}),
+		RESET: onReset,
 	},
 	revealed: {
 		HIDE: (state) => ({
 			...state,
 			value: 'pre_hide',
 		}),
-		RESET: (state) => ({
-			...state,
-			value: 'hidden',
-		}),
+		RESET: onReset,
 	},
 	initial_revealed: {
 		HIDE: (state, { history, cardsSet }) =>
@@ -218,10 +225,7 @@ const machine: Machine = {
 			...state,
 			...pick(history, cardsSet, state.card),
 		}),
-		RESET: (state) => ({
-			...state,
-			value: 'ininital_hidden',
-		}),
+		RESET: onReset,
 	},
 	pre_hide: {
 		PRE_HIDE_END: (state, { history, cardsSet }) => {
@@ -231,14 +235,12 @@ const machine: Machine = {
 				value: 'hiding',
 			}
 		},
-		RESET: (state) => ({ ...state, value: 'hidden' }),
 	},
 	hiding: {
 		HIDDEN: (state) => ({
 			...state,
 			value: 'hidden',
 		}),
-		RESET: (state) => ({ ...state, value: 'hidden' }),
 	},
 }
 
@@ -262,7 +264,7 @@ const getInitialState = ({
 	}
 
 	return {
-		value: revealed ? 'initial_revealed' : 'ininital_hidden',
+		value: revealed ? 'initial_revealed' : 'initial_hidden',
 		card,
 		nextCard: null,
 		history: [],
@@ -313,7 +315,7 @@ export const useStateMachine = ({
 	useEffect(() => {
 		if (
 			stateValue !== 'error' &&
-			stateValue !== 'ininital_hidden' &&
+			stateValue !== 'initial_hidden' &&
 			stateValue !== 'initial_revealed'
 		) {
 			return
@@ -380,7 +382,13 @@ export const useStateMachine = ({
 					send({ type: 'HIDDEN' })
 				},
 				onReset: () => {
-					send({ type: 'RESET' })
+					send({
+						type: 'RESET',
+						cardsSet: cardsSet as NonEmptyArray<
+							(typeof cardsSet)[number]
+						>,
+						history: historyRef.current.getHistory(),
+					})
 				},
 			}
 		}

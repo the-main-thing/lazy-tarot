@@ -20,7 +20,7 @@ const stateStyleMap: {
 		to: typeof visible | typeof hidden
 	}
 } = {
-	ininital_hidden: {
+	initial_hidden: {
 		from: hidden,
 		to: hidden,
 	},

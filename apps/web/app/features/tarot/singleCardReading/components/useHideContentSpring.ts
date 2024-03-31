@@ -15,7 +15,7 @@ const stateToSpringMap: {
 		to: typeof hideContent | typeof revealContent
 	}
 } = {
-	ininital_hidden: {
+	initial_hidden: {
 		from: revealContent,
 		to: revealContent,
 	},
