@@ -73,17 +73,6 @@ export const AboutUsPage = ({ header, image, social }: Props) => {
 							</a>
 						</li>
 					))}
-					<li className="flex flex-1 flex-col gap-4 pb-4 border-b border-black">
-						<Typography variant="default">Email</Typography>
-						<a
-							className="flex flex-col gap-4"
-							href="mailto:mail@example.com"
-						>
-							<Typography variant="default" className="italic">
-								@lazytarot
-							</Typography>
-						</a>
-					</li>
 				</ul>
 			) : null}
 		</section>

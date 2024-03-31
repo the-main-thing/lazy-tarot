@@ -74,7 +74,7 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
           q.object({
             title: schemas.i18n,
             urlTitle: schemas.i18n,
-            url: q.string().url(),
+            url: q.string(),
           }),
         ),
       })
