@@ -7,7 +7,7 @@
 		"**/.server/**/*.tsx",
 		"**/.client/**/*.ts",
 		"**/.client/**/*.tsx"
-	],
+, "../../packages/utils/capitalize.ts"	],
 	"compilerOptions": {
 		"baseUrl": ".",
 		"declarationMap": false,
