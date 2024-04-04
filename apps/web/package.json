@@ -21,6 +21,7 @@
 		"@remix-run/react": "^2.8.1",
 		"@remix-run/serve": "^2.8.1",
 		"@repo/api": "*",
+		"@repo/core": "*",
 		"@repo/utils": "*",
 		"@tanstack/react-query": "^5.22.2",
 		"@trpc/client": "^11.0.0-next-beta.318",
@@ -31,11 +32,11 @@
 		"isbot": "^4.1.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"remeda": "^1.47.0",
+		"remeda": "^1.57.1",
 		"remix-utils": "^7.5.0",
+		"rxjs": "^7.8.1",
 		"ua-parser-js": "^1.0.37",
-		"zod": "^3.22.4",
-		"@repo/core": "*"
+		"zod": "^3.22.4"
 	},
 	"devDependencies": {
 		"@remix-run/dev": "^2.8.1",

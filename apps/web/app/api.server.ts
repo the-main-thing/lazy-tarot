@@ -15,6 +15,9 @@ export const api = createTRPCClient<AppRouter>({
 	links: [
 		httpBatchLink({
 			url: endpoint,
+			headers: {
+				'x-lazy-tarot-api-key': env('LAZY_TAROT_API_KEY')
+			}
 		}),
 	],
 })

@@ -18,6 +18,9 @@ export default {
     request: Request,
     env: {
       SANITY_STUDIO_PROJECT_ID: string
+      SUPABASE_KEY: string
+      SUPABASE_URL: string
+      LAZY_TAROT_API_KEY: string
     },
   ): Promise<Response> {
     return fetchRequestHandler({
