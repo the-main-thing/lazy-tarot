@@ -1,81 +1,31 @@
-# Turborepo starter
+# Lazy tarot. POC.
 
-This is an official starter Turborepo.
+This is a web app that may grow into something big. The main goal is to try new tech, look at some problems and ways to solve them. Basically to educate myself.
 
-## Using this example
+But also this app already is used by somebody. The goal of the app is to help a person to self-analyze through vague description of a tarot card.
 
-Run the following command:
+This is a monorepo. The API is a cloudflare worker with trcp endpoint.
+Database - supabase (postgresql)
 
-```sh
-npx create-turbo@latest
-```
+The mobile part is ionic. Since JIT is available for javascript on mobile only for web view I decided that it will be the best fit for the purpose.
 
-## What's inside?
+The web app is Remix.
 
-This Turborepo includes the following packages/apps:
+Animations - react-spring
 
-### Apps and Packages
+Language - TypeScript.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+To run the apps, you should also fill the environment variables. You can find them in the .env.example files, or in env.ts files.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## WEB: It is harder than it seems
 
-### Utilities
+1. We have SSR + hydration. Hydration may happen way to late (i.e. slow mobile connection).
+2. We use a lot of random values to render UI (deck). So imagine what could happen if we would generate them during both SSR and CSR
+3. We want give the user ability to share their card, and keep the APP working even if it has not been hydrated yet. So some of the state should live in the url.
+4. We don't want to load all the data to the client, but we also want the client to be able to use the app offline. So some of the state should live on the client.
+5. We want random cards appear random, wich means a really small chance of getting the same card twice. So we have to persist some state on the client.
+6. We also want to share the code between web and mobile to save some dev time.
 
-This Turborepo has some additional tools already setup for you:
+These things create a lot (A LOT) of edge cases that we should handle.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+Just FYI.
