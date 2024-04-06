@@ -86,7 +86,7 @@ const getSanityContent = async ({ context }: Pick<Params, 'context'>) => {
   return content
 }
 
-const translate = (
+const translate = async (
   { language, context }: Pick<Params, 'language' | 'context'>,
   {
     rootLayoutContent,
@@ -121,7 +121,7 @@ const translate = (
         indexPageContent.headerDescription,
         language,
       ),
-      logo: getImagesSet({
+      logo: await getImagesSet({
         client,
         image: indexPageContent.logo,
         breakpoints: BREAKPOINTS,
@@ -145,7 +145,7 @@ const translate = (
         tarotReadingPageContent.submitButtonLabel,
         language,
       ),
-      cardBackImage: getImagesSet({
+      cardBackImage: await getImagesSet({
         client,
         image: tarotReadingPageContent.cardBackImage,
         breakpoints: BREAKPOINTS,
@@ -158,7 +158,7 @@ const translate = (
     manifestoPageContent: {
       header: getTranslated(manifestoPageContent.header, language),
       content: getTranslated(manifestoPageContent.content, language),
-      headerImage: getImagesSet({
+      headerImage: await getImagesSet({
         client,
         format: 'png',
         image: manifestoPageContent.headerImage,
@@ -173,7 +173,7 @@ const translate = (
           },
         ),
       }),
-      contentImage: getImagesSet({
+      contentImage: await getImagesSet({
         client,
         image: manifestoPageContent.contentImage,
         breakpoints: BREAKPOINTS,
@@ -185,7 +185,7 @@ const translate = (
         teamTitle: getTranslated(aboutUsPageContent.header.teamTitle, language),
         pageTitle: getTranslated(aboutUsPageContent.header.pageTitle, language),
       },
-      image: getImagesSet({
+      image: await getImagesSet({
         client,
         image: aboutUsPageContent.image,
         breakpoints: BREAKPOINTS,
@@ -208,5 +208,5 @@ export const getPages = publicProcedure
   .query(async ({ input, ctx }) => {
     const sanityData = await getSanityContent({ context: ctx })
 
-    return translate({ ...input, context: ctx }, sanityData)
+    return await translate({ ...input, context: ctx }, sanityData)
   })

@@ -10,7 +10,7 @@ type Props = {
   ctx: Pick<Context, 'sanity'>
 }
 
-export const translateCard = ({ language, card, ctx }: Props) => ({
+export const translateCard = async ({ language, card, ctx }: Props) => ({
   id: card._id,
   regular: {
     title: getTranslated(card.regular.title, language),
@@ -34,7 +34,7 @@ export const translateCard = ({ language, card, ctx }: Props) => ({
       language,
     ),
   },
-  image: getImagesSet({
+  image: await getImagesSet({
     client: ctx.sanity.client,
     image: card.image,
     breakpoints: BREAKPOINTS,

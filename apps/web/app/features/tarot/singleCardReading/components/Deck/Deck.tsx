@@ -51,11 +51,11 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 		const { card, upsideDown } = state.card
 
 		const cardContainerClassName =
-			'absolute top-0 left-0 rounded bg-tranparent'
+			'absolute top-0 left-0 rounded w-full h-full '
 		const imgClassName =
-			'rounded border-4 border-slate-50 shadow-lg '
+			'rounded border-4 border-slate-50 bg-slate-50 shadow-lg w-full h-full '
 		const cardImageContainerClassName =
-			'rounded flex flex-col items-center justify-center flex-shrink-0 bg-tranparent '
+			'rounded w-full h-full flex flex-col items-center justify-center flex-shrink-0 '
 
 		const face = (
 			<Img
@@ -79,7 +79,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 		const placeholder = (
 			<div
 				style={{
-					height: 'min-content',
+					height: 'h-full w-full',
 				}}
 				className="relative max-w-full overflow-hidden -z-50 shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap"
 			>
@@ -87,12 +87,17 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 			</div>
 		)
 
-		const deck = (
+		return (
 			<div
+				ref={ref}
 				className={
-					'relative z-10 flex flex-col items-center justify-center rounded ' +
+					'w-full h-full relative z-10 flex flex-col items-center justify-center rounded ' +
 					className
 				}
+				style={{
+					height: 'auto',
+					aspectRatio: `${card.image.placeholder.originalDimentions[0]}/${card.image.placeholder.originalDimentions[1]}`,
+				}}
 			>
 				<>
 					<div className="sr-only">{submitButtonLabel}</div>
@@ -113,7 +118,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 									type="submit"
 									form={form}
 									onClick={onClick}
-									className="absolute top-0 left-0"
+									className="absolute w-full h-full top-0 left-0"
 									style={
 										animate
 											? getSpringStyles(props)
@@ -124,7 +129,6 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 										<div
 											style={{
 												perspective: '10000px',
-												background: 'transparent',
 											}}
 											className="relative"
 										>
@@ -140,7 +144,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 														'preserve-3d',
 												}}
 												className={
-													'absolute top-0 left-0 rounded '
+													'absolute w-full h-full top-0 left-0 rounded '
 												}
 											>
 												<div
@@ -151,9 +155,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 												>
 													<CardBack
 														face={face}
-														url={
-															cardBackImage.sm.src
-														}
+														back={cardBackImage}
 														style={{
 															...shared,
 														}}
@@ -195,7 +197,7 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 								<div className={cardImageContainerClassName}>
 									<CardBack
 										face={face}
-										url={cardBackImage.sm.src}
+										back={cardBackImage}
 										className={imgClassName + ' border-b-8'}
 									/>
 								</div>
@@ -203,15 +205,6 @@ export const Deck = forwardRef<HTMLDivElement, Props>(
 						)
 					})}
 				</>
-			</div>
-		)
-
-		return (
-			<div
-				ref={ref}
-				className="flex flex-col items-center justify-center w-full"
-			>
-				{deck}
 			</div>
 		)
 	},

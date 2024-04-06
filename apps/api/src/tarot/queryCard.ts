@@ -48,7 +48,7 @@ export const getCardById = publicProcedure
     const card = await queryContent(ctx.sanity.runQuery, getCardsSetParams.id)
 
     return card
-      ? translateCard({
+      ? await translateCard({
           card,
           language,
           ctx,

@@ -219,7 +219,7 @@ const TarotReadingContentfull = ({
 					preventScrollReset: true,
 				})
 			}
-		}, 200)
+		}, 500)
 
 		return () => {
 			clearTimeout(timeout)

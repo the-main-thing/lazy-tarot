@@ -5,6 +5,7 @@
 	"type": "module",
 	"exports": {
 		"./srcSet": "./src/srcSet.ts",
+		"./ui/Img": "./src/ui/Img.tsx",
 		"./i18n": "./src/i18n.ts",
 		"./breakpoints": "./src/breakpoints.ts",
 		"./pickRandomCard": "./src/pickRandomCard.ts"

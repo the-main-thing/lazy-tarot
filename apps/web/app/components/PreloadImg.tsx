@@ -19,8 +19,8 @@ type Props = {
 export const PreloadImg = ({ srcSet, rel = 'prefetch' }: Props) => {
 	return (
 		<>
-			<link rel={rel} as="image" imageSrcSet={getSrcSet(srcSet)} />
-			<link rel={rel} as="image" href={srcSet.sm.src} />
+			<link rel="prefetch" as="image" imageSrcSet={getSrcSet(srcSet)} />
+			<link rel={rel} as="image" href={srcSet.placeholder.src} />
 		</>
 	)
 }

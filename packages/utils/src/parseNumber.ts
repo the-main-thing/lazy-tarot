@@ -1,20 +1,22 @@
+import { isNumber } from './isNumber'
+
 export function parseNumber(value: unknown): number
 export function parseNumber<TFallback>(
 	value: unknown,
-	fallback: TFallback,
+	fallback: TFallback
 ): number | (TFallback extends AnyFunction ? ReturnType<TFallback> : TFallback)
 export function parseNumber(value: unknown, ...args: [unknown] | []) {
-	if (Number.isFinite(value)) {
+	if (isNumber(value)) {
 		return value
 	}
 	const numeric = parseFloat(String(value || ''))
-	if (isFinite(numeric)) {
+	if (isNumber(numeric)) {
 		return numeric
 	}
 
 	if (args.length === 0) {
 		throw new Error(
-			`Could not parse number from value: ${value}\nof type: ${typeof value}`,
+			`Could not parse number from value: ${value}\nof type: ${typeof value}`
 		)
 	}
 
@@ -26,3 +28,5 @@ export function parseNumber(value: unknown, ...args: [unknown] | []) {
 
 	return fallback
 }
+
+type AnyFunction = () => any

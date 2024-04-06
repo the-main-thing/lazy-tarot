@@ -26,12 +26,14 @@ export const queryContent = async ({
     query.slice(slice[0], slice[1])
   }
   const data = await ctx.sanity.runQuery(query)
-  return data.map((card) =>
-    translateCard({
-      language,
-      card,
-      ctx,
-    }),
+  return await Promise.all(
+    data.map((card) =>
+      translateCard({
+        language,
+        card,
+        ctx,
+      }),
+    ),
   )
 }
 
@@ -47,6 +49,6 @@ export const getCardsSet = publicProcedure
       input,
       ctx,
     })
-    
+
     return data
   })

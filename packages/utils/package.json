@@ -5,6 +5,7 @@
 	"type": "module",
 	"exports": {
 		"./findWithIndex": "./src/findWithIndex.ts",
+		"./isNumber": "./src/isNumber.ts",
 		"./isInteger": "./src/isInteger.ts",
 		"./parseNumber": "./src/parseNumber.ts",
 		"./randInt": "./src/randInt.ts",

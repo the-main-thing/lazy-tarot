@@ -77,13 +77,13 @@ export default function Index() {
 
 	return (
 		<>
+			{card ? (
+				<PreloadImg rel="preload" srcSet={card.card.image} />
+			) : null}
 			<PreloadImg
 				rel="preload"
 				srcSet={tarotReadingPageContent.cardBackImage}
 			/>
-			{card ? (
-				<PreloadImg rel="preload" srcSet={card.card.image} />
-			) : null}
 			<ClientOnly fallback={null}>
 				{() =>
 					fullCardsSet?.map((card) => (
@@ -139,10 +139,9 @@ export default function Index() {
 						</Link>
 					</header>
 					<div className="relative -left-4">
-						<Img
-							src={indexPageContent.logo}
-							className="w-screen-30 landscape:w-screen-13 relative"
-						/>
+						<div className="w-screen-30 landscape:w-screen-13 relative">
+							<Img src={indexPageContent.logo} />
+						</div>
 					</div>
 				</div>
 				<TarotReading
