@@ -1,4 +1,4 @@
-import { parseNumber } from '@repo/utils/parseNumber'
+import { parseNumber } from '@repo/utils'
 
 import { urlFor } from './urlFor.server'
 import type { schemas } from './schemas.server'

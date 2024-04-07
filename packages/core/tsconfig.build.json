@@ -1,0 +1,22 @@
+{
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": ["**/node_modules/**", "vitest.config.ts", "./dist"],
+	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable", "ES6"],
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"module": "ES6",
+		"moduleResolution": "Bundler",
+		"resolveJsonModule": true,
+		"target": "ES6",
+		"strict": true,
+		"allowJs": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": false,
+		"declarationMap": true,
+		"declaration": true,
+		"outDir": "./dist"
+	}
+}

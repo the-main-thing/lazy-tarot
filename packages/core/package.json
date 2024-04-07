@@ -3,15 +3,19 @@
 	"version": "1.0.0",
 	"description": "Core, shareable logic for web and mobile applications",
 	"type": "module",
-	"exports": {
-		"./srcSet": "./src/srcSet.ts",
-		"./ui/Img": "./src/ui/Img.tsx",
-		"./i18n": "./src/i18n.ts",
-		"./breakpoints": "./src/breakpoints.ts",
-		"./pickRandomCard": "./src/pickRandomCard.ts"
-	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"./package.json",
+		"./src/*",
+		"./index.ts",
+		"./dist",
+		"./tsconfig.json"
+	],
 	"scripts": {
-		"test": "vitest --config ./vitest.config.ts"
+		"test": "vitest --config ./vitest.config.ts",
+		"build": "tsc -p tsconfig.build.json",
+		"prepare": "tsc -p tsconfig.build.json"
 	},
 	"keywords": [],
 	"author": "",
@@ -19,7 +23,6 @@
 	"devDependencies": {
 		"@types/node": "^20.12.2",
 		"@types/react": "^18.2.73",
-		"@types/react-dom": "^18.2.23",
 		"eslint": "^8.57.0",
 		"prettier": "^3.2.5",
 		"typescript": "^5.4.3",

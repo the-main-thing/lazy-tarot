@@ -3,15 +3,15 @@
 	"version": "1.0.1",
 	"description": "",
 	"type": "module",
-	"exports": {
-		"./findWithIndex": "./src/findWithIndex.ts",
-		"./isNumber": "./src/isNumber.ts",
-		"./isInteger": "./src/isInteger.ts",
-		"./parseNumber": "./src/parseNumber.ts",
-		"./randInt": "./src/randInt.ts",
-		"./requestIdleCallback": "./src/requestIdleCallback.ts",
-		"./capitalize": "./src/capitalize.ts"
-	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"./package.json",
+		"./src/*",
+		"./index.ts",
+		"./dist",
+		"./tsconfig.json"
+	],
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json",
 		"prepare": "tsc -p ./tsconfig.json",
