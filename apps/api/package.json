@@ -17,8 +17,8 @@
     "@sanity/client": "^6.15.3",
     "@sanity/image-url": "^1.0.2",
     "@supabase/supabase-js": "^2.41.1",
-    "@trpc/client": "^11.0.0-next-beta.318",
-    "@trpc/server": "^11.0.0-next-beta.318",
+    "@trpc/client": "^11.0.0-rc.332",
+    "@trpc/server": "^11.0.0-rc.332",
     "accept-language-parser": "^1.5.0",
     "groqd": "^0.15.10",
     "zod": "^3.22.4"

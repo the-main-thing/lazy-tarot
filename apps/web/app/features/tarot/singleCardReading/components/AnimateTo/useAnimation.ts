@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef } from 'react'
 import { useIsomorphicLayoutEffect, useSpring } from '@react-spring/web'
 
-import { requestIdleCallback } from '@repo/utils/requestIdleCallback'
+import { requestIdleCallback } from '@repo/utils'
 
 import { trackPosition } from './trackPosition'
 import { getStyle } from './getStyle'

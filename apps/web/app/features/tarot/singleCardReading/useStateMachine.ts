@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useMemo } from 'react'
-import { requestIdleCallback } from '@repo/utils/requestIdleCallback'
-import { pickRandomCard } from '@repo/core/pickRandomCard'
+import { requestIdleCallback } from '@repo/utils'
+import { pickRandomCard } from '@repo/core'
 
 import type { PickedCard, Card } from '../types'
 import type { LoaderData } from './loader.server'

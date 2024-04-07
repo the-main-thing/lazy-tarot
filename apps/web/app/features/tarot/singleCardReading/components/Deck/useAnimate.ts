@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { to as interpolate, useSprings } from '@react-spring/web'
-import { randInt } from '@repo/utils/randInt'
+import { randInt } from '@repo/utils'
 
 import type { SpringStyles, NonNullableConfig, SpringProps } from './types'
 

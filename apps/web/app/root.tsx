@@ -8,7 +8,7 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 } from '@remix-run/react'
-import { SUPPORTED_LANGUAGES } from '@repo/core/i18n'
+import { SUPPORTED_LANGUAGES } from '@repo/core'
 
 import { getLanguage, dir } from './utils/i18n.server'
 import { QueryProvider } from './QueryProvider'

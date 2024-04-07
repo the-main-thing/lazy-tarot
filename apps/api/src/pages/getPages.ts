@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { BREAKPOINTS } from '@repo/core/breakpoints'
+import { BREAKPOINTS } from '@repo/core'
 
 import { q, schemas, getTranslated, getImagesSet } from '../sanity'
 import { publicProcedure } from '../trpc'
