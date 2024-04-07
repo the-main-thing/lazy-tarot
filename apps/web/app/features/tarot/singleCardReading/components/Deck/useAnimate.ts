@@ -11,7 +11,7 @@ const VOID_FUNCTION: VoidFunction = () => void 0
 const DECK_SIZE = 18
 
 const getZ = (index: number, multiplyBy: number) => {
-	return (index - Math.floor(DECK_SIZE / 2)) * multiplyBy * 10
+	return (index - (DECK_SIZE - 1)) * multiplyBy * 10
 }
 
 const initialFrom: SpringStyles = {
@@ -92,7 +92,7 @@ const transform = (
 	rotate: number,
 	scale: number,
 ) => {
-	return `perspective(10000px) translate3d(${getX(x)}, ${getY(
+	return `perspective(1500px) translate3d(${getX(x)}, ${getY(
 		y,
 	)}, ${z}px)  rotate3d(${rotateX}, ${rotateY}, ${rotateZ}, ${rotate}deg) scale(${scale})` as const
 }
@@ -249,7 +249,7 @@ export const getInitialStylesList = ({
 				from: animate
 					? {
 							...fromShuffle,
-							z: i - (DECK_SIZE - 1),
+							z: getZ(i, 1),
 					  }
 					: to,
 			}

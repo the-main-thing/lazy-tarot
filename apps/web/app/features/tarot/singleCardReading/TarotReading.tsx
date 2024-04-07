@@ -135,7 +135,7 @@ const TarotReadingContentfull = ({
 
 	const { nextCard, card } = state
 	const preloadNextCardImage = nextCard ? (
-		<div className="absolute opacity-0" aria-hidden="true">
+		<div className="sr-only absolute opacity-0" aria-hidden="true">
 			<Img
 				className="sr-only"
 				src={nextCard.card.image}

@@ -59,4 +59,8 @@
 	*:active {
 		outline: none;
 	}
+
+	img {
+		width: '100%';
+	}
 }

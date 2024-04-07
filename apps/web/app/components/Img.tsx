@@ -34,11 +34,6 @@ export const Img = forwardRef<HTMLImageElement, ImgProps>(
 		return (
 			<>
 				<link rel="preload" as="image" href={src.placeholder.src} />
-				<style
-					dangerouslySetInnerHTML={{
-						__html: `.repo-ui-img{width:100%}`,
-					}}
-				/>
 				<img
 					ref={ref}
 					alt={alt}
