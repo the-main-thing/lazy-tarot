@@ -1,6 +1,6 @@
 import { parse } from 'accept-language-parser'
 
-import { defaultLanguage, SUPPORTED_LANGUAGES } from '@repo/core/i18n'
+import { defaultLanguage, SUPPORTED_LANGUAGES } from '@repo/core'
 
 export const dir = (_lang: string): Language['dir'] => 'ltr'
 

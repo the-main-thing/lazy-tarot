@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { createTRPCReact } from '@trpc/react-query'
@@ -10,7 +10,7 @@ import type { AppRouter } from '../../../api'
 const endpoint = (() => {
 	const endpoint =
 		process.env.NODE_ENV === 'development'
-			? process.env.EXPO_PUBLIC_DEV_ONLY_API_ENDPOINT
+			? process.env.EXPO_PUBLIC_DEV_ONLY_API_ENDPOINT || process.env.EXPO_PUBLIC_API_ENDPOINT
 			: process.env.EXPO_PUBLIC_API_ENDPOINT
 	if (!endpoint) {
 		throw new Error(

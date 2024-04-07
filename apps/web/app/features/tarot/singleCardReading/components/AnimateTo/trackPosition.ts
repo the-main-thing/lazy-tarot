@@ -1,4 +1,4 @@
-import { isInteger } from '@repo/utils/isInteger'
+import { isInteger } from '@repo/utils'
 import { equals, type Position, fromElement } from './position'
 
 export const trackPosition = <TElement extends Element>(

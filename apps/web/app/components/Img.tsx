@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
-import { type BREAKPOINTS } from '@repo/core/breakpoints'
-import { srcSet as getSrcSet } from '@repo/core/srcSet'
+import { type BREAKPOINTS, srcSet as getSrcSet } from '@repo/core'
 
 type Breakpoints = typeof BREAKPOINTS
 type Breakpoint<K extends keyof Breakpoints> = Breakpoints[K]
@@ -35,7 +34,11 @@ export const Img = forwardRef<HTMLImageElement, ImgProps>(
 		return (
 			<>
 				<link rel="preload" as="image" href={src.placeholder.src} />
-				<style dangerouslySetInnerHTML={{__html: `.repo-ui-img{width:100%}`}} />
+				<style
+					dangerouslySetInnerHTML={{
+						__html: `.repo-ui-img{width:100%}`,
+					}}
+				/>
 				<img
 					ref={ref}
 					alt={alt}
@@ -57,7 +60,7 @@ export const Img = forwardRef<HTMLImageElement, ImgProps>(
 				/>
 			</>
 		)
-	}
+	},
 )
 
 Img.displayName = 'Img'

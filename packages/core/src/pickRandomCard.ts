@@ -1,4 +1,4 @@
-import { randInt } from '@repo/utils/randInt'
+import { randInt } from '@repo/utils'
 
 const MAX_ATTEMPTS = 100
 

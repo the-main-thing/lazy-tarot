@@ -1,5 +1,4 @@
-import { type BREAKPOINTS } from '@repo/core/breakpoints'
-import { srcSet as getSrcSet } from '@repo/core/srcSet'
+import { type BREAKPOINTS, srcSet as getSrcSet } from '@repo/core'
 
 type Breakpoints = typeof BREAKPOINTS
 type Breakpoint<K extends keyof Breakpoints> = Breakpoints[K]
