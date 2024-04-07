@@ -135,12 +135,14 @@ const TarotReadingContentfull = ({
 
 	const { nextCard, card } = state
 	const preloadNextCardImage = nextCard ? (
-		<Img
-			className="sr-only"
-			src={nextCard.card.image}
-			alt=""
-			aria-hidden="true"
-		/>
+		<div className="absolute opacity-0" aria-hidden="true">
+			<Img
+				className="sr-only"
+				src={nextCard.card.image}
+				alt=""
+				aria-hidden="true"
+			/>
+		</div>
 	) : null
 
 	const deckClassName =
