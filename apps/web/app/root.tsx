@@ -1,5 +1,9 @@
 import { json, redirect } from '@remix-run/node'
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node'
+import type {
+	LinksFunction,
+	MetaFunction,
+	LoaderFunctionArgs,
+} from '@remix-run/node'
 import {
 	Links,
 	Meta,
@@ -9,7 +13,7 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 import { SUPPORTED_LANGUAGES } from '@repo/core'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react'
 
 import { getLanguage, dir } from './utils/i18n.server'
 import { QueryProvider } from './QueryProvider'
@@ -122,4 +126,11 @@ export const links: LinksFunction = () => [
 		type: 'font/woff2',
 	},
 	{ rel: 'stylesheet', href: tailwind },
+]
+
+export const meta: MetaFunction = () => [
+	{
+		name: 'p:domain_verify',
+		content: 'fbf457f39435399318cfa0269464d6d5',
+	},
 ]
