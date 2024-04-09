@@ -174,6 +174,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 	return [
 		{
+			name: 'p:domain_verify',
+			content: 'fbf457f39435399318cfa0269464d6d5',
+		},
+		{
 			title: data.pages.indexPageContent.title,
 		},
 		{
