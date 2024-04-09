@@ -9,6 +9,7 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 import { SUPPORTED_LANGUAGES } from '@repo/core'
+import { Analytics } from "@vercel/analytics/react"
 
 import { getLanguage, dir } from './utils/i18n.server'
 import { QueryProvider } from './QueryProvider'
@@ -53,6 +54,7 @@ export default function Root() {
 					position: 'relative',
 				}}
 			>
+				<Analytics />
 				<QueryProvider>
 					<Outlet />
 				</QueryProvider>
