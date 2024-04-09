@@ -3,11 +3,11 @@ import { useIsomorphicLayoutEffect, useSpring } from '@react-spring/web'
 
 import { requestIdleCallback } from '@repo/utils'
 
-import { trackPosition } from './trackPosition'
+// import { trackPosition } from './trackPosition'
 import { getStyle } from './getStyle'
 import { fromElement, equals } from './position'
 
-export const useAnimation = (target: Element | null, trackForMs?: number) => {
+export const useAnimation = (target: Element | null, _trackForMs?: number) => {
 	const [{ base, current, next }, setElements] = useState<{
 		base: Element | null
 		current: Element | null
@@ -61,16 +61,16 @@ export const useAnimation = (target: Element | null, trackForMs?: number) => {
 	const moving = state === 'moving'
 	useIsomorphicLayoutEffect(() => {
 		onNext(target)
-		if (!moving) {
-			return trackPosition(
-				target,
-				(position, element) => {
-					onNext(element)
-					setTargetPosition(position)
-				},
-				trackForMs,
-			)
-		}
+		// if (!moving) {
+		// 	return trackPosition(
+		// 		target,
+		// 		(position, element) => {
+		// 			onNext(element)
+		// 			setTargetPosition(position)
+		// 		},
+		// 		trackForMs,
+		// 	)
+		// }
 	}, [target, moving])
 
 	useIsomorphicLayoutEffect(() => {
