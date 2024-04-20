@@ -8,7 +8,6 @@ export interface SpringStyles {
 	rotateY: number
 	rotateZ: number
 	rotate: number
-	revealRotate: number
 	scale: number
 	opacity: number
 }
