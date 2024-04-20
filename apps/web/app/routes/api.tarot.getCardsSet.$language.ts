@@ -11,7 +11,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	if (!language) {
 		throw json(
 			{
-				error: 'Missing lanugage parameter',
+				error: 'Missing language parameter',
 			},
 			{
 				status: 400,
