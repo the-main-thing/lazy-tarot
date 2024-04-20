@@ -3,15 +3,11 @@ import { animated } from '@react-spring/web'
 
 import { type ImgProps, Img } from '~/components'
 
-import {
-	useAnimate,
-	interpolateRevealRotate,
-	getSpringStyles,
-	type ChangeEvent,
-} from './useAnimate'
-import { CardBack } from './CardBack'
+import { useAnimate, getSpringStyles, type ChangeEvent } from './useAnimate'
 import type { LoaderData } from './loader'
 import type { State } from '../../useStateMachine'
+
+import { Flip } from '~/components/Card/Flip'
 
 interface Props {
 	state: Extract<State, { card: NonNullable<State['card']> }>
@@ -20,7 +16,7 @@ interface Props {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>
 	form?: string
 	deckSSRData: LoaderData
-	className: string
+	sizesClassName: string
 	submitButtonLabel: React.ReactNode
 }
 
@@ -33,7 +29,7 @@ export const Deck = memo(
 				deckSSRData,
 				onClick,
 				form,
-				className,
+				sizesClassName,
 				submitButtonLabel,
 				cardBackImage,
 			},
@@ -51,12 +47,9 @@ export const Deck = memo(
 
 			const { card, upsideDown } = state.card
 
-			const cardContainerClassName =
-				'absolute top-0 left-0 rounded w-full h-full '
 			const imgClassName =
-				'rounded border-4 border-slate-50 bg-slate-50 shadow-lg w-full h-full '
-			const cardImageContainerClassName =
-				'rounded w-full h-full flex flex-col items-center justify-center flex-shrink-0 '
+				'rounded border-4 border-slate-50 bg-slate-50 shadow-lg ' +
+				sizesClassName
 
 			const face = (
 				<Img
@@ -77,28 +70,14 @@ export const Deck = memo(
 					}
 				/>
 			)
-			const placeholder = (
-				<div
-					style={{
-						height: 'h-full w-full',
-					}}
-					className="relative max-w-full overflow-hidden -z-50 shadow-none pointer-events-none opacity-0 flex flex-row flex-nowrap"
-				>
-					{face}
-				</div>
-			)
 
 			return (
 				<div
 					ref={ref}
 					className={
-						'w-full h-full relative z-10 flex flex-col items-center justify-center rounded ' +
-						className
+						'relative z-10 flex flex-col items-center justify-center rounded ' +
+						sizesClassName
 					}
-					style={{
-						height: 'auto',
-						aspectRatio: `${card.image.placeholder.originalDimentions[0]}/${card.image.placeholder.originalDimentions[1]}`,
-					}}
 				>
 					<>
 						<div className="sr-only">{submitButtonLabel}</div>
@@ -106,82 +85,35 @@ export const Deck = memo(
 							const top = index === array.length - 1
 
 							if (top) {
-								const [, revealRotate] =
-									interpolateRevealRotate(props)
-								const shared = {
-									WebkitBackfaceVisibility: 'hidden',
-									backfaceVisibility: 'hidden',
-								} as const
-
 								return (
 									<animated.button
 										key={index}
 										type="submit"
 										form={form}
 										onClick={onClick}
-										className="absolute w-full h-full top-0 left-0"
+										className="absolute top-0 left-0"
 										style={
 											animate
 												? getSpringStyles(props)
-												: deckSSRData.style[index]!.deck
+												: deckSSRData.style[index]!
 										}
 									>
-										<div className="relative w-full h-full rounded">
-											<div
-												style={{
-													perspective: '1000px',
-													transform: `translateZ(10px)`,
-												}}
-												className="relative"
-											>
-												{placeholder}
-												<animated.div
-													style={{
-														...(animate
-															? revealRotate
-															: deckSSRData.style[
-																	index
-															  ]!.revealRotate),
-														transformStyle:
-															'preserve-3d',
-													}}
-													className={
-														'absolute w-full h-full top-0 left-0 rounded '
-													}
-												>
-													<div
-														style={shared}
-														className={
-															cardImageContainerClassName
-														}
-													>
-														<CardBack
-															face={face}
-															back={cardBackImage}
-															style={{
-																...shared,
-															}}
-															className={
-																imgClassName +
-																' border-b-8'
-															}
-														/>
-													</div>
-													<div
-														style={{
-															...shared,
-															transform: `rotateY(180deg)`,
-														}}
-														className={
-															cardImageContainerClassName +
-															' absolute top-0 left-0'
-														}
-													>
-														{face}
-													</div>
-												</animated.div>
-											</div>
-										</div>
+										<Flip
+											face={face}
+											back={
+												<Img
+													src={cardBackImage}
+													className={imgClassName}
+												/>
+											}
+											revealed={
+												state.value === 'revealed' ||
+												state.value ===
+													'initial_revealed' ||
+												state.value === 'pre_hide' ||
+												state.value === 'revealing'
+											}
+										/>
 									</animated.button>
 								)
 							}
@@ -189,24 +121,20 @@ export const Deck = memo(
 							return (
 								<animated.div
 									key={index}
-									className={cardContainerClassName}
 									style={
 										animate
 											? getSpringStyles(props)
-											: deckSSRData.style[index]!.deck
+											: deckSSRData.style[index]!
+									}
+									className={
+										'absolute top-0 left-0 ' +
+										sizesClassName
 									}
 								>
-									<div
-										className={cardImageContainerClassName}
-									>
-										<CardBack
-											face={face}
-											back={cardBackImage}
-											className={
-												imgClassName + ' border-b-8'
-											}
-										/>
-									</div>
+									<Img
+										src={cardBackImage}
+										className={imgClassName}
+									/>
 								</animated.div>
 							)
 						})}

@@ -24,7 +24,6 @@ const initialFrom: SpringStyles = {
 	rotateZ: 0.01,
 	scale: 1,
 	opacity: 1,
-	revealRotate: 0,
 }
 
 const initialTo: SpringStyles = { ...initialFrom }
@@ -41,7 +40,6 @@ const from = (
 		y,
 		z: getZ(i, 1),
 		rotate,
-		revealRotate: 0,
 	}
 }
 
@@ -58,29 +56,6 @@ const getY = (percent: number): string => {
 
 	return `${Math.abs(percent)}vh`
 }
-
-const toRevealRotateTransformPositive = (rotate: number) =>
-	`rotateY(${rotate}deg)` as const
-const toRevealRotateTransformNegative = (rotate: number) =>
-	`rotateY(${rotate * -1}deg)` as const
-
-export const interpolateRevealRotate = (
-	props: Pick<SpringProps, 'revealRotate'>,
-) =>
-	[
-		{
-			transform: interpolate(
-				[props.revealRotate],
-				toRevealRotateTransformPositive,
-			),
-		},
-		{
-			transform: interpolate(
-				[props.revealRotate],
-				toRevealRotateTransformNegative,
-			),
-		},
-	] as const
 
 const transform = (
 	x: number,
@@ -105,28 +80,13 @@ export const getSSRStyles = ({
 	rotateY,
 	rotateZ,
 	rotate,
-	revealRotate,
 	scale,
 	opacity,
 }: ReturnType<typeof getInitialStylesList>[number]['to']) => {
 	return {
-		deck: {
-			transform: transform(
-				x,
-				y,
-				z,
-				rotateX,
-				rotateY,
-				rotateZ,
-				rotate,
-				scale,
-			),
-			opacity,
-			transformStyle: 'preserve-3d',
-		},
-		revealRotate: {
-			transform: `rotateY(${revealRotate}deg)`,
-		},
+		transform: transform(x, y, z, rotateX, rotateY, rotateZ, rotate, scale),
+		opacity,
+		transformStyle: 'preserve-3d',
 	} as const
 }
 
@@ -162,7 +122,6 @@ const getRevealedStyle = (
 			rotateY: 0,
 			rotateX: 0,
 			rotateZ: 0.1,
-			revealRotate: 0,
 			scale: 1,
 			delay: i * 10,
 			opacity: 1,
@@ -178,7 +137,6 @@ const getRevealedStyle = (
 		rotate: inBrowser
 			? Math.random() * (Math.random() > 0.5 ? 1 : -1) * 6
 			: 0,
-		revealRotate: -180,
 		scale: 1,
 		opacity: 1,
 		onRest,
@@ -197,7 +155,6 @@ const getShuffleStart = (
 		opacity: 1,
 		delay: (DECK_SIZE - 1 - i) * 16,
 		rotate: 0,
-		revealRotate: 0,
 		onRest: i === DECK_SIZE - 1 ? onRest : undefined,
 		onStart: i === 0 ? onStart : undefined,
 	}

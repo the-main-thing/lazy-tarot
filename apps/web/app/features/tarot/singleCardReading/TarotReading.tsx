@@ -154,7 +154,7 @@ const TarotReadingContentfull = ({
 			key={String(reset)}
 			state={state}
 			submitButtonLabel={pageContent.submitButtonLabel}
-			className={deckClassName}
+			sizesClassName={deckClassName}
 			cardBackImage={pageContent.cardBackImage}
 			deckSSRData={deckSSRData}
 			form={FORM_ID}
@@ -271,7 +271,10 @@ const TarotReadingContentfull = ({
 						header={pageContent.headerTitle}
 						description={pageContent.formDescription}
 					/>
-					<ClientOnly
+					<DeckPlaceholderContainer deck={deck} state={state.value}>
+						{formPlaceholder}
+					</DeckPlaceholderContainer>
+					{/* <ClientOnly
 						fallback={
 							<div className="relative">
 								{formPlaceholder}
@@ -287,7 +290,7 @@ const TarotReadingContentfull = ({
 								<div className="absolute top-0 left-0" />
 							</div>
 						)}
-					</ClientOnly>
+					</ClientOnly> */}
 				</div>
 				<div
 					className={
@@ -306,7 +309,13 @@ const TarotReadingContentfull = ({
 						description={pickedCard.description}
 						cardTitle={pickedCard.title}
 					>
-						<ClientOnly
+						<DeckPlaceholderContainer
+							deck={deck}
+							state={state.value}
+						>
+							{descriptionPlaceholder}
+						</DeckPlaceholderContainer>
+						{/* <ClientOnly
 							fallback={
 								<div className="relative">
 									{descriptionPlaceholder}
@@ -322,7 +331,7 @@ const TarotReadingContentfull = ({
 									<div className="absolute top-0 left-0" />
 								</div>
 							)}
-						</ClientOnly>
+						</ClientOnly> */}
 						<ResetButton
 							className="mt-16 flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-stone-600 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100"
 							state={state.value}
@@ -347,9 +356,13 @@ const TarotReadingContentfull = ({
 									}
 								}}
 							/>
-							<AnimateTo trackForMs={500} target={animateTo}>
-								<div className="flex relative z-10">{deck}</div>
-							</AnimateTo>
+							<DeckAnimateToContainer state={state.value}>
+								<AnimateTo trackForMs={500} target={animateTo}>
+									<div className="flex relative z-10">
+										{deck}
+									</div>
+								</AnimateTo>
+							</DeckAnimateToContainer>
 						</>
 					)}
 				</ClientOnly>
@@ -385,3 +398,50 @@ export const TarotReading = memo(
 )
 
 TarotReading.displayName = 'TarotReading'
+
+function DeckPlaceholderContainer({
+	children,
+	deck,
+	state,
+}: {
+	state: State['value']
+	deck: React.ReactNode
+	children: React.ReactNode
+}) {
+	switch (state) {
+		case 'error':
+			return null
+		case 'initial_hidden':
+		case 'initial_revealed':
+			return (
+				<div className="relative">
+					{children}
+					<div className="absolute top-0 left-0">{deck}</div>
+				</div>
+			)
+		default:
+			return (
+				<div className="relative pointer-events-none -z-50">
+					{children}
+					<div className="absolute top-0 left-0" />
+				</div>
+			)
+	}
+}
+
+function DeckAnimateToContainer({
+	children,
+	state,
+}: {
+	children: React.ReactNode
+	state: State['value']
+}) {
+	switch (state) {
+		case 'error':
+		case 'initial_hidden':
+		case 'initial_revealed':
+			return null
+		default:
+			return children
+	}
+}
