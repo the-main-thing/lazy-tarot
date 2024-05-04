@@ -2,7 +2,7 @@ import { useReducer, useEffect, useRef, useMemo } from 'react'
 import { requestIdleCallback } from '@repo/utils'
 import { pickRandomCard } from '@repo/core'
 
-import type { PickedCard, Card } from '../types'
+import type { PickedCard, Card } from './types'
 import type { LoaderData } from './loader.server'
 
 type CardsHistory = Array<{ id: string; upsideDown: boolean }>

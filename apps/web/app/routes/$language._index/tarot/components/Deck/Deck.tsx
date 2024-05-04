@@ -1,13 +1,12 @@
 import { forwardRef, memo } from 'react'
 import { animated } from '@react-spring/web'
 
-import { type ImgProps, Img } from '~/components'
+import { type ImgProps } from '~/components'
+import { Card } from './Card'
 
 import { useAnimate, getSpringStyles, type ChangeEvent } from './useAnimate'
 import type { LoaderData } from './loader'
 import type { State } from '../../useStateMachine'
-
-import { Flip } from '~/components/Card/Flip'
 
 interface Props {
 	state: Extract<State, { card: NonNullable<State['card']> }>
@@ -16,9 +15,12 @@ interface Props {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>
 	form?: string
 	deckSSRData: LoaderData
-	sizesClassName: string
+	sizeClassName: string
 	submitButtonLabel: React.ReactNode
 }
+
+const AnimatedCard = animated(Card<'button'>)
+const AnimatedCardBack = animated(Card<'div'>)
 
 export const Deck = memo(
 	forwardRef<HTMLDivElement, Props>(
@@ -29,7 +31,7 @@ export const Deck = memo(
 				deckSSRData,
 				onClick,
 				form,
-				sizesClassName,
+				sizeClassName,
 				submitButtonLabel,
 				cardBackImage,
 			},
@@ -47,95 +49,70 @@ export const Deck = memo(
 
 			const { card, upsideDown } = state.card
 
-			const imgClassName =
-				'rounded border-4 border-slate-50 bg-slate-50 shadow-lg ' +
-				sizesClassName
-
-			const face = (
-				<Img
-					src={card.image}
-					alt=""
-					aria-hidden="true"
-					style={
-						upsideDown
-							? {
-									transform: 'rotate(180deg)',
-							  }
-							: undefined
-					}
-					className={
-						imgClassName +
-						' ' +
-						(upsideDown ? 'border-t-8' : 'border-b-8')
-					}
-				/>
-			)
 
 			return (
 				<div
 					ref={ref}
 					className={
-						'relative z-10 flex flex-col items-center justify-center rounded ' +
-						sizesClassName
+						'relative z-10 flex flex-col items-center justify-center rounded' +
+						'' //sizesClassName
 					}
 				>
 					<>
-						<div className="sr-only">{submitButtonLabel}</div>
 						{springs.map((props, index, array) => {
 							const top = index === array.length - 1
 
 							if (top) {
 								return (
-									<animated.button
+									<AnimatedCard
 										key={index}
+										sizeClassName={sizeClassName}
+										className=""
+										upsideDown={upsideDown}
+										as="button"
 										type="submit"
+										front={card.image}
+										back={cardBackImage}
+										revealed={
+											state.value === 'revealed' ||
+											state.value ===
+												'initial_revealed' ||
+											state.value === 'pre_hide' ||
+											state.value === 'revealing'
+										}
 										form={form}
 										onClick={onClick}
-										className="absolute top-0 left-0"
 										style={
 											animate
 												? getSpringStyles(props)
 												: deckSSRData.style[index]!
 										}
 									>
-										<Flip
-											face={face}
-											back={
-												<Img
-													src={cardBackImage}
-													className={imgClassName}
-												/>
-											}
-											revealed={
-												state.value === 'revealed' ||
-												state.value ===
-													'initial_revealed' ||
-												state.value === 'pre_hide' ||
-												state.value === 'revealing'
-											}
-										/>
-									</animated.button>
+										<div className="sr-only">
+											{submitButtonLabel}
+										</div>
+									</AnimatedCard>
 								)
 							}
 
 							return (
-								<animated.div
+								<div
 									key={index}
-									style={
-										animate
-											? getSpringStyles(props)
-											: deckSSRData.style[index]!
-									}
-									className={
-										'absolute top-0 left-0 ' +
-										sizesClassName
-									}
+									className="flex absolute top-0 left-0"
 								>
-									<Img
-										src={cardBackImage}
-										className={imgClassName}
+									<AnimatedCardBack
+										revealed={false}
+										upsideDown={false}
+										sizeClassName={sizeClassName}
+										style={
+											animate
+												? getSpringStyles(props)
+												: deckSSRData.style[index]!
+										}
+										back={cardBackImage}
+										front={card.image}
 									/>
-								</animated.div>
+								</div>
 							)
 						})}
 					</>

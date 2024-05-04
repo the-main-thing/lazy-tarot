@@ -58,7 +58,7 @@ export default function Root() {
 					position: 'relative',
 				}}
 			>
-				<Analytics />
+				{process.env.NODE_ENV === 'production' ? <Analytics /> : null}
 				<QueryProvider>
 					<Outlet />
 				</QueryProvider>

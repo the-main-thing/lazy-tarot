@@ -3,15 +3,16 @@ import { useSearchParams, useLocation } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 import { useReducedMotion } from '@react-spring/web'
 
-import { Img } from '~/components'
+import { Img, type ImgProps } from '~/components'
 import { LocalStorage, KEYS } from '~/utils/localStorage'
-import { useQueryCardsSet } from '../query'
+import { useQueryCardsSet } from './query'
 
-import type { PageData, Card as CardType } from '../types'
+import type { PageData, Card as CardType } from './types'
 
 import { useStateMachine, type State } from './useStateMachine'
 import { useHoldScroll } from './useHoldScroll'
 import { Deck } from './components/Deck/Deck'
+import { Card } from './components/Deck/Card'
 
 import { HideContent } from './components/HideContent'
 import { ResetButton } from './components/ResetButton'
@@ -29,6 +30,9 @@ type Props = LoaderData & {
 type ContentfullProps = Pick<Props, 'deckSSRData' | 'pageContent'> & {
 	state: Extract<State, { card: NonNullable<State['card']> }>
 } & ReturnType<typeof useStateMachine>[1]
+
+const CARD_SIZE_CLASS_NAME =
+	'landscape:w-screen-h-50 landscape:max-w-screen-22 portrait:w-screen-50 portrait:max-w-screen-h-60'
 
 const getCardContent = ({
 	card,
@@ -145,16 +149,18 @@ const TarotReadingContentfull = ({
 		</div>
 	) : null
 
-	const deckClassName =
-		'landscape:w-screen-h-60 landscape:max-w-screen-22 portrait:w-screen-50 portrait:max-w-screen-h-60'
 	const [urlSearchParams, setURLSearchParams] = useSearchParams()
 	const reset = urlSearchParams.get('reset') === '1'
+	const [deckElement, setDeckElement] = useState<HTMLDivElement | null>(null)
+	const [placeholderElelement, setPlaceholderElement] =
+		useState<HTMLElement | null>(null)
 	const deck = (
 		<Deck
+			ref={setDeckElement}
 			key={String(reset)}
 			state={state}
 			submitButtonLabel={pageContent.submitButtonLabel}
-			sizesClassName={deckClassName}
+			sizeClassName={CARD_SIZE_CLASS_NAME}
 			cardBackImage={pageContent.cardBackImage}
 			deckSSRData={deckSSRData}
 			form={FORM_ID}
@@ -170,7 +176,7 @@ const TarotReadingContentfull = ({
 	)
 
 	const placeholderClassName =
-		deckClassName + ' opacity-0 pointer-events-none z-50 relative'
+		CARD_SIZE_CLASS_NAME + ' opacity-0 pointer-events-none z-50 relative'
 	const placeholderChild = (
 		<Img src={pageContent.cardBackImage} alt="" aria-hidden="true" />
 	)
@@ -271,26 +277,20 @@ const TarotReadingContentfull = ({
 						header={pageContent.headerTitle}
 						description={pageContent.formDescription}
 					/>
-					<DeckPlaceholderContainer deck={deck} state={state.value}>
+					{/* <DeckPlaceholderContainer deck={deck} state={state.value}>
 						{formPlaceholder}
-					</DeckPlaceholderContainer>
-					{/* <ClientOnly
-						fallback={
-							<div className="relative">
-								{formPlaceholder}
-								<div className="absolute top-0 left-0">
-									{deck}
-								</div>
-							</div>
-						}
+					</DeckPlaceholderContainer> */}
+					<RenderDeck
+						state={state.value}
+						setPlaceholderElement={setPlaceholderElement}
+						deckElement={deckElement}
+						back={pageContent.cardBackImage}
+						front={pickedCard.image || pageContent.cardBackImage}
+						placement="form"
+						placeholderElement={placeholderElelement}
 					>
-						{() => (
-							<div className="relative pointer-events-none -z-50">
-								{formPlaceholder}
-								<div className="absolute top-0 left-0" />
-							</div>
-						)}
-					</ClientOnly> */}
+						{deck}
+					</RenderDeck>
 				</div>
 				<div
 					className={
@@ -309,29 +309,25 @@ const TarotReadingContentfull = ({
 						description={pickedCard.description}
 						cardTitle={pickedCard.title}
 					>
-						<DeckPlaceholderContainer
+						<RenderDeck
+							state={state.value}
+							setPlaceholderElement={setPlaceholderElement}
+							deckElement={deckElement}
+							back={pageContent.cardBackImage}
+							front={
+								pickedCard.image || pageContent.cardBackImage
+							}
+							placement="description"
+							placeholderElement={placeholderElelement}
+						>
+							{deck}
+						</RenderDeck>
+						{/* <DeckPlaceholderContainer
 							deck={deck}
 							state={state.value}
 						>
 							{descriptionPlaceholder}
 						</DeckPlaceholderContainer>
-						{/* <ClientOnly
-							fallback={
-								<div className="relative">
-									{descriptionPlaceholder}
-									<div className="absolute top-0 left-0">
-										{deck}
-									</div>
-								</div>
-							}
-						>
-							{() => (
-								<div className="relative pointer-events-none -z-50">
-									{descriptionPlaceholder}
-									<div className="absolute top-0 left-0" />
-								</div>
-							)}
-						</ClientOnly> */}
 						<ResetButton
 							className="mt-16 flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-stone-600 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100"
 							state={state.value}
@@ -339,7 +335,7 @@ const TarotReadingContentfull = ({
 							form={FORM_ID}
 						>
 							{pageContent.pickNextCardButtonLabel}
-						</ResetButton>
+						</ResetButton> */}
 					</Description>
 				</div>
 				<ClientOnly fallback={null}>
@@ -356,13 +352,13 @@ const TarotReadingContentfull = ({
 									}
 								}}
 							/>
-							<DeckAnimateToContainer state={state.value}>
+							{/* <DeckAnimateToContainer state={state.value}>
 								<AnimateTo trackForMs={500} target={animateTo}>
 									<div className="flex relative z-10">
 										{deck}
 									</div>
 								</AnimateTo>
-							</DeckAnimateToContainer>
+							</DeckAnimateToContainer> */}
 						</>
 					)}
 				</ClientOnly>
@@ -399,6 +395,76 @@ export const TarotReading = memo(
 
 TarotReading.displayName = 'TarotReading'
 
+function RenderDeck({
+	state,
+	placement,
+	setPlaceholderElement,
+	front,
+	deckElement,
+	placeholderElement,
+	back,
+	children,
+}: {
+	state: State['value']
+	back: ImgProps['src']
+	front: ImgProps['src']
+	placement: 'form' | 'description'
+	deckElement: HTMLElement | null
+	placeholderElement: HTMLElement | null
+	setPlaceholderElement: React.Dispatch<
+		React.SetStateAction<HTMLElement | null>
+	>
+	children: React.ReactNode
+}) {
+	const [animateFrom] = useState(() => {
+		if (state === 'initial_revealed') {
+			return 'description'
+		}
+		return 'form'
+	})
+
+	if (state === 'error') {
+		return null
+	}
+
+	if (animateFrom === placement) {
+		const revealed = state === 'revealed' || state === 'initial_revealed'
+
+		let target = deckElement
+		switch (placement) {
+			case 'form':
+				target = revealed ? placeholderElement : deckElement
+				break
+			case 'description':
+				target = revealed ? deckElement : placeholderElement
+				break
+			default:
+				console.error('unknown placement', placement)
+				target = deckElement
+				break
+		}
+
+		return (
+			<AnimateTo target={target}>
+				{children}
+			</AnimateTo>
+		)
+	}
+
+	return (
+		<Card
+			ref={setPlaceholderElement}
+			front={front}
+			back={back}
+			upsideDown={false}
+			revealed={false}
+			aria-disabled="true"
+			className="pointer-events-none opacity-0"
+			sizeClassName={CARD_SIZE_CLASS_NAME}
+		/>
+	)
+}
+
 function DeckPlaceholderContainer({
 	children,
 	deck,
@@ -413,12 +479,7 @@ function DeckPlaceholderContainer({
 			return null
 		case 'initial_hidden':
 		case 'initial_revealed':
-			return (
-				<div className="relative">
-					{children}
-					<div className="absolute top-0 left-0">{deck}</div>
-				</div>
-			)
+			return <div className="">{deck}</div>
 		default:
 			return (
 				<div className="relative pointer-events-none -z-50">

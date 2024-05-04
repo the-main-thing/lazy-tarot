@@ -1,7 +1,7 @@
 import { type ClientLoaderFunctionArgs, redirect } from '@remix-run/react'
 
 import { queryClient } from '~/QueryProvider'
-import { getOrFetchCardsSet } from '../query'
+import { getOrFetchCardsSet } from './query'
 
 /**
  * Prevent client from sending following requests to the server

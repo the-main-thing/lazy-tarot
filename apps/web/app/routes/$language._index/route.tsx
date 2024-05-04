@@ -16,13 +16,13 @@ import { ClientOnly } from 'remix-utils/client-only'
 
 import { env } from '~/utils/env.server'
 import { Img, PortableText, NavigationBar, PreloadImg } from '~/components'
-import { TarotReading } from '~/features/tarot/singleCardReading/TarotReading'
+import { TarotReading } from './tarot/TarotReading'
 import { api } from '~/api.server'
-import { loader as tarotReadingLoader } from '~/features/tarot/singleCardReading/loader.server'
-import { clientLoader as tarotReadingClientLoader } from '~/features/tarot/singleCardReading/clientLoader.client'
-import { useQueryCardsSet } from '~/features/tarot/query'
-import { ManifestoPage } from '~/features/manifesto/ManifestoPage'
-import { AboutUsPage } from '~/features/aboutUs/AboutUsPage'
+import { loader as tarotReadingLoader } from './tarot/loader.server'
+import { clientLoader as tarotReadingClientLoader } from './tarot/clientLoader.client'
+import { useQueryCardsSet } from './tarot/query'
+import { ManifestoPage } from './manifesto/ManifestoPage'
+import { AboutUsPage } from './aboutUs/AboutUsPage'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const host = env('PUBLIC_HOST')
@@ -222,5 +222,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-	return loaderHeaders
+	// return loaderHeaders
+	return new Headers({
+		'Cache-control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+	})
 }
