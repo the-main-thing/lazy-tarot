@@ -112,23 +112,6 @@ const TarotReadingContentfull = ({
 	onReset,
 }: ContentfullProps) => {
 	useReducedMotion()
-	const [formCardPlaceholder, setFormCardPlaceholder] =
-		useState<Element | null>(null)
-	const [descriptionCardPlaceholder, setDescriptionCardPlaceholder] =
-		useState<Element | null>(null)
-
-	useScrollIntoView(state.value, formCardPlaceholder)
-
-	const animateTo = useMemo(() => {
-		switch (state.value) {
-			case 'revealed':
-			case 'initial_revealed':
-			case 'pre_hide':
-				return descriptionCardPlaceholder
-			default:
-				return formCardPlaceholder
-		}
-	}, [state.value, formCardPlaceholder, descriptionCardPlaceholder])
 
 	useHoldScroll(
 		state.value !== 'initial_hidden' &&
@@ -175,25 +158,7 @@ const TarotReadingContentfull = ({
 		/>
 	)
 
-	const placeholderClassName =
-		CARD_SIZE_CLASS_NAME + ' opacity-0 pointer-events-none z-50 relative'
-	const placeholderChild = (
-		<Img src={pageContent.cardBackImage} alt="" aria-hidden="true" />
-	)
-
-	const formPlaceholder = (
-		<div ref={setFormCardPlaceholder} className={placeholderClassName}>
-			{placeholderChild}
-		</div>
-	)
-	const descriptionPlaceholder = (
-		<div
-			ref={setDescriptionCardPlaceholder}
-			className={placeholderClassName}
-		>
-			{placeholderChild}
-		</div>
-	)
+	useScrollIntoView(state.value, deckElement)
 
 	const formIsHidden =
 		state.value === 'initial_revealed' ||
@@ -248,14 +213,7 @@ const TarotReadingContentfull = ({
 			{preloadNextCardImage}
 
 			<div className="relative flex flex-col w-full">
-				<div
-					className={
-						'flex flex-col items-center w-full gap-12' +
-						(formIsHidden
-							? ' absolute -translate-x-screen opacity-0 top-0 left-0 -z-50 pointer-events-none'
-							: '')
-					}
-				>
+				<div className={'flex flex-col items-center w-full gap-12'}>
 					<Form
 						id={FORM_ID}
 						cardId={card.card.id}
@@ -292,74 +250,40 @@ const TarotReadingContentfull = ({
 						{deck}
 					</RenderDeck>
 				</div>
-				<div
-					className={
-						!formIsHidden
-							? 'absolute -z-50 opacity-0 pointer-events-none'
-							: ''
-					}
+
+				<Description
+					hidden={!formIsHidden}
+					header={pageContent.pickedCardTitle}
+					descriptionTitleText={pageContent.cardDescriptionHeaderText}
+					shortDescription={pickedCard.shortDescription}
+					description={pickedCard.description}
+					cardTitle={pickedCard.title}
 				>
-					<Description
-						hidden={!formIsHidden}
-						header={pageContent.pickedCardTitle}
-						descriptionTitleText={
-							pageContent.cardDescriptionHeaderText
-						}
-						shortDescription={pickedCard.shortDescription}
-						description={pickedCard.description}
-						cardTitle={pickedCard.title}
+					<RenderDeck
+						state={state.value}
+						setPlaceholderElement={setPlaceholderElement}
+						deckElement={deckElement}
+						back={pageContent.cardBackImage}
+						front={pickedCard.image || pageContent.cardBackImage}
+						placement="description"
+						placeholderElement={placeholderElelement}
 					>
-						<RenderDeck
-							state={state.value}
-							setPlaceholderElement={setPlaceholderElement}
-							deckElement={deckElement}
-							back={pageContent.cardBackImage}
-							front={
-								pickedCard.image || pageContent.cardBackImage
-							}
-							placement="description"
-							placeholderElement={placeholderElelement}
-						>
-							{deck}
-						</RenderDeck>
-						{/* <DeckPlaceholderContainer
-							deck={deck}
-							state={state.value}
-						>
-							{descriptionPlaceholder}
-						</DeckPlaceholderContainer>
-						<ResetButton
-							className="mt-16 flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-stone-600 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100"
-							state={state.value}
-							type="submit"
-							form={FORM_ID}
-						>
-							{pageContent.pickNextCardButtonLabel}
-						</ResetButton> */}
-					</Description>
-				</div>
+						{deck}
+					</RenderDeck>
+				</Description>
 				<ClientOnly fallback={null}>
 					{() => (
-						<>
-							<HideContent
-								state={state.value}
-								onRest={() => {
-									if (state.value === 'pre_reveal') {
-										onPreRevealEnd()
-									}
-									if (state.value === 'pre_hide') {
-										onPreHideEnd()
-									}
-								}}
-							/>
-							{/* <DeckAnimateToContainer state={state.value}>
-								<AnimateTo trackForMs={500} target={animateTo}>
-									<div className="flex relative z-10">
-										{deck}
-									</div>
-								</AnimateTo>
-							</DeckAnimateToContainer> */}
-						</>
+						<HideContent
+							state={state.value}
+							onRest={() => {
+								if (state.value === 'pre_reveal') {
+									onPreRevealEnd()
+								}
+								if (state.value === 'pre_hide') {
+									onPreHideEnd()
+								}
+							}}
+						/>
 					)}
 				</ClientOnly>
 			</div>
@@ -444,11 +368,7 @@ function RenderDeck({
 				break
 		}
 
-		return (
-			<AnimateTo target={target}>
-				{children}
-			</AnimateTo>
-		)
+		return <AnimateTo target={target}>{children}</AnimateTo>
 	}
 
 	return (
@@ -463,46 +383,4 @@ function RenderDeck({
 			sizeClassName={CARD_SIZE_CLASS_NAME}
 		/>
 	)
-}
-
-function DeckPlaceholderContainer({
-	children,
-	deck,
-	state,
-}: {
-	state: State['value']
-	deck: React.ReactNode
-	children: React.ReactNode
-}) {
-	switch (state) {
-		case 'error':
-			return null
-		case 'initial_hidden':
-		case 'initial_revealed':
-			return <div className="">{deck}</div>
-		default:
-			return (
-				<div className="relative pointer-events-none -z-50">
-					{children}
-					<div className="absolute top-0 left-0" />
-				</div>
-			)
-	}
-}
-
-function DeckAnimateToContainer({
-	children,
-	state,
-}: {
-	children: React.ReactNode
-	state: State['value']
-}) {
-	switch (state) {
-		case 'error':
-		case 'initial_hidden':
-		case 'initial_revealed':
-			return null
-		default:
-			return children
-	}
 }
