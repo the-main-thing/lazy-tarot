@@ -25,10 +25,14 @@
 			"packages/*"
 		],
 		"nohoist": [
+			"apps/mobile/**/@tanstack/react-query",
 			"apps/mobile/**/react-router",
 			"apps/mobile/**/react-router-dom",
+			"apps/mobile/**/@trpc/react-query",
 			"apps/web/**/react-router",
-			"apps/web/**/react-router-dom"
+			"apps/web/**/react-router-dom",
+			"apps/web/**/@trpc/react-query",
+			"apps/web/**/@tanstack/react-query"
 		]
 	}
 }

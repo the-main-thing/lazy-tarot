@@ -1,0 +1,33 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "API",
+
+	"compilerOptions": {
+		"declaration": true,
+		"declarationMap": true,
+		"incremental": false,
+		"moduleDetection": "force",
+		"resolveJsonModule": true,
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./src/*"]
+		},
+		"noEmit": false,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"useUnknownInCatchVariables": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"skipLibCheck": true,
+		"outDir": "./dist"
+	},
+	"exclude": ["dist", "build", "node_modules"]
+}

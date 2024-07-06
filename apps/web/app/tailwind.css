@@ -87,8 +87,7 @@
 	span {
 		@apply text-xl;
 	}
-	.perspective-1000 {
-		-webkit-perspective: 1000px;
-		perspective: 1000px;
+	.site-header * {
+		line-height: 0.66em;
 	}
 }

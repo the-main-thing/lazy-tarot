@@ -67,6 +67,7 @@ module.exports = {
 			rules: {
 				'no-mixed-spaces-and-tabs': 'off',
 				'react/prop-types': 'off',
+				'no-case-declarations': 'off'
 			},
 		},
 

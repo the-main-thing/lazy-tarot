@@ -67,6 +67,8 @@ module.exports = {
 			rules: {
 				'no-mixed-spaces-and-tabs': 'off',
 				'react/prop-types': 'off',
+				'no-case-declarations': 'off',
+				'prefer-const': 'off',
 			},
 		},
 
@@ -94,6 +96,8 @@ module.exports = {
 			],
 			rules: {
 				'@typescript-eslint/no-explicit-any': 'off',
+				'prefer-const': 'off',
+				'no-case-declarations': 'off',
 				'@typescript-eslint/no-unused-vars': [
 					'error',
 					{

@@ -3,7 +3,7 @@ export const requestIdleCallback = (callback: () => void) => {
 		const id = window.requestIdleCallback(callback)
 		return () => window.cancelIdleCallback(id)
 	} catch {
-		const id = setTimeout(callback, 0)
+		const id = setTimeout(callback, 100)
 		return () => clearTimeout(id)
 	}
 }

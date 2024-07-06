@@ -5,7 +5,7 @@ import { defaultLanguage, SUPPORTED_LANGUAGES } from '@repo/core'
 export const dir = (_lang: string): Language['dir'] => 'ltr'
 
 type Language = {
-	code: string
+	code: (typeof SUPPORTED_LANGUAGES)[number]
 	dir: 'rtl' | 'ltr'
 }
 
@@ -14,12 +14,14 @@ const DEFAULT_LANGUAGE = {
 	dir: dir(defaultLanguage),
 } as const
 
-export const getLanguagesFromHeaders = (
+export const getDefaultLanguage = () => DEFAULT_LANGUAGE
+
+const getLanguagesFromHeaders = (
 	headers: Headers,
-): NonEmptyArray<Language> => {
+): NonEmptyArray<Language> | null => {
 	const acceptLanguageHeader = headers.get('Accept-Language')
 	if (!acceptLanguageHeader) {
-		return [DEFAULT_LANGUAGE]
+		return null
 	}
 	const parsedLanugages = parse(acceptLanguageHeader)
 		.map(({ code }) => {
@@ -42,17 +44,23 @@ export const getLanguagesFromHeaders = (
 		.filter(Boolean)
 		.concat(DEFAULT_LANGUAGE) as NonEmptyArray<Language>
 
-	return parsedLanugages
+	return parsedLanugages.length ? parsedLanugages : null
 }
 
-export const getLanguage = (
-	headers: Headers,
-): (typeof SUPPORTED_LANGUAGES)[number] => {
-	const languages = getLanguagesFromHeaders(headers)
+export const getLanguageFromHeaders = (headers: Headers) => {
+	return getLanguagesFromHeaders(headers)?.[0] || null
+}
 
-	return (
-		(languages.find(({ code }) =>
-			(SUPPORTED_LANGUAGES as ReadonlyArray<string>).includes(code),
-		)?.code as (typeof SUPPORTED_LANGUAGES)[number]) || defaultLanguage
-	)
+export const getLanguageFromParams = (
+	params: Record<string, string | undefined>,
+): Language | null => {
+	const code = params.language as Language['code'] | undefined
+	if (!code || !SUPPORTED_LANGUAGES.includes(code as never)) {
+		return null
+	}
+
+	return {
+		code,
+		dir: dir(code),
+	}
 }
