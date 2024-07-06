@@ -145,7 +145,7 @@ export const useAnimationState = ([loaderData, actionData]: [
 		setCard([actionData.card, actionData.upsideDown])
 	}
 	const [prevLoaderCardId, setPrevLoaderCardId] = useState(loaderData.card.id)
-	if (prevLoaderCardId !== loaderData.card.id) {
+	if (prevLoaderCardId !== loaderData.card.id && !cardIsVisible(state)) {
 		setPrevLoaderCardId(loaderData.card.id)
 		setCard([loaderData.card, loaderData.upsideDown])
 	}

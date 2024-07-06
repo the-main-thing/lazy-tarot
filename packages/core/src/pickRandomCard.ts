@@ -59,6 +59,18 @@ const getHistory = <TCard, TId extends ID>({
 	}
 }
 
+const getUpsideDown = (prev: Array<{ upsideDown: boolean }>) => {
+	if (
+		typeof prev.at(-1) !== 'undefined' &&
+		prev.at(-1)?.upsideDown === prev.at(-2)?.upsideDown &&
+		prev.at(-2)?.upsideDown === prev.at(-3)?.upsideDown
+	) {
+		return !prev.at(-1)?.upsideDown
+	}
+
+	return Math.random() > 0.5
+}
+
 export const pickRandomCard = <TCard, TId extends ID>(
 	props: Props<TCard, TId>
 ) => {
@@ -72,13 +84,18 @@ export const pickRandomCard = <TCard, TId extends ID>(
 			}
 			const id = getIdFromSetItem(card)
 			if (!skipIds.has(id)) {
-				const pickedCard = { id, upsideDown: Math.random() > 0.5 }
+				const pickedCard = {
+					id,
+					upsideDown: getUpsideDown(historyArray),
+				}
 				historyArray.push(pickedCard)
 				return [
 					null,
 					{
 						...pickedCard,
-						prevPickedCards: historyArray.slice(1),
+						prevPickedCards: historyArray.slice(
+							-1 * MAX_HISTORY_SIZE
+						),
 					},
 				] as const
 			}

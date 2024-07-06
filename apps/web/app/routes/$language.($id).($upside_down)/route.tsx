@@ -44,6 +44,7 @@ export default function Page() {
 			<Layout>
 				<AnimationStateProvider actionData={actionData}>
 					<TarotReading />
+					<div />
 					<Manifesto loaderData={loaderData} />
 					<About loaderData={loaderData} />
 				</AnimationStateProvider>

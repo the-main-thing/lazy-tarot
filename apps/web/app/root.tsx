@@ -102,7 +102,6 @@ export default function Root() {
 				</QueryProvider>
 				<ScrollRestoration />
 				<Scripts />
-				<div id="body-bottom-portal" />
 			</body>
 		</html>
 	)

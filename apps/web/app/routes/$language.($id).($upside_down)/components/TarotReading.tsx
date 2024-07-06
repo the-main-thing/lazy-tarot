@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-semi */
 import { useRef, useState, useEffect } from 'react'
 import { Form } from '@remix-run/react'
 import { useSpring, animated } from '@react-spring/web'
@@ -294,7 +295,7 @@ export const TarotReading = () => {
 							form={FORM_ID}
 							type="submit"
 							className={classNames(
-								'rounded border flex py-4 px-8 items-center justify-center transition-all duration-200',
+								'flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-zinc-800 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100 duration-200',
 								revealedReadingIsVisibleState(state)
 									? ''
 									: 'opacity-0',
