@@ -22,17 +22,12 @@
 	"license": "ISC",
 	"devDependencies": {
 		"@types/node": "^20.12.2",
-		"@types/react": "^18.2.73",
 		"eslint": "^8.57.0",
 		"prettier": "^3.2.5",
 		"typescript": "^5.5.2",
 		"vitest": "^1.4.0"
 	},
 	"dependencies": {
-		"@repo/utils": "*",
-		"react": "^18",
-		"rxjs": "^7.8.1",
-		"xstate": "^5.13.0",
-		"zod": "^3"
+		"@repo/utils": "*"
 	}
 }
