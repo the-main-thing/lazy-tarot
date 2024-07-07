@@ -284,11 +284,12 @@ export const TarotReading = () => {
 							isAnimateable &&
 							!preventRevealedDeckAnimation(state)
 						}
-						className={
+						className={classNames(
 							preventRevealedDeckAnimation(state)
 								? 'opacity-0 pointer-events-none'
-								: ''
-						}
+								: '',
+							'will-change-transform',
+						)}
 					/>
 					{revealedReadingIsInDomFlow(state) ? (
 						<button
