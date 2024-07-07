@@ -74,7 +74,7 @@ const usePreAnimate = (
 		if (hide) {
 			const timeout = setTimeout(() => {
 				send({ type: 'PREANIMATE_END_HIDE_CONTENT' })
-			}, 100)
+			}, 200)
 			return () => clearTimeout(timeout)
 		}
 	}, [state, send])

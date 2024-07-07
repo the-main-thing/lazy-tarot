@@ -147,7 +147,7 @@ const getRevealedStyle = (
 
 const getShuffleStart = (i: number) => {
 	return {
-		x: 50,
+		x: 105,
 		delay: (DECK_SIZE - 1 - i) * 16,
 	}
 }

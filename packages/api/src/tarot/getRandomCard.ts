@@ -55,7 +55,7 @@ export const getRandomCard = async (params: Params) => {
 		throw new Error(`Can't pick up a card. Seems like cards set is empty.`)
 	}
 
-	return await translateCard({
+	return translateCard({
 		language: params.language,
 		context: params.context,
 		card,

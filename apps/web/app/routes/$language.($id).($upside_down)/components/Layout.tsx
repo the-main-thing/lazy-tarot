@@ -6,10 +6,11 @@ import {
 	useMemo,
 	type Dispatch,
 } from 'react'
-import { NavigationBar, PortableText, Img } from '~/components'
+import { NavigationBar, PortableText } from '~/components'
 import { Link } from '@remix-run/react'
 import { TAROT_READING_SECTION_ID } from '../constants'
 import { useRouteLoadersData } from '../RouteLoadersDataProvider'
+import { Logo } from './Logo'
 
 type Props = {
 	children: React.ReactNode
@@ -88,7 +89,7 @@ export const Layout = ({ children }: Props) => {
 					</header>
 					<div className="relative -left-4">
 						<div className="w-screen-30 landscape:w-screen-13 relative">
-							<Img src={indexPageContent.logo} />
+							<Logo />
 						</div>
 					</div>
 				</div>

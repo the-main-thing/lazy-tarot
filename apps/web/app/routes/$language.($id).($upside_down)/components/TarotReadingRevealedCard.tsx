@@ -113,7 +113,7 @@ export const TarotReadingRevealedCard = forwardRef<HTMLDivElement, Props>(
 				ref={ref}
 				aria-hidden={isVisible ? 'false' : 'true'}
 				className={
-					'flex flex-col gap-20 portrait:items-center ' +
+					'flex flex-col gap-16 md:gap-16 portrait:items-center ' +
 					(className || '')
 				}
 			>

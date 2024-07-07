@@ -121,7 +121,11 @@ const CardInternal = memo(
 				<Component
 					ref={ref as never}
 					{...(props as any)}
-					className={rootContainerClassName(sizeClassName, className)}
+					className={rootContainerClassName(
+						sizeClassName,
+						props.as === 'button' ? 'will-change-contents' : '',
+						className,
+					)}
 				>
 					<Img
 						src={front}
@@ -130,7 +134,12 @@ const CardInternal = memo(
 						alt=""
 					/>
 					<animated.div
-						className={imageContainerClassName(sizeClassName)}
+						className={imageContainerClassName(
+							sizeClassName,
+							props.as === 'button'
+								? 'will-change-transform'
+								: '',
+						)}
 						style={{
 							display: spring.rotateY.to(backDisplay),
 							transform: spring.rotateY.to(backRotate),
@@ -139,7 +148,12 @@ const CardInternal = memo(
 						<Img src={back} className={'w-full rounded p-0'} />
 					</animated.div>
 					<animated.div
-						className={imageContainerClassName(sizeClassName)}
+						className={imageContainerClassName(
+							sizeClassName,
+							props.as === 'button'
+								? 'will-change-transform'
+								: '',
+						)}
 						style={{
 							display: spring.rotateY.to(frontDisplay),
 							transform: spring.rotateY.to(frontRotate),

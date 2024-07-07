@@ -9,7 +9,7 @@ type Props = {
 	context: Context
 }
 
-export const translateCard = async ({ language, card, context }: Props) => {
+export const translateCard = ({ language, card, context }: Props) => {
 	const { getTranslated, getImagesSet, client } = context.sanity
 	return {
 		id: card._id,
@@ -35,7 +35,7 @@ export const translateCard = async ({ language, card, context }: Props) => {
 				language
 			),
 		},
-		image: await getImagesSet({
+		image: getImagesSet({
 			client,
 			image: card.image,
 			breakpoints: BREAKPOINTS,

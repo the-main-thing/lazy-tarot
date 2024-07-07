@@ -19,6 +19,7 @@ import {
 	TAROT_READING_SECTION_ID,
 } from '../constants'
 import { useBlockScroll, useLayoutContext } from './Layout'
+import { isElementMostlyVisible } from '../isElementMostlyVisible'
 
 const AnimatedDeck = animated(Deck)
 
@@ -144,22 +145,6 @@ export const TarotReading = () => {
 			state === 'hiding_pre_animate_scroll' ||
 			state === 'revealing_pre_animate_scroll'
 		) {
-			const element =
-				state === 'hiding_pre_animate_scroll'
-					? revealedDeckElement?.children.item(0)
-					: hiddenDeckElement?.children.item(0)
-			if (
-				state === 'hiding_pre_animate_scroll' &&
-				element &&
-				isElementPartiallyVisible(element)
-			) {
-				return send({ type: 'PREANIMATE_END_SCROLL' })
-			}
-			element?.scrollIntoView({
-				behavior: 'smooth',
-				block: 'center',
-				inline: 'center',
-			})
 			let timeout = setTimeout(() => {
 				send({ type: 'PREANIMATE_END_SCROLL' })
 			}, 80)
@@ -189,19 +174,16 @@ export const TarotReading = () => {
 			if (!revealedDeckElement) {
 				return
 			}
-			const frames = [
-				window.requestAnimationFrame(() => {
-					const revealedRect =
-						revealedDeckElement.getBoundingClientRect()
-					revealedDeckSpringApi.set({
-						x: hiddenDeckRect.left - revealedRect.left,
-						y: hiddenDeckRect.top - revealedRect.top,
-					})
-				}),
-			]
+			const frame = window.requestAnimationFrame(() => {
+				const revealedRect = revealedDeckElement.getBoundingClientRect()
+				revealedDeckSpringApi.set({
+					x: hiddenDeckRect.left - revealedRect.left,
+					y: hiddenDeckRect.top - revealedRect.top,
+				})
+			})
 
 			return () => {
-				frames.forEach((frame) => window.cancelAnimationFrame(frame))
+				window.cancelAnimationFrame(frame)
 			}
 		}
 		if (state === 'revealing_flipping_card') {
@@ -225,7 +207,10 @@ export const TarotReading = () => {
 		content.tarotReadingPageContent.pickNextCardButtonLabel
 
 	return (
-		<section className="relative" id={TAROT_READING_SECTION_ID}>
+		<section
+			className="relative will-change-contents"
+			id={TAROT_READING_SECTION_ID}
+		>
 			<Form
 				ref={formRef}
 				action={`/${language}`}
@@ -271,7 +256,7 @@ export const TarotReading = () => {
 				card={card}
 				upsideDown={upsideDown}
 			>
-				<div className="flex flex-col gap-24">
+				<div className="flex flex-col gap-24 items-center">
 					<AnimatedDeck
 						ref={setRevealedDeckElement}
 						{...deckState}
@@ -295,6 +280,23 @@ export const TarotReading = () => {
 						<button
 							form={FORM_ID}
 							type="submit"
+							onClick={() => {
+								if (
+									isElementMostlyVisible(
+										revealedDeckElement?.children[0] ||
+											null,
+									)
+								) {
+									return
+								}
+								revealedDeckElement?.children[0]?.scrollIntoView(
+									{
+										behavior: 'smooth',
+										block: 'center',
+										inline: 'center',
+									},
+								)
+							}}
 							className={classNames(
 								'flex rounded border-2 border-slate-200 w-full justify-center items-center p-4 uppercase hover:bg-zinc-800 hover:text-stone-100 transition-all focus:bg-slate-600 focus:text-slate-100 duration-200',
 								revealedReadingIsVisibleState(state)
@@ -309,18 +311,4 @@ export const TarotReading = () => {
 			</TarotReadingRevealedCard>
 		</section>
 	)
-}
-
-function isElementPartiallyVisible(el: Element) {
-	const rect = el.getBoundingClientRect()
-
-	const windowHeight =
-		window.innerHeight || document.documentElement.clientHeight
-	const windowWidth =
-		window.innerWidth || document.documentElement.clientWidth
-
-	const vertInView = rect.top <= windowHeight && rect.top + rect.height >= 0
-	const horInView = rect.left <= windowWidth && rect.left + rect.width >= 0
-
-	return vertInView && horInView
 }

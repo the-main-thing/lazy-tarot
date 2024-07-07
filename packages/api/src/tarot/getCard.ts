@@ -32,7 +32,7 @@ export const getCardById = async ({ language, id, context }: Params) => {
 	const card = await queryContent(context.sanity, id)
 
 	return card
-		? await translateCard({
+		? translateCard({
 				card,
 				language,
 				context,

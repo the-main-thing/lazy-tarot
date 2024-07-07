@@ -25,14 +25,12 @@ export const queryContent = async ({
 		query.slice(slice[0], slice[1])
 	}
 	const data = await context.sanity.runQuery(query)
-	return await Promise.all(
-		data.map(card =>
-			translateCard({
-				language,
-				card,
-				context,
-			})
-		)
+	return data.map(card =>
+		translateCard({
+			language,
+			card,
+			context,
+		})
 	)
 }
 

@@ -1,7 +1,9 @@
-import { forwardRef, memo } from 'react'
+/* eslint-disable no-extra-semi */
+import { forwardRef, memo, useCallback, useRef } from 'react'
 import { animated } from '@react-spring/web'
 import classNames from 'classnames'
 
+import { isElementMostlyVisible } from '../../isElementMostlyVisible'
 import { Card } from './Card'
 
 import type { useDeck } from './useDeck'
@@ -63,9 +65,31 @@ const DeckButton = memo(
 			},
 			ref,
 		) => {
+			const containerRef = useRef<HTMLDivElement | null>(null)
+			const mergeRefs = useCallback(
+				(node: HTMLDivElement | null) => {
+					if (typeof ref === 'function') {
+						ref(node)
+					} else if (ref) {
+						ref.current = node
+					}
+					containerRef.current = node
+				},
+				[ref],
+			)
+			const onClick = useCallback(() => {
+				if (revealed && isElementMostlyVisible(containerRef.current)) {
+					return
+				}
+				containerRef.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center',
+					inline: 'center',
+				})
+			}, [revealed])
 			return (
 				<div
-					ref={ref}
+					ref={mergeRefs}
 					className={
 						'relative z-10 flex flex-col items-center justify-center rounded'
 					}
@@ -84,6 +108,7 @@ const DeckButton = memo(
 										'will-change-transform',
 										sizeClassName,
 									)}
+									onClick={onClick}
 									className=""
 									as="button"
 									type="submit"

@@ -36,7 +36,6 @@ const getSanityContent = async ({
 				description: schemas.i18n,
 				headerTitle: schemas.i18nBlock,
 				headerDescription: schemas.i18nBlock,
-				logo: schemas.image,
 			})
 			.slice(0),
 		tarotReadingPageContent: q('*')
@@ -87,7 +86,7 @@ const getSanityContent = async ({
 	return content
 }
 
-const translate = async (
+const translate = (
 	{ language, context }: Pick<Params, 'language' | 'context'>,
 	{
 		rootLayoutContent,
@@ -122,11 +121,6 @@ const translate = async (
 				indexPageContent.headerDescription,
 				language
 			),
-			logo: await getImagesSet({
-				client,
-				image: indexPageContent.logo,
-				breakpoints: BREAKPOINTS,
-			}),
 		},
 		tarotReadingPageContent: {
 			headerTitle: getTranslated(
@@ -149,7 +143,7 @@ const translate = async (
 				tarotReadingPageContent.submitButtonLabel,
 				language
 			),
-			cardBackImage: await getImagesSet({
+			cardBackImage: getImagesSet({
 				client,
 				image: tarotReadingPageContent.cardBackImage,
 				breakpoints: BREAKPOINTS,
@@ -162,7 +156,7 @@ const translate = async (
 		manifestoPageContent: {
 			header: getTranslated(manifestoPageContent.header, language),
 			content: getTranslated(manifestoPageContent.content, language),
-			headerImage: await getImagesSet({
+			headerImage: getImagesSet({
 				client,
 				format: 'png',
 				image: manifestoPageContent.headerImage,
@@ -177,7 +171,7 @@ const translate = async (
 					}
 				),
 			}),
-			contentImage: await getImagesSet({
+			contentImage: getImagesSet({
 				client,
 				image: manifestoPageContent.contentImage,
 				breakpoints: BREAKPOINTS,
@@ -195,7 +189,7 @@ const translate = async (
 					language
 				),
 			},
-			image: await getImagesSet({
+			image: getImagesSet({
 				client,
 				image: aboutUsPageContent.image,
 				breakpoints: BREAKPOINTS,
