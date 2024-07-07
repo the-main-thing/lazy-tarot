@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /en/
+Allow: /ru/
+Sitemap: https://www.lazy-tarot.ru/sitemap.xml
