@@ -13,7 +13,6 @@ export default defineConfig({
 		tsconfigPaths(),
 	],
 	define: {
-		__API_KEY__: JSON.stringify(crypto.randomUUID()),
 		__BUILD_TIMESTAMP__: JSON.stringify(Math.floor(Date.now() / 1000)),
 	},
 })

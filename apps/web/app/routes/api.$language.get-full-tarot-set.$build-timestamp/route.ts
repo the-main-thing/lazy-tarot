@@ -16,14 +16,10 @@ const getData = async (language: string) => {
 	})
 }
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const language = getLanguageFromParams(params)?.code
 	if (!language) {
 		throw new Response(null, { status: 404 })
-	}
-	const apiKey = request.headers.get('x-api-key')
-	if (apiKey !== __API_KEY__) {
-		throw new Response(null, { status: 401 })
 	}
 
 	return json(await getData(language), {

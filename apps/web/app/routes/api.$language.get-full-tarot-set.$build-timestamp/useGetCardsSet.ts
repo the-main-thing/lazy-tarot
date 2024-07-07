@@ -16,12 +16,7 @@ export const queryCardsSet = async (language: string, ts?: number) => {
 	if (ts) {
 		url.searchParams.set('ts', String(ts))
 	}
-	const response = await fetch(url, {
-		method: 'GET',
-		headers: {
-			'x-api-key': __API_KEY__,
-		},
-	})
+	const response = await fetch(url)
 
 	if (response.status >= 400) {
 		const body = await response.text()
