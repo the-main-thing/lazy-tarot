@@ -153,13 +153,7 @@ const CardInternal = memo(
 							src={back.srcSet.xs.src}
 							placeholderSrc={back.srcSet.placeholder.src}
 							dimentions={back.dimentions}
-							className={'w-full rounded p-0 md:hidden'}
-						/>
-						<Img
-							src={back.srcSet.sm.src}
-							placeholderSrc={back.srcSet.placeholder.src}
-							dimentions={back.dimentions}
-							className={'w-full rounded p-0 hidden md:block'}
+							className={'w-full rounded p-0'}
 						/>
 					</animated.div>
 					<animated.div
