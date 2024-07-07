@@ -20,7 +20,7 @@ import {
 
 import { QueryProvider } from './QueryProvider'
 
-import './tailwind.css'
+import styles from './tailwind.css?url'
 
 export default function Root() {
 	useReducedMotion()
@@ -40,6 +40,7 @@ export default function Root() {
 				minHeight: '100dvh',
 			}}
 		>
+			<link rel="stylesheet" href={styles} />
 			<head>
 				{lang === 'ru' ? (
 					<>
