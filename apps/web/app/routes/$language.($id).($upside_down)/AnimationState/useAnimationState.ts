@@ -3,7 +3,7 @@ import { useReducer, useState } from 'react'
 import { matches } from './matches'
 import type { AnimationState, AnimationEvent, TransitionsMap } from './types'
 import type { ActionData } from '../clientAction'
-import type { LoaderData } from '../loader.server'
+import type { useRouteLoadersData } from '../RouteLoadersDataProvider'
 
 const inBrowser = () => typeof window !== 'undefined'
 
@@ -125,16 +125,18 @@ const cardIsVisible = matches([
 ])
 
 export const useAnimationState = ([loaderData, actionData]: [
-	loaderData: LoaderData,
+	loaderData: ReturnType<typeof useRouteLoadersData>,
 	actionData: ActionData | undefined,
 ]) => {
 	const [state, send] = useReducer(
 		reducer,
 		loaderData.revealed ? 'idle_ssr_revealed' : 'idle_ssr_hidden',
 	)
-	const [[card, upsideDown], setCard] = useState([
-		loaderData.card,
-		loaderData.upsideDown,
+	const [[card, upsideDown], setCard] = useState(() => [
+		loaderData.card || loaderData.initialCard,
+		typeof loaderData.upsideDown === 'undefined'
+			? loaderData.initialUpsideDown
+			: loaderData.upsideDown,
 	])
 
 	if (
@@ -144,10 +146,16 @@ export const useAnimationState = ([loaderData, actionData]: [
 	) {
 		setCard([actionData.card, actionData.upsideDown])
 	}
-	const [prevLoaderCardId, setPrevLoaderCardId] = useState(loaderData.card.id)
-	if (prevLoaderCardId !== loaderData.card.id && !cardIsVisible(state)) {
+	const [prevLoaderCardId, setPrevLoaderCardId] = useState(
+		loaderData.card?.id || loaderData.initialCard.id,
+	)
+	if (
+		loaderData.card &&
+		prevLoaderCardId !== loaderData.card?.id &&
+		!cardIsVisible(state)
+	) {
 		setPrevLoaderCardId(loaderData.card.id)
-		setCard([loaderData.card, loaderData.upsideDown])
+		setCard([loaderData.card, Boolean(loaderData.upsideDown)])
 	}
 
 	return [state, send, card, upsideDown] as const

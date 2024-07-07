@@ -18,12 +18,20 @@ const useLoadersData = (loaderData: LoaderData) => {
 	}
 
 	const { data: cardsSet } = useGetCardsSet(language)
+	const [prevPickedCardId, setPrevPickedCardId] = useState(loaderData.card.id)
 	const [pickedInitialCard, setPickedInitialCard] = useState<null | {
 		card: LoaderData['card']
 		upsideDown: boolean
 	}>(null)
+	if (prevPickedCardId !== loaderData.card.id) {
+		setPrevPickedCardId(loaderData.card.id)
+		setPickedInitialCard({
+			card: loaderData.card,
+			upsideDown: loaderData.upsideDown,
+		})
+	}
 	useEffect(() => {
-		if (pickedInitialCard || !cardsSet || isRevealed) {
+		if (pickedInitialCard || !cardsSet) {
 			return
 		}
 		const prevPickedCards = getPrevPickedCards()
@@ -44,16 +52,9 @@ const useLoadersData = (loaderData: LoaderData) => {
 			card,
 			upsideDown: result.upsideDown,
 		})
-	}, [cardsSet, pickedInitialCard, isRevealed])
+	}, [cardsSet, pickedInitialCard])
 
 	const { content, deckSSRData } = loaderData
-	const card = pickedInitialCard?.card || loaderData.card
-	let upsideDown = pickedInitialCard
-		? pickedInitialCard.upsideDown
-		: loaderData.upsideDown
-	if ('upside_down' in params) {
-		upsideDown = params.upside_down === '1'
-	}
 
 	return useMemo(() => {
 		return {
@@ -61,10 +62,19 @@ const useLoadersData = (loaderData: LoaderData) => {
 			deckSSRData,
 			language,
 			revealed: isRevealed,
-			upsideDown,
-			card,
+			initialCard: loaderData.card,
+			initialUpsideDown: loaderData.upsideDown,
+			...pickedInitialCard,
 		} as const
-	}, [content, deckSSRData, language, isRevealed, upsideDown, card])
+	}, [
+		content,
+		deckSSRData,
+		language,
+		isRevealed,
+		loaderData.card,
+		loaderData.upsideDown,
+		pickedInitialCard,
+	])
 }
 
 const Context = createContext<RouteLoadersData | null>(null)
