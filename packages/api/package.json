@@ -1,0 +1,40 @@
+{
+	"name": "@repo/api",
+	"version": "1.0.0",
+	"description": "Server side code for common query logic and such",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"./package.json",
+		"./src/*",
+		"./index.ts",
+		"./dist",
+		"./tsconfig.json"
+	],
+	"scripts": {
+		"build": "tsc"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@repo/core": "*",
+		"@repo/utils": "*",
+		"@sanity/client": "^6.15.3",
+		"@sanity/image-url": "^1.0.2",
+		"accept-language-parser": "^1.5.0",
+		"groqd": "^0.15.10",
+		"xstate": "^5.13.0",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@repo/eslint-config": "*",
+		"@repo/typescript-config": "*",
+		"@types/accept-language-parser": "^1.5.6",
+		"@types/node": "^20.11.25",
+		"dotenv": "^16.4.5",
+		"prettier": "^3.2.5",
+		"typescript": "^5.5.2"
+	}
+}

@@ -6,5 +6,3 @@ export {
 } from './PortableText'
 export { Img, type ImgProps } from './Img'
 export { NavigationBar } from './NavigationBar'
-export { BodyBottomPortal } from './BodyBottomPortal'
-export { PreloadImg } from './PreloadImg'

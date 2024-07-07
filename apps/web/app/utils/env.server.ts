@@ -2,7 +2,9 @@ export type EnvKey =
 	| 'NODE_ENV'
 	| 'API_ENDPOINT'
 	| 'DEV_ONLY_API_ENDPOINT'
-	| 'PUBLIC_HOST' | 'LAZY_TAROT_API_KEY'
+	| 'PUBLIC_HOST'
+	| 'LAZY_TAROT_API_KEY'
+	| 'SANITY_STUDIO_PROJECT_ID'
 export const env = <TGraceful extends boolean = false>(
 	key: EnvKey,
 	graceful?: TGraceful,

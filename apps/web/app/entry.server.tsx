@@ -11,11 +11,6 @@ import { createReadableStreamFromReadable } from '@remix-run/node'
 import { RemixServer } from '@remix-run/react'
 import { isbot } from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
-import {
-	preloadRouteAssets,
-	preloadLinkedAssets,
-	preloadModuleAssets,
-} from 'remix-utils/preload-route-assets'
 
 const ABORT_DELAY = 5_000
 
@@ -62,9 +57,6 @@ function handleBotRequest(
 					const stream = createReadableStreamFromReadable(body)
 
 					responseHeaders.set('Content-Type', 'text/html')
-					preloadRouteAssets(remixContext, responseHeaders)
-					preloadLinkedAssets(remixContext, responseHeaders)
-					preloadModuleAssets(remixContext, responseHeaders)
 
 					resolve(
 						new Response(stream, {
@@ -115,9 +107,6 @@ function handleBrowserRequest(
 					const stream = createReadableStreamFromReadable(body)
 
 					responseHeaders.set('Content-Type', 'text/html')
-					preloadRouteAssets(remixContext, responseHeaders)
-					preloadLinkedAssets(remixContext, responseHeaders)
-					preloadModuleAssets(remixContext, responseHeaders)
 
 					resolve(
 						new Response(stream, {

@@ -1,5 +1,4 @@
 import { Link } from '@remix-run/react'
-import { ClassNames } from '@emotion/react'
 
 import { Typography } from './Typography'
 import { useGetNavLink } from '~/utils/useGetNavLink'
@@ -11,21 +10,15 @@ const NavLinkItem = ({
 	to: string
 	children: React.ReactNode
 }) => (
-	<ClassNames>
-		{({ cx, css }) => (
-			<Link
-				to={to}
-				className={cx(
-					'italic border-transparent border-b-2 hover:border-black focus:border-black pb-1',
-					css`
-						transition: border-bottom 0.2s ease-in-out;
-					`,
-				)}
-			>
-				<Typography variant="span">{children}</Typography>
-			</Link>
-		)}
-	</ClassNames>
+	<Link
+		to={to}
+		style={{
+			transition: 'border-bottom 0.2s ease-in-out',
+		}}
+		className="italic border-transparent border-b-2 hover:border-black focus:border-black pb-1"
+	>
+		<Typography variant="span">{children}</Typography>
+	</Link>
 )
 
 export const NavigationBar = ({

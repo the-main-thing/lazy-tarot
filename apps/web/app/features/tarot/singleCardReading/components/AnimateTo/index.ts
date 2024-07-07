@@ -1,1 +1,0 @@
-export { AnimateTo } from './AnimateTo'

@@ -1,100 +1,101 @@
 import { randInt } from '@repo/utils'
 
-const MAX_ATTEMPTS = 100
+const MAX_HISTORY_SIZE = 20
+const MAX_ATTEMPTS = 5000 // to prevent infinite loop
 
-type Card = {
-	id: string
-}
+type SomeArray<T> = Array<T> | ReadonlyArray<T>
+type GetCardIdFromSetItem<TCard> = (card: TCard) => string
 
-type NonEmptyArray<T> = [T, ...Array<T>]
-
-type Combination<T> = {
-	card: T
-	upsideDown: boolean
-}
-
-type CombinationString = `${string}:${boolean}`
-
-export const pickRandomCard = <
-	TCard extends Card,
-	TPrev extends Card & { upsideDown: boolean } = Card & {
+interface Props<TCard> {
+	prevPickedCards: SomeArray<{
+		id: string
 		upsideDown: boolean
-	},
->({
-	source,
-	prev = [],
-}: {
-	source: NonEmptyArray<TCard>
-	prev?: Array<TPrev>
-}): Combination<TCard> => {
-	if (!source.length) {
-		throw new Error('Nothing to pick from')
-	}
-	if (!prev.length) {
-		return {
-			card: source[randInt(0, source.length - 1)]!,
-			upsideDown: randInt(0, 1) === 1,
-		}
-	}
+	}>
+	cardsSet: SomeArray<TCard>
+	getIdFromSetItem: GetCardIdFromSetItem<TCard>
+}
 
-	const prevCombinations = {} as Record<CombinationString, true>
-	const historyLimit = Math.max(
-		Math.min(source.length - 4, Math.floor(source.length / 2)),
-		0
+const maxHistorySize = ({
+	prevPickedCards,
+	cardsSet,
+}: Pick<Props<any>, 'cardsSet' | 'prevPickedCards'>): number => {
+	return Math.min(
+		Math.max(cardsSet.length - 1, 0),
+		MAX_HISTORY_SIZE,
+		prevPickedCards.length
 	)
-	let combinationsCount = 0
-	for (let i = prev.length - 1; i >= 0; i--) {
-		if (combinationsCount >= historyLimit) {
-			break
-		}
-		combinationsCount += 1
-		const { id } = prev[i]!
-		prevCombinations[`${id}:true`] = true
-		prevCombinations[`${id}:false`] = true
-	}
-	const sourceCombinations = {} as Record<CombinationString, true>
-	for (let i = 0; i < source.length; i++) {
-		const id = source[i]!.id
-		const aCombination = `${id}:true` as const
-		const bCombination = `${id}:false` as const
-		if (
-			!prevCombinations[aCombination] &&
-			!sourceCombinations[aCombination]
-		) {
-			sourceCombinations[aCombination] = true
-			sourceCombinations[bCombination] = true
+}
+
+const getHistorySet = <TCard>({
+	prevPickedCards,
+	cardsSet,
+	getIdFromSetItem,
+}: Props<TCard>) => {
+	const prevPickedIds = Object.fromEntries(
+		prevPickedCards
+			.slice(
+				-1 *
+					maxHistorySize({
+						prevPickedCards,
+						cardsSet,
+					})
+			)
+			.map(entry => [entry.id, entry])
+	)
+	const validPickedCardsIds = new Set<string>()
+	for (const card of cardsSet) {
+		const id = getIdFromSetItem(card)
+		const pickedCard = prevPickedIds[id]
+		if (pickedCard) {
+			validPickedCardsIds.add(id)
 		}
 	}
 
-	for (let i = 0; i < MAX_ATTEMPTS; i++) {
-		const card = source[randInt(0, source.length - 1)]!
-		const upsideDown = randInt(0, 1) === 1
-		const combination = `${card.id}:${upsideDown}` as const
-		if (!prevCombinations[combination]) {
-			return {
-				card,
-				upsideDown,
+	return [
+		validPickedCardsIds,
+		prevPickedCards
+			.slice(-1 * maxHistorySize({ prevPickedCards, cardsSet }))
+			.filter(card => validPickedCardsIds.has(card.id)),
+	] as const
+}
+
+const getUpsideDown = (prev: SomeArray<{ upsideDown: boolean }>) => {
+	if (
+		typeof prev.at(-1) !== 'undefined' &&
+		prev.at(-1)?.upsideDown === prev.at(-2)?.upsideDown &&
+		prev.at(-2)?.upsideDown === prev.at(-3)?.upsideDown
+	) {
+		return !prev.at(-1)?.upsideDown
+	}
+
+	return Math.random() - 0.1 > 0.5
+}
+
+export const pickRandomCard = <TCard>(props: Props<TCard>) => {
+	const [prevPickedIds, nextPrevPickedCards] = getHistorySet(props)
+	const { cardsSet, getIdFromSetItem } = props
+	try {
+		for (let i = 0; i < MAX_ATTEMPTS; i++) {
+			const card = cardsSet.at(randInt(0, cardsSet.length - 1))
+			if (!card) {
+				throw new Error('pick random card error. index out of bounds')
+			}
+			const id = getIdFromSetItem(card)
+			const upsideDown = getUpsideDown(props.prevPickedCards)
+			if (!prevPickedIds.has(id)) {
+				nextPrevPickedCards.push({ id, upsideDown })
+				return [
+					null,
+					{
+						id,
+						upsideDown,
+						prevPickedCards: nextPrevPickedCards,
+					},
+				] as const
 			}
 		}
-	}
-
-	const index = randInt(0, source.length - 1)
-	let card = source[index]!
-	let upsideDown = randInt(0, 1) === 1
-	if (prev[prev.length - 1]?.id === card.id) {
-		card = source[index % source.length]!
-	}
-	// Try to avoid same card orientation too much
-	if (
-		prev.at(-1)?.upsideDown === upsideDown &&
-		prev.at(-2)?.upsideDown === upsideDown &&
-		prev.at(-3)?.upsideDown
-	) {
-		upsideDown = randInt(0, 4) > 0 ? !upsideDown : upsideDown
-	}
-
-	return {
-		card,
-		upsideDown,
+		throw new Error('Too many attempts for picking next card')
+	} catch (error) {
+		return [error as Error, null] as const
 	}
 }
