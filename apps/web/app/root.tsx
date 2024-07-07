@@ -27,6 +27,7 @@ export default function Root() {
 	const loaderData = useLoaderData<typeof loader>()
 	const {
 		language: { lang, dir },
+		stylesContent,
 	} = loaderData
 
 	return (
@@ -40,8 +41,14 @@ export default function Root() {
 				minHeight: '100dvh',
 			}}
 		>
-			<link rel="stylesheet" href={styles} />
 			<head>
+				{stylesContent ? (
+					<style
+						dangerouslySetInnerHTML={{ __html: stylesContent }}
+					/>
+				) : (
+					<link rel="stylesheet" href={styles} />
+				)}
 				{lang === 'ru' ? (
 					<>
 						<link
@@ -139,7 +146,19 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		getLanguageFromHeaders(request.headers) ||
 		getDefaultLanguage()
 
+	const stylesUrl = styles.startsWith('http')
+		? styles
+		: new URL(styles, new URL(request.url).origin).href
+
+	const stylesContent = await fetch(stylesUrl)
+		.then((res) => res.text())
+		.catch((error) => {
+			console.error('Error fetching styles:', error)
+			return null
+		})
+
 	return json({
+		stylesContent,
 		language: {
 			dir,
 			lang: language,
