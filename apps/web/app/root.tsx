@@ -40,8 +40,8 @@ export default function Root() {
 				minHeight: '100dvh',
 			}}
 		>
-			<link rel="stylesheet" href={styles} />
 			<head>
+				<link rel="stylesheet" href={styles} />
 				{lang === 'ru' ? (
 					<>
 						<link
