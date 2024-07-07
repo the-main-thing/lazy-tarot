@@ -141,6 +141,15 @@ export const TarotReading = () => {
 	const { scrollElement } = useLayoutContext()
 
 	useEffect(() => {
+		if (state === 'idle_ssr_revealed') {
+			const section = document.getElementById(TAROT_READING_SECTION_ID)
+			section?.scrollIntoView({
+				behavior: 'smooth',
+			})
+		}
+	}, [state])
+
+	useEffect(() => {
 		if (
 			state === 'hiding_pre_animate_scroll' ||
 			state === 'revealing_pre_animate_scroll'
