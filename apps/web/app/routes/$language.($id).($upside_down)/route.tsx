@@ -4,7 +4,7 @@ import {
 	useActionData,
 	ShouldRevalidateFunction,
 } from '@remix-run/react'
-import type { HeadersFunction } from '@remix-run/node'
+import type { HeadersFunction, MetaFunction } from '@remix-run/node'
 
 import { TarotReading } from './components/TarotReading'
 import { Layout } from './components/Layout'
@@ -19,8 +19,9 @@ import {
 import { RouteLoadersDataProvider } from './RouteLoadersDataProvider'
 import type { LoaderData } from './loader.server'
 import type { ActionData } from './clientAction'
+import { loader } from './loader.server'
 
-export { loader } from './loader.server'
+export { loader }
 export { action } from './action.server'
 export { clientAction } from './clientAction'
 
@@ -38,6 +39,60 @@ export const headers: HeadersFunction = () => {
 			60 * 2
 		}`,
 	}
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	if (!data) {
+		return []
+	}
+
+	return [
+		{
+			name: 'p:domain_verify',
+			content: 'fbf457f39435399318cfa0269464d6d5',
+		},
+		{
+			title: data.content.indexPageContent.title,
+		},
+		{
+			name: 'description',
+			content: data.content.indexPageContent.description,
+		},
+		{
+			property: 'og:title',
+			content: data.content.indexPageContent.title,
+		},
+		{
+			property: 'og:type',
+			content: 'website',
+		},
+		{
+			property: 'og:url',
+			content: data.host,
+		},
+		{
+			property: 'og:image',
+			content: `${
+				data.host.endsWith('/') ? data.host : data.host + '/'
+			}og-image.png`,
+		},
+		{
+			property: 'og:image:width',
+			content: '1200',
+		},
+		{
+			property: 'og:image:height',
+			content: '630',
+		},
+		{
+			property: 'og:description',
+			content: data.content.indexPageContent.description,
+		},
+		{
+			property: 'og:locale',
+			content: data.language,
+		},
+	].concat(data.content.rootLayoutContent.ogData)
 }
 
 export default function Page() {

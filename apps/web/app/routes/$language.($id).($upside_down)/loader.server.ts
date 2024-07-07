@@ -31,7 +31,7 @@ const getCardById = (language: string, id: string) => {
 	})
 }
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const { id, upside_down, language } = params
 	if (!language) {
 		throw redirect('/')
@@ -51,6 +51,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 				content,
 				upsideDown: upside_down === '1',
 				revealed: true,
+				host: new URL(request.url).origin,
+				language,
 			} as const)
 		}
 
@@ -71,5 +73,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		content,
 		upsideDown: Math.random() > 0.5,
 		revealed: false,
+		host: new URL(request.url).origin,
+		language,
 	} as const)
 }
