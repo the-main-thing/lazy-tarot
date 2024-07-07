@@ -2,7 +2,9 @@ import { useSpring, animated } from '@react-spring/web'
 import { memo, forwardRef } from 'react'
 import classnames from 'classnames'
 
-import { type ImgProps, Img } from '~/components'
+import { Img } from '~/components'
+import type { CardsSet } from '~/routes/api.$language.get-full-tarot-set.$build-timestamp/useGetCardsSet'
+type Image = CardsSet[number]['image']
 
 type ButtonProps = React.ComponentProps<'button'>
 
@@ -25,8 +27,8 @@ interface Props
 	onChange?: (revealed: boolean) => void
 	sizeClassName: string
 	children: React.ReactNode
-	back: ImgProps['src']
-	front: ImgProps['src']
+	back: Image
+	front: Image
 }
 
 type Ref<T> = Parameters<ReturnType<typeof forwardRef<T>>>[0]['ref']
@@ -128,7 +130,9 @@ const CardInternal = memo(
 					)}
 				>
 					<Img
-						src={front}
+						src={front.srcSet.xs.src}
+						placeholderSrc={front.srcSet.placeholder.src}
+						dimentions={front.dimentions}
 						className="sr-only"
 						aria-hidden="true"
 						alt=""
@@ -145,7 +149,18 @@ const CardInternal = memo(
 							transform: spring.rotateY.to(backRotate),
 						}}
 					>
-						<Img src={back} className={'w-full rounded p-0'} />
+						<Img
+							src={back.srcSet.xs.src}
+							placeholderSrc={back.srcSet.placeholder.src}
+							dimentions={back.dimentions}
+							className={'w-full rounded p-0 md:hidden'}
+						/>
+						<Img
+							src={back.srcSet.sm.src}
+							placeholderSrc={back.srcSet.placeholder.src}
+							dimentions={back.dimentions}
+							className={'w-full rounded p-0 hidden md:block'}
+						/>
 					</animated.div>
 					<animated.div
 						className={imageContainerClassName(
@@ -160,9 +175,20 @@ const CardInternal = memo(
 						}}
 					>
 						<Img
-							src={front}
+							src={front.srcSet.xs.src}
+							placeholderSrc={front.srcSet.placeholder.src}
+							dimentions={front.dimentions}
 							className={
-								'w-full rounded p-0' +
+								'w-full rounded p-0 md:hidden' +
+								(upsideDown ? ' rotate-180' : '')
+							}
+						/>
+						<Img
+							src={front.srcSet.sm.src}
+							placeholderSrc={front.srcSet.placeholder.src}
+							dimentions={front.dimentions}
+							className={
+								'w-full rounded p-0 hidden md:block' +
 								(upsideDown ? ' rotate-180' : '')
 							}
 						/>

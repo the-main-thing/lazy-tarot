@@ -1,20 +1,13 @@
 import { forwardRef } from 'react'
-import { type BREAKPOINTS, srcSet as getSrcSet } from '@repo/core'
-
-type Breakpoints = typeof BREAKPOINTS
-type Breakpoint<K extends keyof Breakpoints> = Breakpoints[K]
-
-type SrcSet = {
-	[breakpoint in keyof Breakpoints]: {
-		src: string
-		originalDimentions: [width: number, height: number]
-		width: Breakpoint<breakpoint>
-	}
-}
 
 interface ImgPropsBase
-	extends Omit<React.ComponentProps<'img'>, 'src' | 'srcSet' | 'ref'> {
-	src: SrcSet
+	extends Omit<
+		React.ComponentProps<'img'>,
+		'src' | 'srcSet' | 'placeholderSrc' | 'dimentions' | 'ref'
+	> {
+	src: string
+	placeholderSrc: string
+	dimentions: [w: number, h: number]
 }
 
 export type ImgProps = ImgPropsBase &
@@ -30,22 +23,24 @@ export type ImgProps = ImgPropsBase &
 	)
 
 export const Img = forwardRef<HTMLImageElement, ImgProps>(
-	({ src, alt = '', className, ...props }, ref) => {
+	(
+		{ src, dimentions, placeholderSrc, alt = '', className, ...props },
+		ref,
+	) => {
 		return (
 			<img
 				ref={ref}
 				alt={alt}
 				aria-hidden={alt ? 'false' : 'true'}
 				{...props}
-				srcSet={getSrcSet(src)}
-				src={src.sm.src}
+				src={src}
 				className={'repo-ui-img ' + className}
 				style={{
-					backgroundImage: `url(${src.placeholder.src})`,
+					backgroundImage: `url(${placeholderSrc})`,
 					backgroundRepeat: 'no-repeat',
 					backgroundPosition: 'center center',
 					backgroundSize: 'cover',
-					aspectRatio: `${src.sm.originalDimentions[0]} / ${src.sm.originalDimentions[1]}`,
+					aspectRatio: `${dimentions[0]} / ${dimentions[1]}`,
 					...props.style,
 				}}
 			/>

@@ -53,16 +53,17 @@ export const getImagesSet = <TBreakpoints extends Record<number, number>>({
 			{
 				src,
 				width,
-				originalDimentions: dimentions,
 			},
 		]
 	})
 
-	return Object.fromEntries(entries) as {
-		[key in keyof TBreakpoints]: {
-			src: string
-			width: TBreakpoints[key]
-			originalDimentions: [width: number, height: number]
-		}
+	return {
+		dimentions: dimentions as NonNullable<typeof dimentions>,
+		srcSet: Object.fromEntries(entries) as {
+			[key in keyof TBreakpoints]: {
+				src: string
+				width: TBreakpoints[key]
+			}
+		},
 	}
 }

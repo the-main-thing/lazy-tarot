@@ -15,13 +15,22 @@ export const ManifestoPage = memo(
 			<section
 				id="manifesto"
 				className={
-					'transition-opacity duration-300 ' + (hide ? 'opacity-0 ' : 'opacity-100')
+					'transition-opacity duration-300 ' +
+					(hide ? 'opacity-0 ' : 'opacity-100')
 				}
 			>
 				<article className="flex flex-col gap-16 w-full landscape:flex-row landscape:flex-nowrap">
 					<div className="flex flex-col-reverse portrait:flex-col items-center gap-16">
 						<div className="landscape:w-screen-33 portrait:w-screen-70">
-							<Img src={headerImage} alt="" aria-hidden="true" />
+							<Img
+								src={headerImage.srcSet.md.src}
+								placeholderSrc={
+									headerImage.srcSet.placeholder.src
+								}
+								dimentions={headerImage.dimentions}
+								alt=""
+								aria-hidden="true"
+							/>
 						</div>
 						<div className="text-pretty uppercase">
 							<PortableText value={header} />

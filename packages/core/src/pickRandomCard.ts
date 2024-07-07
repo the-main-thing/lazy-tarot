@@ -3,28 +3,22 @@ import { randInt } from '@repo/utils'
 const MAX_HISTORY_SIZE = 20
 const MAX_ATTEMPTS = 5000 // to prevent infinite loop
 
-type ID = string | number
-interface HistoryEntry<TId extends ID> {
-	id: TId
-	upsideDown: boolean
-}
-
 type SomeArray<T> = Array<T> | ReadonlyArray<T>
-type GetCardIdFromSetItem<TCard, TId extends ID> = (card: TCard) => TId
+type GetCardIdFromSetItem<TCard> = (card: TCard) => string
 
-interface Props<TCard, TId extends ID> {
+interface Props<TCard> {
 	prevPickedCards: SomeArray<{
-		id: TId
+		id: string
 		upsideDown: boolean
 	}>
 	cardsSet: SomeArray<TCard>
-	getIdFromSetItem: GetCardIdFromSetItem<TCard, TId>
+	getIdFromSetItem: GetCardIdFromSetItem<TCard>
 }
 
 const maxHistorySize = ({
 	prevPickedCards,
 	cardsSet,
-}: Pick<Props<any, any>, 'cardsSet' | 'prevPickedCards'>): number => {
+}: Pick<Props<any>, 'cardsSet' | 'prevPickedCards'>): number => {
 	return Math.min(
 		Math.max(cardsSet.length - 1, 0),
 		MAX_HISTORY_SIZE,
@@ -32,34 +26,40 @@ const maxHistorySize = ({
 	)
 }
 
-const getHistory = <TCard, TId extends ID>({
+const getHistorySet = <TCard>({
 	prevPickedCards,
 	cardsSet,
 	getIdFromSetItem,
-}: Props<TCard, TId>) => {
-	const cardsSetAsSet = new Set<TId>(
-		cardsSet.map(card => getIdFromSetItem(card))
+}: Props<TCard>) => {
+	const prevPickedIds = Object.fromEntries(
+		prevPickedCards
+			.slice(
+				-1 *
+					maxHistorySize({
+						prevPickedCards,
+						cardsSet,
+					})
+			)
+			.map(entry => [entry.id, entry])
 	)
-	const validIdsHistorySet = new Set<TId>()
-	const validHistoryArray: Array<HistoryEntry<TId>> = []
-	const historySize = maxHistorySize({ prevPickedCards, cardsSet })
-	for (let i = prevPickedCards.length - 1; i >= 0; i--) {
-		if (validIdsHistorySet.size >= historySize) {
-			break
-		}
-		const entry = prevPickedCards[i]
-		if (cardsSetAsSet.has(entry.id)) {
-			validIdsHistorySet.add(entry.id)
-			validHistoryArray.push(entry)
+	const validPickedCardsIds = new Set<string>()
+	for (const card of cardsSet) {
+		const id = getIdFromSetItem(card)
+		const pickedCard = prevPickedIds[id]
+		if (pickedCard) {
+			validPickedCardsIds.add(id)
 		}
 	}
-	return {
-		set: validIdsHistorySet,
-		array: validHistoryArray,
-	}
+
+	return [
+		validPickedCardsIds,
+		prevPickedCards
+			.slice(-1 * maxHistorySize({ prevPickedCards, cardsSet }))
+			.filter(card => validPickedCardsIds.has(card.id)),
+	] as const
 }
 
-const getUpsideDown = (prev: Array<{ upsideDown: boolean }>) => {
+const getUpsideDown = (prev: SomeArray<{ upsideDown: boolean }>) => {
 	if (
 		typeof prev.at(-1) !== 'undefined' &&
 		prev.at(-1)?.upsideDown === prev.at(-2)?.upsideDown &&
@@ -68,13 +68,11 @@ const getUpsideDown = (prev: Array<{ upsideDown: boolean }>) => {
 		return !prev.at(-1)?.upsideDown
 	}
 
-	return Math.random() > 0.5
+	return Math.random() - 0.1 > 0.5
 }
 
-export const pickRandomCard = <TCard, TId extends ID>(
-	props: Props<TCard, TId>
-) => {
-	const { set: skipIds, array: historyArray } = getHistory(props)
+export const pickRandomCard = <TCard>(props: Props<TCard>) => {
+	const [prevPickedIds, nextPrevPickedCards] = getHistorySet(props)
 	const { cardsSet, getIdFromSetItem } = props
 	try {
 		for (let i = 0; i < MAX_ATTEMPTS; i++) {
@@ -83,19 +81,15 @@ export const pickRandomCard = <TCard, TId extends ID>(
 				throw new Error('pick random card error. index out of bounds')
 			}
 			const id = getIdFromSetItem(card)
-			if (!skipIds.has(id)) {
-				const pickedCard = {
-					id,
-					upsideDown: getUpsideDown(historyArray),
-				}
-				historyArray.push(pickedCard)
+			const upsideDown = getUpsideDown(props.prevPickedCards)
+			if (!prevPickedIds.has(id)) {
+				nextPrevPickedCards.push({ id, upsideDown })
 				return [
 					null,
 					{
-						...pickedCard,
-						prevPickedCards: historyArray.slice(
-							-1 * MAX_HISTORY_SIZE
-						),
+						id,
+						upsideDown,
+						prevPickedCards: nextPrevPickedCards,
 					},
 				] as const
 			}

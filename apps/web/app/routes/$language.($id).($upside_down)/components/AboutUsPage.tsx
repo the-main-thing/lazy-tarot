@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { ClassNames } from '@emotion/react'
 import { Img, Typography } from '~/components'
 import type { LoaderData } from '../loader.server'
 
@@ -37,27 +36,31 @@ export const AboutUsPage = memo(
 						</div>
 					</div>
 					<div className="flex flex-col items-end w-full gap-4">
-						<ClassNames>
-							{({ cx, css }) => (
-								<div
-									className={cx(
-										'landscape:w-screen-25 rounded portrait:w-screen-70',
-										css`
-											@media (orientation: landscape) {
-												margin-right: 5.9rem;
-											}
-										`,
-									)}
-								>
-									<Img
-										src={image}
-										alt=""
-										aria-hidden="true"
-										className="rounded"
-									/>
-								</div>
-							)}
-						</ClassNames>
+						<div className="landscape:hidden rounded portrait:w-screen-70">
+							<Img
+								src={image.srcSet.sm.src}
+								placeholderSrc={image.srcSet.placeholder.src}
+								dimentions={image.dimentions}
+								alt=""
+								aria-hidden="true"
+								className="rounded"
+							/>
+						</div>
+						<div
+							style={{
+								marginRight: '5.9rem',
+							}}
+							className="landscape:w-screen-25 rounded portrait:hidden"
+						>
+							<Img
+								src={image.srcSet.md.src}
+								placeholderSrc={image.srcSet.placeholder.src}
+								dimentions={image.dimentions}
+								alt=""
+								aria-hidden="true"
+								className="rounded"
+							/>
+						</div>
 					</div>
 				</article>
 				{social.length ? (
