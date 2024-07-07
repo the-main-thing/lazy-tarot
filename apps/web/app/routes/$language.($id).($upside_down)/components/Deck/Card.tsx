@@ -1,7 +1,6 @@
 import { useSpring, animated } from '@react-spring/web'
-import { memo, forwardRef } from 'react'
+import { memo, forwardRef, useState, useEffect } from 'react'
 import classnames from 'classnames'
-import { ClientOnly } from 'remix-utils/client-only'
 
 import { Img } from '~/components'
 import type { CardsSet } from '~/routes/api.$language.get-full-tarot-set.$build-timestamp/useGetCardsSet'
@@ -120,6 +119,11 @@ const CardInternal = memo(
 				Component = animated.button
 			}
 
+			const [hydrated, setHydrated] = useState(false)
+			useEffect(() => {
+				setHydrated(true)
+			}, [])
+
 			return (
 				<Component
 					ref={ref as never}
@@ -130,32 +134,6 @@ const CardInternal = memo(
 						className,
 					)}
 				>
-					<ClientOnly
-						fallback={
-							<Img
-								src={front.srcSet.xs.src}
-								placeholderSrc={front.srcSet.placeholder.src}
-								dimentions={front.dimentions}
-								className="sr-only"
-								aria-hidden="true"
-								alt=""
-								lazy={!revealed}
-							/>
-						}
-					>
-						{() => (
-							<Img
-								src={front.srcSet.xs.src}
-								placeholderSrc={front.srcSet.placeholder.src}
-								dimentions={front.dimentions}
-								className="sr-only"
-								aria-hidden="true"
-								alt=""
-								lazy={false}
-							/>
-						)}
-					</ClientOnly>
-
 					<animated.div
 						className={imageContainerClassName(
 							sizeClassName,
@@ -196,7 +174,7 @@ const CardInternal = memo(
 								'w-full rounded p-0 md:hidden' +
 								(upsideDown ? ' rotate-180' : '')
 							}
-							lazy={!revealed}
+							lazy={!hydrated}
 						/>
 						<Img
 							src={front.srcSet.sm.src}
@@ -206,7 +184,7 @@ const CardInternal = memo(
 								'w-full rounded p-0 hidden md:block' +
 								(upsideDown ? ' rotate-180' : '')
 							}
-							lazy={!revealed}
+							lazy={!hydrated}
 						/>
 					</animated.div>
 				</Component>
