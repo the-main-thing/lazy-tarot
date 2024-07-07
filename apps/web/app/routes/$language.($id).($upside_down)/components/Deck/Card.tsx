@@ -136,6 +136,7 @@ const CardInternal = memo(
 						className="sr-only"
 						aria-hidden="true"
 						alt=""
+						lazy={!revealed}
 					/>
 					<animated.div
 						className={imageContainerClassName(
@@ -154,6 +155,7 @@ const CardInternal = memo(
 							placeholderSrc={back.srcSet.placeholder.src}
 							dimentions={back.dimentions}
 							className={'w-full rounded p-0'}
+							lazy={false}
 						/>
 					</animated.div>
 					<animated.div
@@ -176,6 +178,7 @@ const CardInternal = memo(
 								'w-full rounded p-0 md:hidden' +
 								(upsideDown ? ' rotate-180' : '')
 							}
+							lazy={!revealed}
 						/>
 						<Img
 							src={front.srcSet.sm.src}
@@ -185,6 +188,7 @@ const CardInternal = memo(
 								'w-full rounded p-0 hidden md:block' +
 								(upsideDown ? ' rotate-180' : '')
 							}
+							lazy={!revealed}
 						/>
 					</animated.div>
 				</Component>

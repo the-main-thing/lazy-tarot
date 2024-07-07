@@ -3,11 +3,12 @@ import { forwardRef } from 'react'
 interface ImgPropsBase
 	extends Omit<
 		React.ComponentProps<'img'>,
-		'src' | 'srcSet' | 'placeholderSrc' | 'dimentions' | 'ref'
+		'src' | 'srcSet' | 'placeholderSrc' | 'dimentions' | 'ref' | 'lazy'
 	> {
 	src: string
 	placeholderSrc: string
 	dimentions: [w: number, h: number]
+	lazy: boolean
 }
 
 export type ImgProps = ImgPropsBase &
@@ -24,7 +25,15 @@ export type ImgProps = ImgPropsBase &
 
 export const Img = forwardRef<HTMLImageElement, ImgProps>(
 	(
-		{ src, dimentions, placeholderSrc, alt = '', className, ...props },
+		{
+			src,
+			dimentions,
+			placeholderSrc,
+			alt = '',
+			className,
+			lazy,
+			...props
+		},
 		ref,
 	) => {
 		return (
@@ -43,6 +52,7 @@ export const Img = forwardRef<HTMLImageElement, ImgProps>(
 					aspectRatio: `${dimentions[0]} / ${dimentions[1]}`,
 					...props.style,
 				}}
+				loading={lazy ? 'lazy' : 'eager'}
 			/>
 		)
 	},

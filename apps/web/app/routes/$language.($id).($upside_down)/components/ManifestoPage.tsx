@@ -30,6 +30,7 @@ export const ManifestoPage = memo(
 								dimentions={headerImage.dimentions}
 								alt=""
 								aria-hidden="true"
+								lazy
 							/>
 						</div>
 						<div className="text-pretty uppercase">

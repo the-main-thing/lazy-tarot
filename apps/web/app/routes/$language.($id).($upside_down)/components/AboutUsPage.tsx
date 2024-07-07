@@ -44,6 +44,7 @@ export const AboutUsPage = memo(
 								alt=""
 								aria-hidden="true"
 								className="rounded"
+								lazy
 							/>
 						</div>
 						<div
@@ -59,6 +60,7 @@ export const AboutUsPage = memo(
 								alt=""
 								aria-hidden="true"
 								className="rounded"
+								lazy
 							/>
 						</div>
 					</div>
