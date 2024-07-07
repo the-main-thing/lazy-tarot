@@ -1,6 +1,7 @@
 import { useSpring, animated } from '@react-spring/web'
 import { memo, forwardRef } from 'react'
 import classnames from 'classnames'
+import { ClientOnly } from 'remix-utils/client-only'
 
 import { Img } from '~/components'
 import type { CardsSet } from '~/routes/api.$language.get-full-tarot-set.$build-timestamp/useGetCardsSet'
@@ -129,15 +130,32 @@ const CardInternal = memo(
 						className,
 					)}
 				>
-					<Img
-						src={front.srcSet.xs.src}
-						placeholderSrc={front.srcSet.placeholder.src}
-						dimentions={front.dimentions}
-						className="sr-only"
-						aria-hidden="true"
-						alt=""
-						lazy={!revealed}
-					/>
+					<ClientOnly
+						fallback={
+							<Img
+								src={front.srcSet.xs.src}
+								placeholderSrc={front.srcSet.placeholder.src}
+								dimentions={front.dimentions}
+								className="sr-only"
+								aria-hidden="true"
+								alt=""
+								lazy={!revealed}
+							/>
+						}
+					>
+						{() => (
+							<Img
+								src={front.srcSet.xs.src}
+								placeholderSrc={front.srcSet.placeholder.src}
+								dimentions={front.dimentions}
+								className="sr-only"
+								aria-hidden="true"
+								alt=""
+								lazy={false}
+							/>
+						)}
+					</ClientOnly>
+
 					<animated.div
 						className={imageContainerClassName(
 							sizeClassName,
