@@ -32,12 +32,8 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
 export const headers: HeadersFunction = () => {
 	return {
 		'Cache-Control': `public, max-age=${
-			// 60 * 60 * 1
-			60 * 2
-		}, stale-while-revalidate=${
-			// 60 * 60 * 24
-			60 * 2
-		}`,
+			60 * 60 * 3
+		}, stale-while-revalidate=${60 * 60 * 12}`,
 	}
 }
 
