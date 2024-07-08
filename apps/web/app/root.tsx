@@ -88,6 +88,11 @@ export default function Root() {
 				/>
 				<Meta />
 				<Links />
+				<link
+					rel="icon"
+					type="image/svg+xml;charset=utf-8"
+					href="/favicon.svg"
+				/>
 				<link rel="stylesheet" href={styles} />
 			</head>
 			<body
