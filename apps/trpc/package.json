@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
+  "types": "index.d.ts",
+  "main": "index.d.ts",
   "scripts": {
     "deploy": "npx wrangler deploy",
     "dev": "npx wrangler dev"
