@@ -2,29 +2,24 @@
 	"name": "monorepo-guess",
 	"private": true,
 	"scripts": {
-		"build": "turbo build",
-		"dev": "turbo dev",
-		"lint": "turbo lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"prepare": "husky"
+		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
 	"devDependencies": {
-		"@repo/eslint-config": "*",
-		"@repo/typescript-config": "*",
-		"ajv": "^8.12.0",
-		"husky": "^9.0.11",
-		"turbo": "latest"
+		"ajv": "^8.12.0"
 	},
 	"engines": {
 		"node": ">=18"
 	},
-	"packageManager": "yarn@1.22.22",
 	"workspaces": {
 		"packages": [
 			"apps/*",
 			"packages/*"
 		],
-		"nohoist": [
+		"noHoist": [
+			"**/@repo/web",
+			"**/@repo/mobile",
+			"apps/mobile/**/*",
+			"apps/web/**/*",
 			"apps/mobile/**/@tanstack/react-query",
 			"apps/mobile/**/react-router",
 			"apps/mobile/**/react-router-dom",
@@ -32,7 +27,51 @@
 			"apps/web/**/react-router",
 			"apps/web/**/react-router-dom",
 			"apps/web/**/@trpc/react-query",
-			"apps/web/**/@tanstack/react-query"
+			"apps/web/**/@tanstack/react-query",
+			"apps/web/@capacitor/app",
+			"apps/web/@capacitor/core",
+			"apps/web/@capacitor/haptics",
+			"apps/web/@capacitor/keyboard",
+			"apps/web/@capacitor/status-bar",
+			"apps/web/@ionic/react",
+			"apps/web/@ionic/react-router",
+			"apps/web/@portabletext/react",
+			"apps/web/@react-spring/web",
+			"apps/web/@tanstack/react-query",
+			"apps/web/@trpc/client",
+			"apps/web/@trpc/react-query",
+			"apps/web/@types/react-router",
+			"apps/web/@types/react-router-dom",
+			"apps/web/autoprefixer",
+			"apps/web/ionicons",
+			"apps/web/postcss",
+			"apps/web/react",
+			"apps/web/react-dom",
+			"apps/web/react-router",
+			"apps/web/react-router-dom",
+			"apps/web/tailwindcss",
+			"apps/mobile/@capacitor/app",
+			"apps/mobile/@capacitor/core",
+			"apps/mobile/@capacitor/haptics",
+			"apps/mobile/@capacitor/keyboard",
+			"apps/mobile/@capacitor/status-bar",
+			"apps/mobile/@ionic/react",
+			"apps/mobile/@ionic/react-router",
+			"apps/mobile/@portabletext/react",
+			"apps/mobile/@react-spring/web",
+			"apps/mobile/@tanstack/react-query",
+			"apps/mobile/@trpc/client",
+			"apps/mobile/@trpc/react-query",
+			"apps/mobile/@types/react-router",
+			"apps/mobile/@types/react-router-dom",
+			"apps/mobile/autoprefixer",
+			"apps/mobile/ionicons",
+			"apps/mobile/postcss",
+			"apps/mobile/react",
+			"apps/mobile/react-dom",
+			"apps/mobile/react-router",
+			"apps/mobile/react-router-dom",
+			"apps/mobile/tailwindcss"
 		]
 	}
 }

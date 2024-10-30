@@ -7,7 +7,8 @@
   "main": "index.d.ts",
   "scripts": {
     "deploy": "npx wrangler deploy",
-    "dev": "npx wrangler dev"
+    "dev": "npx wrangler dev",
+    "build": "vite build"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +16,7 @@
   "dependencies": {
     "@repo/api": "*",
     "@repo/core": "*",
-    "@trpc/server": "^11.0.0-rc.332",
+    "@trpc/server": "^11.0.0-rc.553",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -24,7 +25,7 @@
     "@repo/typescript-config": "*",
     "@types/node": "^20.11.25",
     "prettier": "^3.2.5",
-    "typescript": "^5.5.2",
+    "typescript": "^5.6.2",
     "wrangler": "^3.32.0"
   }
 }

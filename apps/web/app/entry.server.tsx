@@ -21,19 +21,22 @@ export default function handleRequest(
 	remixContext: EntryContext,
 	_loadContext: AppLoadContext,
 ) {
-	return isbot(request.headers.get('user-agent'))
-		? handleBotRequest(
+	switch (true) {
+		case isbot(request.headers.get('user-agent')):
+			return handleBotRequest(
 				request,
 				responseStatusCode,
 				responseHeaders,
 				remixContext,
-		  )
-		: handleBrowserRequest(
+			)
+		default:
+			return handleBrowserRequest(
 				request,
 				responseStatusCode,
 				responseHeaders,
 				remixContext,
-		  )
+			)
+	}
 }
 
 function handleBotRequest(
