@@ -6,6 +6,7 @@ import {
 	useMemo,
 	type Dispatch,
 	useRef,
+    useLayoutEffect,
 } from 'react'
 import { NavigationBar, PortableText } from '~/components'
 import { Link } from '@remix-run/react'
@@ -41,7 +42,7 @@ function useScrollCompensation(
 	compensate: boolean,
 ) {
 	const scrollWidth = useRef<number>(0)
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (!scrollElement) {
 			return
 		}
