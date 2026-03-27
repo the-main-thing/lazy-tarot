@@ -79,7 +79,7 @@ export const Layout = ({ children }: Props) => {
 	useScrollCompensation(scrollElement, blockingScroll)
 
 	return (
-		<div ref={setScrollElement} className="w-full h-full">
+		<div ref={setScrollElement} className="w-full h-full overflow-y-auto">
 			<div className="w-full md:w-11/12 p-4 pt-10 pb-20 md:pb-40 flex flex-col m-auto gap-16">
 				<div id="index">
 					<NavigationBar
