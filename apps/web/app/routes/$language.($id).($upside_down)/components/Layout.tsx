@@ -35,11 +35,12 @@ export const useBlockScroll = (block: boolean) => {
 	}, [block, set])
 }
 
+
 function compensateScroll(scrollElement: HTMLDivElement | null): void {
 	if (!scrollElement) {
 		return
 	}
-	const scrollBarCompensation = window.innerWidth - scrollElement.offsetWidth
+	const scrollBarCompensation = window.innerWidth - scrollElement.clientWidth
 	scrollElement.style.overflow = 'hidden'
 	scrollElement.style.paddingRight = `${scrollBarCompensation}px`
 }
