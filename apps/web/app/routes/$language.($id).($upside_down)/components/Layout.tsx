@@ -5,6 +5,7 @@ import {
 	useEffect,
 	useMemo,
 	type Dispatch,
+	useRef,
 } from 'react'
 import { NavigationBar, PortableText } from '~/components'
 import { Link } from '@remix-run/react'
@@ -35,22 +36,26 @@ export const useBlockScroll = (block: boolean) => {
 	}, [block, set])
 }
 
-
-function compensateScroll(scrollElement: HTMLDivElement | null): void {
-	if (!scrollElement) {
-		return
-	}
-	const scrollBarCompensation = window.innerWidth - scrollElement.clientWidth
-	scrollElement.style.overflow = 'hidden'
-	scrollElement.style.paddingRight = `${scrollBarCompensation}px`
-}
-
-function removeScrollCompensation(scrollElement: HTMLDivElement | null): void {
-	if (!scrollElement) {
-		return
-	}
-	scrollElement.style.overflow = ''
-	scrollElement.style.paddingRight = ''
+function useScrollCompensation(
+	scrollElement: HTMLDivElement | null,
+	compensate: boolean,
+) {
+	const scrollWidth = useRef<number>(0)
+	useEffect(() => {
+		if (!scrollElement) {
+			return
+		}
+		if (!scrollWidth.current) {
+			scrollWidth.current = window.innerWidth - scrollElement.clientWidth
+		}
+		if (compensate) {
+			scrollElement.style.overflow = 'hidden'
+			scrollElement.style.paddingRight = `${scrollWidth.current}px`
+		} else {
+			scrollElement.style.overflow = ''
+			scrollElement.style.paddingRight = ''
+		}
+	}, [scrollElement, scrollWidth, compensate])
 }
 
 export const Layout = ({ children }: Props) => {
@@ -70,13 +75,7 @@ export const Layout = ({ children }: Props) => {
 	}, [blockScroll, scrollElement])
 
 	const blockingScroll = blockScroll[0]
-	useEffect(() => {
-		if (blockingScroll) {
-			compensateScroll(scrollElement)
-		} else {
-			removeScrollCompensation(scrollElement)
-		}
-	}, [blockingScroll, scrollElement])
+	useScrollCompensation(scrollElement, blockingScroll)
 
 	return (
 		<div
