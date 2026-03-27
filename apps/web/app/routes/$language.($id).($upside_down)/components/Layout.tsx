@@ -35,6 +35,23 @@ export const useBlockScroll = (block: boolean) => {
 	}, [block, set])
 }
 
+function compensateScroll(scrollElement: HTMLDivElement | null): void {
+	if (!scrollElement) {
+		return
+	}
+	const scrollBarCompensation = window.innerWidth - scrollElement.offsetWidth
+	scrollElement.style.overflow = 'hidden'
+	scrollElement.style.paddingRight = `${scrollBarCompensation}px`
+}
+
+function removeScrollCompensation(scrollElement: HTMLDivElement | null): void {
+	if (!scrollElement) {
+		return
+	}
+	scrollElement.style.overflow = ''
+	scrollElement.style.paddingRight = ''
+}
+
 export const Layout = ({ children }: Props) => {
 	const {
 		language,
@@ -51,16 +68,22 @@ export const Layout = ({ children }: Props) => {
 		}
 	}, [blockScroll, scrollElement])
 
+	const blockingScroll = blockScroll[0]
+	useEffect(() => {
+		if (blockingScroll) {
+			compensateScroll(scrollElement)
+		} else {
+			removeScrollCompensation(scrollElement)
+		}
+	}, [blockingScroll, scrollElement])
+
 	return (
 		<div
 			ref={setScrollElement}
 			className={
-				'h-full' +
-				(blockScroll[0] ? ' overflow-hidden' : ' overflow-y-auto')
+				'w-full h-full' +
+				(blockScroll[0] ? ' overflow-y-hidden' : ' overflow-y-auto')
 			}
-			style={{
-				width: '100dvw',
-			}}
 		>
 			<div className="w-full md:w-11/12 p-4 pt-10 pb-20 md:pb-40 flex flex-col m-auto gap-16">
 				<div id="index">
