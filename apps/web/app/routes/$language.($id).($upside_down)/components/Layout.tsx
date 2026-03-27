@@ -55,9 +55,12 @@ export const Layout = ({ children }: Props) => {
 		<div
 			ref={setScrollElement}
 			className={
-				'w-full h-full' +
+				'h-full' +
 				(blockScroll[0] ? ' overflow-hidden' : ' overflow-y-auto')
 			}
+			style={{
+				width: '100dvw',
+			}}
 		>
 			<div className="w-full md:w-11/12 p-4 pt-10 pb-20 md:pb-40 flex flex-col m-auto gap-16">
 				<div id="index">
