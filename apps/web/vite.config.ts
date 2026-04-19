@@ -4,6 +4,9 @@ import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 installGlobals()
+if (!process.env.LAZY_TAROT_API_KEY) {
+	throw new Error('LAZY_TAROT_API_KEY is not set')
+}
 
 export default defineConfig({
 	plugins: [
